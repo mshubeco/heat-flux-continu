@@ -1,0 +1,4 @@
+﻿# HEAT flux continu — GitHub Pages
+*.log
+.DS_Store
+__pycache__/
