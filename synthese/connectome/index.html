@@ -144,12 +144,12 @@
   <div id="c"></div>
   <div id="labels"></div>
   <aside id="hud">
-    <b>CARDS · P1</b>
+    <b>CARDS · P1 · 20 mai – 7 juin</b>
     <div id="stats">—</div>
-    <div class="row"><span>Lumière liens</span><input id="linkLight" type="range" min="0" max="1" step="0.01" value="0.28"></div>
+    <div class="row"><span>Lumière liens</span><input id="linkLight" type="range" min="0" max="1" step="0.01" value="0.40"></div>
     <div class="row"><span>Bloom</span><input id="bloom" type="range" min="0" max="2.2" step="0.01" value="0.38"></div>
     <div class="row"><span>Opacité</span><input id="op" type="range" min="0" max="0.45" step="0.005" value="0.07"></div>
-    <div class="row"><span>Labels</span><input id="nLabels" type="range" min="0" max="80" step="1" value="40"></div>
+    <div class="row"><span>Labels</span><input id="nLabels" type="range" min="0" max="80" step="1" value="80"></div>
     <label class="hl-toggle" for="hlSelected">
       <input id="hlSelected" type="checkbox" checked />
       <span class="hl-copy">
@@ -193,14 +193,14 @@ const labelsEl = document.getElementById('labels');
 const loading = document.getElementById('loading');
 
 const P = {
-  linkLight: 0.28,
+  linkLight: 0.40,
   bloom: 0.38,
   radius: 0.08,
   threshold: 0.22,
   opacity: 0.07,
   strands: 4,
   segments: 18,
-  nLabels: 40,
+  nLabels: 80,
   exposure: 0.72,
 };
 const MIN_CARDS = 5;
@@ -211,11 +211,28 @@ const showCards = !(
   params.get('nocards') === '1'
 );
 let includeRT = params.get('rt') === '1' || params.get('rt') === 'true';
+const linkQ = params.get('link') ?? params.get('linkLight');
+if (linkQ != null) {
+  const v = parseFloat(linkQ);
+  if (Number.isFinite(v)) P.linkLight = Math.max(0, Math.min(1, v));
+}
+const labelsQ = params.get('labels') ?? params.get('nLabels');
+if (labelsQ != null) {
+  let v = parseFloat(labelsQ);
+  if (Number.isFinite(v)) {
+    if (v >= 0 && v <= 1) v = Math.round(v * 80);
+    P.nLabels = Math.max(0, Math.min(80, Math.round(v)));
+  }
+}
+const linkSlider = document.getElementById('linkLight');
+const labelsSlider = document.getElementById('nLabels');
+if (linkSlider) linkSlider.value = String(P.linkLight);
+if (labelsSlider) labelsSlider.value = String(P.nLabels);
 if (!showCards) {
   document.body.classList.add('no-cards');
-  document.title = 'Connectome P1';
+  document.title = 'Connectome P1 · 20 mai – 7 juin 2026';
   const hudTitle = document.querySelector('#hud b');
-  if (hudTitle) hudTitle.textContent = 'Connectome · P1';
+  if (hudTitle) hudTitle.textContent = 'Connectome · P1 · 20 mai – 7 juin';
   const hlBox = document.getElementById('hlSelected');
   if (hlBox) hlBox.checked = false;
 }
