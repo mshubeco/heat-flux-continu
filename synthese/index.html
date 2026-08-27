@@ -808,6 +808,27 @@
   #cohort-251-table tbody tr.is-filtered-out { display: none !important; }
   .mono-dup { margin: 1.25rem 0 1.4rem; }
   aside.homonym-box + aside.homonym-box { margin-top: 1rem; }
+  .encadres-pair {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin: 1.2rem 0 1.4rem;
+    align-items: start;
+  }
+  .encadres-pair > .callout {
+    margin: 0;
+    min-width: 0;
+  }
+  .encadres-pair .homonym-grid {
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 880px) {
+    .encadres-pair {
+      grid-template-columns: 1fr 1fr;
+      gap: 1.1rem;
+    }
+    .encadres-pair aside.homonym-box + aside.homonym-box { margin-top: 0; }
+  }
   .mono-dup-list { display: flex; flex-direction: column; gap: 0.45rem; margin: 0.75rem 0 1rem; }
   .mono-dup-group {
     border: 1px solid var(--line);
@@ -1808,6 +1829,7 @@ Je dois reconmnaitre que si actuellement on peut encore parler librement sur le 
     <figcaption>Figure 19: Cohorte des 251 comptes coordonnés en surbrillance au 29 juin 2026, dans le graphique réseau des interactions de ce jour</figcaption>
   </figure>
 
+<div class="encadres-pair">
 <aside class="callout warn homonym-box" aria-label="Exemple d’homonymes, trio Droniou">
     <h4>Encadré, comptes homonymes&nbsp;: le trio Droniou</h4>
     <p>Parmi le noyau des 251, trois comptes portent le même patronyme, des noms d’affichage quasi identiques (<em>…vivelern</em>), des rangs de force voisins (#90 / #92 / #96) et une activité quasi exclusivement en retweet. Ce n’est pas seulement une ressemblance de pseudos&nbsp;: ils amplifient <strong>le même contenu</strong>, souvent dans la même minute.</p>
@@ -1884,6 +1906,7 @@ Je dois reconmnaitre que si actuellement on peut encore parler librement sur le 
   })();
   </script>
   </aside>
+</div>
 
 </section>
 
