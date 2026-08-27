@@ -612,6 +612,59 @@
     letter-spacing: 0.02em;
   }
 
+  .cards-frontier {
+    margin: 1.5rem 0 1.8rem;
+  }
+  .cards-frontier h4 { margin: 0 0 0.45rem; }
+  .cards-frontier p { margin: 0.55rem 0; }
+  .cards-frontier .x-tweet-row { margin-top: 0.9rem; }
+  .x-code-frontier {
+    color: var(--warn);
+  }
+
+  .cards-frontier-flow {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    gap: 0.55rem;
+    align-items: center;
+    margin-top: 0.95rem;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  .cards-frontier-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    color: var(--warn);
+    min-width: 3.1rem;
+    font-family: system-ui, sans-serif;
+    font-size: 0.68rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .cards-frontier-arrow svg {
+    width: 2.4rem;
+    height: 1.35rem;
+    fill: none;
+    stroke: var(--warn);
+    stroke-width: 2.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  @media (max-width: 700px) {
+    .cards-frontier-flow {
+      grid-template-columns: 1fr;
+    }
+    .cards-frontier-arrow {
+      flex-direction: row;
+      min-width: 0;
+      padding: 0.15rem 0;
+    }
+    .cards-frontier-arrow svg { transform: rotate(90deg); }
+  }
+
   ol.steps { font-family: system-ui, sans-serif; font-size: 0.95rem; }
   ol.steps li { margin: 0.55rem 0; }
   .method-dual-hint { margin: -0.35rem 0 0.85rem; }
@@ -1242,8 +1295,8 @@
   <p class="muted small">Périmètre de cette classification&nbsp;: premier pic de chaleur (20&nbsp;mai – 7&nbsp;juin 2026). Les sections suivantes reprennent ces flags pour identifier les comptes les plus ciblés, puis les communautés qui concentrent la production.</p>
 <!-- TOP4_CARDS_X -->
 <div class="x-tweet-block" id="cards-top-tweets">
-  <h4>Quatre tweets CARDS originaux les plus engagés</h4>
-  <p class="muted small">Premier pic (P1), publications hors retweet. Classement par engagements (J’aime + RT + réponses + citations). Affichage au format X.</p>
+  <h4>Quatre tweets CARDS originaux les plus engagés (thèses explicites)</h4>
+  <p class="muted small">Premier pic (P1), publications hors retweet. Classement par engagements (J’aime + RT + réponses + citations), après retrait des minimisations (voir encadré). Affichage au format X.</p>
   <div class="x-tweet-row">
     <a class="x-card" href="https://x.com/BlackBondPtv/status/2062206932589703563" target="_blank" rel="noopener">
       <div class="x-card-head">
@@ -1261,29 +1314,13 @@
       </div>
       <div class="x-code">CARDS 3.3.1 · Le CO₂ nourrit les plantes</div>
     </a>
-    <a class="x-card" href="https://x.com/FredGaulois/status/2059323307854307792" target="_blank" rel="noopener">
-      <div class="x-card-head">
-        <span class="x-avatar" data-initial="F"><img src="https://unavatar.io/twitter/FredGaulois" alt="" onerror="this.remove()"/></span>
-        <div class="x-names"><strong>🇫🇷 fred le gaulois 🇫🇷 Uniondesdroites 🐱🐱</strong><span>@FredGaulois</span></div>
-        <svg class="x-logo" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.727-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-      </div>
-      <p class="x-text">En 2 min, comment détruire le narratif, il fait chaud : @DanielRiolo &quot;Tout ce blabla pour 2 semaines de chaleur dans l&#x27;année, 40 milliards, il faut faire des choses, les bâtiments ne sont pas construits correctement... En Espagne, Italie, Grèce, comment font-ils ?  On perd notre https://t.co/fnAlfqbDjz</p>
-      <div class="x-meta">26 mai 2026</div>
-      <div class="x-stats">
-        <span><b>212</b> réponses</span>
-        <span><b>1,8 k</b> RT</span>
-        <span><b>6,6 k</b> J’aime</span>
-        <span><b>58</b> citations</span>
-      </div>
-      <div class="x-code">CARDS 1.7 · Les extrêmes n&#x27;augmentent pas</div>
-    </a>
     <a class="x-card" href="https://x.com/Pascal_Laurent_/status/2061884382550577297" target="_blank" rel="noopener">
       <div class="x-card-head">
         <span class="x-avatar" data-initial="P"><img src="https://unavatar.io/twitter/Pascal_Laurent_" alt="" onerror="this.remove()"/></span>
         <div class="x-names"><strong>Pascal Laurent</strong><span>@Pascal_Laurent_</span></div>
         <svg class="x-logo" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.727-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
       </div>
-      <p class="x-text">🇮🇹 COL DU STELVIO AUJOURD&#x27;HUI. C&#x27;est marrant, les merdias de grands chemins ne montrent pas ces images, par contre, dès que le soleil pointe le bout de ses rayons, que les températures montent, c&#x27;est canicule, canicule, canicule, sur toutes les chaînes, on va tous mourir, on nous https://t.co/gLJ994prXy</p>
+      <p class="x-text">🇮🇹 COL DU STELVIO AUJOURD’HUI. C’est marrant, les merdias de grands chemins ne montrent pas ces images, par contre, dès que le soleil pointe le bout de ses rayons, que les températures montent, c’est canicule, canicule, canicule, sur toutes les chaînes, on va tous mourir, on nous https://t.co/gLJ994prXy</p>
       <div class="x-meta">2 juin 2026</div>
       <div class="x-stats">
         <span><b>161</b> réponses</span>
@@ -1293,6 +1330,43 @@
       </div>
       <div class="x-code">CARDS 5.2.2 · Médias alarmistes</div>
     </a>
+    <a class="x-card" href="https://x.com/VictorSinclair3/status/2059523821174977016" target="_blank" rel="noopener">
+      <div class="x-card-head">
+        <span class="x-avatar" data-initial="V"><img src="https://unavatar.io/twitter/VictorSinclair3" alt="" onerror="this.remove()"/></span>
+        <div class="x-names"><strong>AuBonTouiteFrançais 🍾🍾🍾</strong><span>@VictorSinclair3</span></div>
+        <svg class="x-logo" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.727-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </div>
+      <p class="x-text">C&#x27;est quand même pas de bol. On venait d&#x27;échapper (de peu) au Hantavirus Patatras ! Voila que la #canicule nous tombe dessus ! La dernière fois qu&#x27;il y a eu autant de catastrophes sur terre en aussi peu de temps, c&#x27;était à l&#x27;ère des dinosaures. Ou alors on se fout de notre gueule</p>
+      <div class="x-meta">27 mai 2026</div>
+      <div class="x-stats">
+        <span><b>83</b> réponses</span>
+        <span><b>660</b> RT</span>
+        <span><b>2,8 k</b> J’aime</span>
+        <span><b>5</b> citations</span>
+      </div>
+      <div class="x-code">CARDS 5.2.2 · Médias alarmistes</div>
+    </a>
+    <a class="x-card" href="https://x.com/camille_moscow/status/2059330005528678614" target="_blank" rel="noopener">
+      <div class="x-card-head">
+        <span class="x-avatar" data-initial="C"><img src="https://unavatar.io/twitter/camille_moscow" alt="" onerror="this.remove()"/></span>
+        <div class="x-names"><strong>Camille Moscow 🇷🇺 🌿 ☦️</strong><span>@camille_moscow</span></div>
+        <svg class="x-logo" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.727-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </div>
+      <p class="x-text">Depuis des années, des technologies de modification climatique existent officiellement pour influencer certaines conditions météo à petite échelle. Mais dès qu’on évoque leur utilisation à grande échelle, le sujet devient tabou.  Et pourtant, voir un dôme de chaleur aussi massif</p>
+      <div class="x-meta">26 mai 2026</div>
+      <div class="x-stats">
+        <span><b>167</b> réponses</span>
+        <span><b>944</b> RT</span>
+        <span><b>1,8 k</b> J’aime</span>
+        <span><b>26</b> citations</span>
+      </div>
+      <div class="x-code">CARDS 5.3.2 · Science = complot</div>
+    </a>
+  </div>
+</div>
+<aside class="callout warn cards-frontier" id="frontieres-climatoscepticisme" aria-label="Frontières du climatoscepticisme">
+  <h4>Encadré — où commence le climatoscepticisme&nbsp;?</h4>
+  <div class="cards-frontier-flow" role="group" aria-label="Reprise des propos, d’Estelle Midi vers Fred le gaulois">
     <a class="x-card" href="https://x.com/EstelleMidi/status/2059218987750240480" target="_blank" rel="noopener">
       <div class="x-card-head">
         <span class="x-avatar" data-initial="E"><img src="https://unavatar.io/twitter/EstelleMidi" alt="" onerror="this.remove()"/></span>
@@ -1307,11 +1381,36 @@
         <span><b>4,1 k</b> J’aime</span>
         <span><b>397</b> citations</span>
       </div>
-      <div class="x-code">CARDS 1.7 · Les extrêmes n&#x27;augmentent pas</div>
+      <div class="x-code x-code-frontier">Minimisation · propos de Daniel Riolo</div>
+    </a>
+    <div class="cards-frontier-arrow" aria-hidden="true">
+      <svg viewBox="0 0 48 24" focusable="false"><path d="M3 12h38M32 5l13 7-13 7"/></svg>
+      <span>reprise</span>
+    </div>
+    <a class="x-card" href="https://x.com/FredGaulois/status/2059323307854307792" target="_blank" rel="noopener">
+      <div class="x-card-head">
+        <span class="x-avatar" data-initial="F"><img src="https://unavatar.io/twitter/FredGaulois" alt="" onerror="this.remove()"/></span>
+        <div class="x-names"><strong>🇫🇷 fred le gaulois 🇫🇷 Uniondesdroites 🐱🐱</strong><span>@FredGaulois</span></div>
+        <svg class="x-logo" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.727-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </div>
+      <p class="x-text">En 2 min, comment détruire le narratif, il fait chaud : @DanielRiolo &quot;Tout ce blabla pour 2 semaines de chaleur dans l&#x27;année, 40 milliards, il faut faire des choses, les bâtiments ne sont pas construits correctement... En Espagne, Italie, Grèce, comment font-ils ?  On perd notre https://t.co/fnAlfqbDjz</p>
+      <div class="x-meta">26 mai 2026</div>
+      <div class="x-stats">
+        <span><b>212</b> réponses</span>
+        <span><b>1,8 k</b> RT</span>
+        <span><b>6,6 k</b> J’aime</span>
+        <span><b>58</b> citations</span>
+      </div>
+      <div class="x-code x-code-frontier">Minimisation · propos de Daniel Riolo</div>
     </a>
   </div>
-</div>
+  <p>Certains discours, à l’instar de celui de Daniel Riolo (repris par le compte @EstelleMidi), minimisent l’épisode caniculaire et ses impacts plus qu’ils n’énoncent une thèse climatosceptique explicite. Ils posent donc la question de la frontière de ce qui peut être considéré ou non comme climatosceptique&nbsp;: est-ce que minimiser, c’est déjà désinformer sur le sujet&nbsp;?</p>
+  <p>Dans le cadre du codage CARDS retenu pour cette analyse, seuls les énoncés explicitement climatosceptiques ont été codés comme positifs.</p>
+  <p>Cette distinction laisse néanmoins ouverte une question importante&nbsp;: le climatoscepticisme doit-il inclure les discours qui, sans nier explicitement le changement climatique, en minimisent les effets, les risques ou la nécessité d’agir&nbsp;? Ou doit-il être réservé aux prises de position formulant explicitement une thèse climatosceptique&nbsp;?</p>
+  <p>Cette zone d’indétermination n’est pas sans enjeu. Les discours de minimisation peuvent en effet constituer un point d’appui pour des discours explicitement climatosceptiques, qui s’en saisissent pour contester plus frontalement les discours des experts et des médias. C’est ce que semble illustrer la publication de @FredGaulois, qui félicite Daniel Riolo d’avoir «&nbsp;détruit le narratif de la canicule&nbsp;».</p>
+</aside>
 <!-- /TOP4_CARDS_X -->
+
 
 <h3 id="les-cibles-de-la-désinformation">Les cibles de la désinformation</h3>
 <p>Les mécanismes de diffusion des publications climatosceptiques illustrent une asymétrie dans leur traitement.</p>
