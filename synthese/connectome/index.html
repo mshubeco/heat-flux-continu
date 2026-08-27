@@ -82,6 +82,9 @@
     #exportBtn:hover { background: #2563a0; }
     #exportBtn:disabled { opacity: 0.55; cursor: wait; }
     #exportStatus { margin-top: 6px; font-size: 10px; color: #6a7380; line-height: 1.35; min-height: 1.2em; }
+    body.no-cards .hl-toggle,
+    body.no-cards .opt-toggle { display: none; }
+    body.no-cards #tip { display: none !important; }
     #loading { position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; background: #000; color: #666; font-size: 13px; }
     #loading.hidden { display: none; }
     #tip {
@@ -202,7 +205,20 @@ const P = {
 };
 const MIN_CARDS = 5;
 const params = new URLSearchParams(location.search);
+const showCards = !(
+  params.get('cards') === '0' ||
+  params.get('cards') === 'false' ||
+  params.get('nocards') === '1'
+);
 let includeRT = params.get('rt') === '1' || params.get('rt') === 'true';
+if (!showCards) {
+  document.body.classList.add('no-cards');
+  document.title = 'Connectome P1';
+  const hudTitle = document.querySelector('#hud b');
+  if (hudTitle) hudTitle.textContent = 'Connectome · P1';
+  const hlBox = document.getElementById('hlSelected');
+  if (hlBox) hlBox.checked = false;
+}
 function nodeCardCount(n) {
   if (includeRT) return n.cards || 0;
   return n.cards_orig != null ? n.cards_orig : 0;
@@ -256,7 +272,7 @@ let lineColorsBase = null;
 let graphData = null;
 let labelItems = [];
 let cardsPts = null;
-let highlightSelected = true;
+let highlightSelected = showCards;
 let cardsHit = [];
 let hoverData = { users: {} };
 let hoverHandle = null;
@@ -546,6 +562,11 @@ function updateCardsHud(nCards) {
       : 'Points rouges = créateurs (hors RT)';
   }
   if (!graphData) return;
+  if (!showCards) {
+    document.getElementById('stats').textContent =
+      `${graphData.meta.n_nodes.toLocaleString('fr-FR')} nœuds · ${graphData.meta.n_edges.toLocaleString('fr-FR')} liens`;
+    return;
+  }
   const mode = includeRT ? 'RT inclus' : 'hors RT';
   document.getElementById('stats').textContent =
     `${nCards.toLocaleString('fr-FR')} CARDS ≥${MIN_CARDS} (${mode}) / ${graphData.meta.n_nodes.toLocaleString('fr-FR')} nœuds · ${graphData.meta.n_edges.toLocaleString('fr-FR')} liens`;
@@ -556,6 +577,11 @@ function rebuildCardsOverlay() {
   cardsPts = null;
   cardsHit = [];
   if (!graphData) return;
+  if (!showCards) {
+    updateCardsHud(0);
+    rebuildLabels();
+    return;
+  }
   const nodes = graphData.nodes;
   const n = nodes.length;
   const maxDeg = graphMaxDeg || 1;
@@ -1139,7 +1165,7 @@ function placeTip(clientX, clientY) {
 }
 
 function pickCardsHit(clientX, clientY) {
-  if (!cardsHit.length) return null;
+  if (!showCards || !cardsHit.length) return null;
   const ndcX = (clientX / innerWidth) * 2 - 1;
   const ndcY = -(clientY / innerHeight) * 2 + 1;
   const world = new THREE.Vector3(ndcX, ndcY, 0).unproject(camera);
@@ -1205,7 +1231,9 @@ controls.addEventListener('start', () => hideTip());
 
 Promise.all([
   fetch(new URL('./data/graph.json', import.meta.url)).then((r) => r.json()),
-  fetch(new URL('./data/cards_hover.json', import.meta.url)).then((r) => r.json()).catch(() => ({ users: {} })),
+  showCards
+    ? fetch(new URL('./data/cards_hover.json', import.meta.url)).then((r) => r.json()).catch(() => ({ users: {} }))
+    : Promise.resolve({ users: {} }),
 ])
   .then(([d, hover]) => {
     hoverData = hover && hover.users ? hover : { users: {} };
