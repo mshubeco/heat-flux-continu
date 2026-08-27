@@ -952,11 +952,12 @@
     }
   }
 
-  /* Taxonomie infamante 60% (grille 2×2) / figure 17 40% */
+  /* Taxonomie infamante 60% (grille 2×2) / figure 17 40%
+     Two-class selector beats later .split-figure 980/1280 rules (1.2fr / 0.8fr). */
   .taxo-grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.55rem;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
     margin: 0 0 0.75rem;
   }
   .taxo-grid .taxo {
@@ -964,31 +965,40 @@
     height: 100%;
     font-size: 0.86rem;
   }
-  @media (min-width: 720px) {
-    .taxo-grid {
-      grid-template-columns: 1fr 1fr;
-      gap: 0.6rem;
+  .split-figure.split-figure--wide-media {
+    display: grid;
+    grid-template-columns: minmax(0, 0.6fr) minmax(0, 0.4fr);
+    gap: 1.15rem 1.25rem;
+    align-items: start;
+  }
+  .split-figure.split-figure--wide-media .split-figure-text {
+    font-size: 0.98rem;
+  }
+  .split-figure.split-figure--wide-media .split-figure-media {
+    margin: 0;
+  }
+  .split-figure.split-figure--wide-media .split-figure-media img {
+    max-height: none;
+    width: 100%;
+    object-fit: contain;
+  }
+  .split-figure.split-figure--wide-media .split-figure-media figcaption {
+    font-size: 0.78rem;
+  }
+  @media (max-width: 719px) {
+    .split-figure.split-figure--wide-media {
+      grid-template-columns: 1fr;
     }
   }
   @media (min-width: 980px) {
-    .split-figure--wide-media {
+    .split-figure.split-figure--wide-media {
+      grid-template-columns: minmax(0, 0.6fr) minmax(0, 0.4fr);
+    }
+  }
+  @media (min-width: 1280px) {
+    .split-figure.split-figure--wide-media {
       grid-template-columns: minmax(0, 0.6fr) minmax(0, 0.4fr);
       gap: 1.15rem 1.25rem;
-      align-items: start;
-    }
-    .split-figure--wide-media .split-figure-text {
-      font-size: 0.98rem;
-    }
-    .split-figure--wide-media .split-figure-media {
-      margin: 0;
-    }
-    .split-figure--wide-media .split-figure-media img {
-      max-height: none;
-      width: 100%;
-      object-fit: contain;
-    }
-    .split-figure--wide-media .split-figure-media figcaption {
-      font-size: 0.78rem;
     }
   }
 
