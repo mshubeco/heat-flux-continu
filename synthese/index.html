@@ -548,6 +548,23 @@
     letter-spacing: 0.02em;
   }
 
+  .x-tweet-row.x-tweet-row-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 46rem;
+  }
+  @media (max-width: 560px) {
+    .x-tweet-row.x-tweet-row-2 { grid-template-columns: 1fr; max-width: none; }
+  }
+  .cards-frontier {
+    margin: 1.5rem 0 1.8rem;
+  }
+  .cards-frontier h4 { margin: 0 0 0.45rem; }
+  .cards-frontier p { margin: 0.55rem 0; }
+  .cards-frontier .x-tweet-row { margin-top: 0.9rem; }
+  .x-code-frontier {
+    color: var(--warn);
+  }
+
   ol.steps { font-family: system-ui, sans-serif; font-size: 0.95rem; }
   ol.steps li { margin: 0.55rem 0; }
   .method-dual-hint { margin: -0.35rem 0 0.85rem; }
@@ -1179,9 +1196,9 @@
   <p class="muted small">Périmètre de cette classification&nbsp;: premier pic de chaleur (20&nbsp;mai – 7&nbsp;juin 2026). Les sections suivantes reprennent ces flags pour identifier les comptes les plus ciblés, puis les communautés qui concentrent la production.</p>
 <!-- TOP4_CARDS_X -->
 <div class="x-tweet-block" id="cards-top-tweets">
-  <h4>Quatre tweets CARDS originaux les plus engagés</h4>
-  <p class="muted small">Premier pic (P1), publications hors retweet. Classement par engagements (J’aime + RT + réponses + citations). Affichage au format X.</p>
-  <div class="x-tweet-row">
+  <h4>Deux tweets CARDS originaux les plus engagés (thèses explicites)</h4>
+  <p class="muted small">Premier pic (P1), publications hors retweet. Classement par engagements (J’aime + RT + réponses + citations), après retrait des minimisations (voir encadré). Affichage au format X.</p>
+  <div class="x-tweet-row x-tweet-row-2">
     <a class="x-card" href="https://x.com/BlackBondPtv/status/2062206932589703563" target="_blank" rel="noopener">
       <div class="x-card-head">
         <span class="x-avatar" data-initial="B"><img src="https://unavatar.io/twitter/BlackBondPtv" alt="" onerror="this.remove()"/></span>
@@ -1197,22 +1214,6 @@
         <span><b>139</b> citations</span>
       </div>
       <div class="x-code">CARDS 3.3.1 · Le CO₂ nourrit les plantes</div>
-    </a>
-    <a class="x-card" href="https://x.com/FredGaulois/status/2059323307854307792" target="_blank" rel="noopener">
-      <div class="x-card-head">
-        <span class="x-avatar" data-initial="F"><img src="https://unavatar.io/twitter/FredGaulois" alt="" onerror="this.remove()"/></span>
-        <div class="x-names"><strong>🇫🇷 fred le gaulois 🇫🇷 Uniondesdroites 🐱🐱</strong><span>@FredGaulois</span></div>
-        <svg class="x-logo" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.727-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-      </div>
-      <p class="x-text">En 2 min, comment détruire le narratif, il fait chaud : @DanielRiolo &quot;Tout ce blabla pour 2 semaines de chaleur dans l&#x27;année, 40 milliards, il faut faire des choses, les bâtiments ne sont pas construits correctement... En Espagne, Italie, Grèce, comment font-ils ?  On perd notre https://t.co/fnAlfqbDjz</p>
-      <div class="x-meta">26 mai 2026</div>
-      <div class="x-stats">
-        <span><b>212</b> réponses</span>
-        <span><b>1,8 k</b> RT</span>
-        <span><b>6,6 k</b> J’aime</span>
-        <span><b>58</b> citations</span>
-      </div>
-      <div class="x-code">CARDS 1.7 · Les extrêmes n&#x27;augmentent pas</div>
     </a>
     <a class="x-card" href="https://x.com/Pascal_Laurent_/status/2061884382550577297" target="_blank" rel="noopener">
       <div class="x-card-head">
@@ -1230,6 +1231,30 @@
       </div>
       <div class="x-code">CARDS 5.2.2 · Médias alarmistes</div>
     </a>
+  </div>
+</div>
+<aside class="callout warn cards-frontier" id="frontieres-climatoscepticisme" aria-label="Frontières du climatoscepticisme">
+  <h4>Encadré — où commence le climatoscepticisme&nbsp;?</h4>
+  <p>Deux des originaux les plus engagés du premier pic relaient les propos de Daniel Riolo (@FredGaulois, @EstelleMidi). Ils minimisent l’épisode («&nbsp;tout ce blabla pour 2 semaines de chaleur dans l’année&nbsp;») plus qu’ils n’énoncent une thèse climatosceptique explicite (CO₂ innocent, cycles naturels, stations truquées, etc.).</p>
+  <p>La question reste ouverte&nbsp;: le climatoscepticisme commence-t-il dès la minimisation, à l’image de ces propos, ou faut-il une thèse explicite pour le qualifier ainsi&nbsp;?</p>
+  <p>Pour le codage CARDS de cette analyse, <strong>seuls les propos explicites</strong> ont été retenus comme positifs. Ces deux tweets sont donc présentés à part, comme zone frontière, et non dans la vitrine ci-dessus.</p>
+  <div class="x-tweet-row x-tweet-row-2">
+    <a class="x-card" href="https://x.com/FredGaulois/status/2059323307854307792" target="_blank" rel="noopener">
+      <div class="x-card-head">
+        <span class="x-avatar" data-initial="F"><img src="https://unavatar.io/twitter/FredGaulois" alt="" onerror="this.remove()"/></span>
+        <div class="x-names"><strong>🇫🇷 fred le gaulois 🇫🇷 Uniondesdroites 🐱🐱</strong><span>@FredGaulois</span></div>
+        <svg class="x-logo" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.744l7.727-8.835L1.254 2.25H8.08l4.253 5.622L18.244 2.25zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+      </div>
+      <p class="x-text">En 2 min, comment détruire le narratif, il fait chaud : @DanielRiolo &quot;Tout ce blabla pour 2 semaines de chaleur dans l&#x27;année, 40 milliards, il faut faire des choses, les bâtiments ne sont pas construits correctement... En Espagne, Italie, Grèce, comment font-ils ?  On perd notre https://t.co/fnAlfqbDjz</p>
+      <div class="x-meta">26 mai 2026</div>
+      <div class="x-stats">
+        <span><b>212</b> réponses</span>
+        <span><b>1,8 k</b> RT</span>
+        <span><b>6,6 k</b> J’aime</span>
+        <span><b>58</b> citations</span>
+      </div>
+      <div class="x-code x-code-frontier">Minimisation · propos de Daniel Riolo</div>
+    </a>
     <a class="x-card" href="https://x.com/EstelleMidi/status/2059218987750240480" target="_blank" rel="noopener">
       <div class="x-card-head">
         <span class="x-avatar" data-initial="E"><img src="https://unavatar.io/twitter/EstelleMidi" alt="" onerror="this.remove()"/></span>
@@ -1244,11 +1269,12 @@
         <span><b>4,1 k</b> J’aime</span>
         <span><b>397</b> citations</span>
       </div>
-      <div class="x-code">CARDS 1.7 · Les extrêmes n&#x27;augmentent pas</div>
+      <div class="x-code x-code-frontier">Minimisation · propos de Daniel Riolo</div>
     </a>
   </div>
-</div>
+</aside>
 <!-- /TOP4_CARDS_X -->
+
 <h3 id="les-cibles-de-la-désinformation">Les cibles de la désinformation</h3>
 <p>Les mécanismes de diffusion des publications climatosceptiques illustrent une asymétrie dans leur traitement.</p>
 <p>Hors retweet, la production de publications climatosceptiques se distribue à <strong>47,5&nbsp;%</strong> depuis <span class="comm comm-c229" style="color:#E97032">C229</span> et <strong>39,8&nbsp;%</strong> depuis <span class="comm comm-c0" style="color:#196A24">C0</span>. Les deux clusters se partagent donc l’origine de la plupart de ces publications.</p>
