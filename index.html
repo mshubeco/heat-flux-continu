@@ -110,7 +110,7 @@
       <button id="btnNext" type="button">▶</button>
     </div>
     <div class="row"><span>Vitesse</span><input id="speed" type="range" min="1" max="20" value="6" /></div>
-    <div class="row"><span>Opacité</span><input id="opacity" type="range" min="0.02" max="0.35" step="0.005" value="0.02" /></div>
+    <div class="row"><span>Opacité</span><input id="opacity" type="range" min="0" max="1" step="0.01" value="0.5" /></div>
     <div class="row"><span>Couleurs</span>
       <select id="colorMode">
         <option value="track">Track · fenêtre 3j</option>
@@ -126,10 +126,6 @@
     <div class="row"><span>Fondu E/S</span><input id="dynamics" type="range" min="1" max="10" value="5" /></div>
     <div class="row"><span>Labels</span><input id="nLabels" type="range" min="0" max="80" step="1" value="30" /></div>
     <div class="row"><span>Taille</span><input id="nodeScale" type="range" min="0.5" max="4" step="0.1" value="4" /></div>
-    <label class="check-row" title="UNFL_sum + Serrano α=0.05 (multiplex)">
-      <input id="hlCohort251" type="checkbox" />
-      <span>Highlight cohorte 251 (multiplex)</span>
-    </label>
   </aside>
   <aside id="tracks">
     <h2 id="tracksTitle">Louvain global ALL (top 6)</h2>
@@ -1565,9 +1561,6 @@ async function init() {
 
   loading.textContent = 'Chargement Louvain global…';
   await loadGlobalLouvain();
-  loading.textContent = 'Chargement cohorte 251…';
-  await loadCohort251();
-  buildCohort251Index();
 
   loading.textContent = 'Compactage layouts…';
   finalizeFrameLayouts();
@@ -1618,14 +1611,6 @@ async function init() {
   });
   document.getElementById('scopeMode').addEventListener('change', (e) => {
     applyScopeMode(e.target.value);
-  });
-  document.getElementById('hlCohort251').addEventListener('change', (e) => {
-    highlightCohort251 = !!e.target.checked;
-    if (!playing) renderForCurrentTime();
-    else {
-      const visible = updateGraphics();
-      updateHUD(visible);
-    }
   });
   updateScopeLegend();
   window.addEventListener('keydown', (e) => {
