@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Analyse du corpus canicule, synthèse</title>
-<meta name="revision" content="venn-full-diagram"/>
+<meta name="revision" content="lede-analyse-linguistique"/>
 <style>
   :root {
     --bg: #f4f2ec;
@@ -1572,54 +1572,147 @@
   table.cards-codes td:last-child { color: var(--muted); font-size: 0.88em; }
 
   figure.fig-euler {
-    margin: 1.35rem 0 1.7rem;
-    padding: 0.55rem 0.4rem 0.7rem;
+    margin: 0.85rem 0 1.15rem;
+    padding: 0.65rem 0.8rem 0.55rem;
     background: var(--paper);
     border: 1px solid var(--line);
-    border-radius: 10px;
+    border-radius: 8px;
+  }
+  .fig-euler-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.35rem 1rem;
+    margin: 0 0 0.45rem;
+  }
+  .fig-euler-head .fig-donut-title { margin: 0; }
+  .fig-euler-head .pill-198 {
+    font-family: system-ui, sans-serif;
+    font-size: 0.78rem;
+    font-weight: 650;
+    color: var(--track-b);
+    background: var(--track-b-soft);
+    border-radius: 999px;
+    padding: 0.22rem 0.65rem;
+    white-space: nowrap;
+  }
+  .fig-euler-swatches {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.1rem;
+    margin: 0 0 0.55rem;
+    padding: 0;
+    list-style: none;
+    font-family: system-ui, sans-serif;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .fig-euler-swatches li {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .fig-euler-swatches .swatch {
+    width: 0.7rem;
+    height: 0.7rem;
+    border-radius: 2px;
+  }
+  .fig-euler-layout {
+    display: grid;
+    grid-template-columns: minmax(12rem, 1.2fr) minmax(12.5rem, 0.9fr);
+    gap: 0.15rem 1rem;
+    align-items: center;
   }
   .fig-euler svg.fig-chart {
     display: block;
     width: 100%;
-    max-width: 54rem;
+    max-width: 26rem;
     height: auto;
-    max-height: none;
-    margin: 0 auto;
+    max-height: min(32vh, 13.5rem);
+    margin: 0;
     background: transparent;
   }
   .fig-euler .venn-n {
     font-family: system-ui, sans-serif;
-    font-weight: 750;
+    font-weight: 700;
     font-variant-numeric: tabular-nums;
     paint-order: stroke fill;
     stroke: #fffcf7;
-    stroke-width: 7px;
+    stroke-width: 4.5px;
     stroke-linejoin: round;
     fill: var(--ink);
   }
-  .fig-euler .venn-cap {
-    font-family: system-ui, sans-serif;
-    font-weight: 600;
-    paint-order: stroke fill;
-    stroke: #fffcf7;
-    stroke-width: 5px;
-    stroke-linejoin: round;
-    fill: var(--muted);
-  }
   .fig-euler .venn-set {
-    font-family: "Source Serif 4", Georgia, serif;
-    font-weight: 600;
-  }
-  .fig-euler .venn-set-n {
     font-family: system-ui, sans-serif;
-    font-weight: 600;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+  }
+  .fig-euler .tick { stroke: var(--line); stroke-width: 1; stroke-linecap: round; }
+  table.fig-euler-tally {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: system-ui, sans-serif;
+    font-size: 0.82rem;
+  }
+  table.fig-euler-tally th {
+    text-align: right;
+    font-size: 0.68rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+    padding: 0 0.1rem 0.28rem;
+    border-bottom: 1px solid var(--line);
+  }
+  table.fig-euler-tally th:first-child { text-align: left; }
+  table.fig-euler-tally td {
+    padding: 0.28rem 0.1rem;
+    border-bottom: 1px solid var(--line);
+  }
+  table.fig-euler-tally td:last-child {
+    text-align: right;
     font-variant-numeric: tabular-nums;
-    fill: var(--muted);
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  table.fig-euler-tally tr.is-triple td { background: var(--track-b-soft); }
+  table.fig-euler-tally .k {
+    display: inline-block;
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 1px;
+    margin-right: 0.4rem;
+    vertical-align: -0.05rem;
+  }
+  table.fig-euler-tally tfoot td {
+    border-bottom: none;
+    padding-top: 0.4rem;
+    font-weight: 650;
+  }
+  .fig-euler-bar {
+    display: flex;
+    height: 0.55rem;
+    border-radius: 99px;
+    overflow: hidden;
+    margin: 0.55rem 0 0.28rem;
+  }
+  .fig-euler-bar span { display: block; min-width: 2px; }
+  .fig-euler-bar-lab {
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    font-size: 0.72rem;
+    color: var(--muted);
+    line-height: 1.35;
   }
   .fig-euler figcaption {
-    max-width: 48rem;
-    margin: 0.35rem auto 0;
-    padding: 0 0.75rem;
+    max-width: none;
+    margin: 0.45rem 0 0;
+    padding: 0;
+  }
+  @media (max-width: 720px) {
+    .fig-euler-layout { grid-template-columns: 1fr; }
+    .fig-euler svg.fig-chart { max-height: 12.5rem; max-width: 22rem; margin: 0 auto; }
   }
 
 </style>
@@ -1636,7 +1729,7 @@
   </div>
   <h1>Analyse du corpus canicule sur X<br/><span style="font-weight:500;font-size:0.72em;color:var(--muted)">20 mai – 29 juin 2026</span></h1>
   <p class="lede">Les canicules de mai–juin 2026 ont ouvert, sur X, un espace de débat où se mêlent alerte météorologique, controverses climatiques et polarisation politique. Cette synthèse analyse, entre le 20&nbsp;mai et le 29&nbsp;juin 2026, le corpus d’interactions pour éclairer trois enjeux&nbsp;: la structuration communautaire du débat&nbsp;; la circulation de discours climatosceptiques et contestataires&nbsp;; l’apparition de dynamiques d’amplification et de formes d’inauthenticité.</p>
-  <p>L’analyse croise différentes approches computationnelles&nbsp;: analyse de réseau, détection de désinformation depuis une typologie de référence et par inférence LLM, identification de mouvements de coordination.</p>
+  <p>L’analyse croise différentes approches computationnelles&nbsp;: analyse de réseau, analyse linguistique, détection de désinformation depuis une typologie de référence et par inférence LLM, identification de mouvements de coordination.</p>
 </header>
 <figure class="hero-connectome" id="fig-connectome-p1">
   <div class="connectome-frame">
@@ -2499,58 +2592,101 @@ Je dois reconmnaitre que si actuellement on peut encore parler librement sur le 
 </section>
 
 <figure class="fig-euler" id="fig-euler-251">
-  <svg class="fig-chart" viewBox="0 0 1000 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-euler-251-title fig-euler-251-desc">
-    <title id="fig-euler-251-title">Recoupement entre discours climatosceptiques, co-actions et stigmatisation</title>
-    <desc id="fig-euler-251-desc">Trois ensembles de comptes. Climatosceptiques : 7 296, dont 6 345 hors des deux autres. Stigmatisation : 1 688, dont 849 hors des deux autres. Co-actions : 251, dont 51 hors des deux autres. Intersection des trois : 84. Climatosceptiques et stigmatisation hors cohorte : 753. Climatosceptiques et co-actions sans stigmatisation : 114. Stigmatisation et co-actions sans CARDS : 2.</desc>
-    <g style="isolation:isolate">
-      <circle cx="340" cy="350" r="228" fill="var(--euler-cards)" fill-opacity="0.38" style="mix-blend-mode:multiply"/>
-      <circle cx="660" cy="350" r="228" fill="var(--euler-stigma)" fill-opacity="0.40" style="mix-blend-mode:multiply"/>
-      <circle cx="500" cy="580" r="228" fill="var(--euler-cohort)" fill-opacity="0.42" style="mix-blend-mode:multiply"/>
-    </g>
-    <circle cx="340" cy="350" r="228" fill="none" stroke="var(--euler-cards)" stroke-width="2.4"/>
-    <circle cx="660" cy="350" r="228" fill="none" stroke="var(--euler-stigma)" stroke-width="2.4"/>
-    <circle cx="500" cy="580" r="228" fill="none" stroke="var(--euler-cohort)" stroke-width="2.8"/>
-
-    <g class="venn-set" fill="var(--euler-cards)">
-      <circle cx="108" cy="64" r="8"/>
-      <text x="124" y="58" font-size="22">Climatosceptiques</text>
-      <text class="venn-set-n" x="124" y="82" font-size="15">7&nbsp;296 comptes</text>
-    </g>
-    <g class="venn-set" fill="var(--euler-stigma)">
-      <circle cx="892" cy="64" r="8"/>
-      <text x="876" y="58" text-anchor="end" font-size="22">Stigmatisation</text>
-      <text class="venn-set-n" x="876" y="82" text-anchor="end" font-size="15">1&nbsp;688 comptes</text>
-    </g>
-    <g class="venn-set" fill="var(--euler-cohort)">
-      <circle cx="392" cy="848" r="8"/>
-      <text x="408" y="842" font-size="22">Co-actions</text>
-      <text class="venn-set-n" x="408" y="866" font-size="15">251 comptes · 198 aussi climatosceptiques</text>
-    </g>
-
-    <text class="venn-n" x="215" y="320" text-anchor="middle" font-size="34">6&nbsp;345</text>
-    <text class="venn-cap" x="215" y="344" text-anchor="middle" font-size="13">uniquement</text>
-
-    <text class="venn-n" x="785" y="320" text-anchor="middle" font-size="34">849</text>
-    <text class="venn-cap" x="785" y="344" text-anchor="middle" font-size="13">uniquement</text>
-
-    <text class="venn-n" x="500" y="238" text-anchor="middle" font-size="28">753</text>
-    <text class="venn-cap" x="500" y="260" text-anchor="middle" font-size="12">climato. et stigma.</text>
-
-    <text class="venn-n" x="325" y="520" text-anchor="middle" font-size="28">114</text>
-    <text class="venn-cap" x="325" y="542" text-anchor="middle" font-size="12">climato. et co-act.</text>
-
-    <text class="venn-n" x="675" y="520" text-anchor="middle" font-size="28">2</text>
-    <text class="venn-cap" x="675" y="542" text-anchor="middle" font-size="12">stigma. et co-act.</text>
-
-    <text class="venn-n" x="500" y="675" text-anchor="middle" font-size="28">51</text>
-    <text class="venn-cap" x="500" y="697" text-anchor="middle" font-size="13">uniquement</text>
-
-    <rect x="448" y="388" width="104" height="58" rx="10" fill="var(--track-b)"/>
-    <text x="500" y="420" text-anchor="middle" fill="#fffcf7" font-family="system-ui, sans-serif" font-size="28" font-weight="750" font-variant-numeric="tabular-nums">84</text>
-    <text x="500" y="438" text-anchor="middle" fill="#fffcf7" font-family="system-ui, sans-serif" font-size="11" font-weight="600">les trois · 33&nbsp;%</text>
-  </svg>
-  <figcaption>Figure 20&nbsp;: recoupement entre comptes ayant (re)publié des discours climatosceptiques, comptes fortement liés par des co-actions, et comptes ayant produit des discours stigmatisant les défenseurs du climat.</figcaption>
-</figure>
+    <div class="fig-euler-head">
+      <p class="fig-donut-title">Exposition CARDS de la cohorte 251 <span>Euler, pas un Venn symétrique</span></p>
+      <span class="pill-198">198&nbsp;/&nbsp;251 · 78,9&nbsp;%</span>
+    </div>
+    <ul class="fig-euler-swatches">
+      <li><span class="swatch" style="background:var(--euler-cards)"></span>CARDS · écrire ou RT</li>
+      <li><span class="swatch" style="background:var(--euler-stigma)"></span>Infamant · lexique</li>
+      <li><span class="swatch" style="background:var(--euler-cohort)"></span>Cohorte 251</li>
+    </ul>
+    <div class="fig-euler-layout">
+      <svg class="fig-chart" viewBox="0 0 720 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-euler-251-title fig-euler-251-desc">
+        <title id="fig-euler-251-title">Recoupement CARDS, lexique infamant et cohorte 251</title>
+        <desc id="fig-euler-251-desc">Même géométrie que le canvas d’analyse : disque CARDS rayon 175, infamant 130, cohorte 78. 198 des 251 comptes (78,9 pour cent) sont dans CARDS. Triple 84, hors CARDS 51 plus 2.</desc>
+        <defs>
+          <clipPath id="eu-clip-cards"><circle cx="280" cy="250" r="175"/></clipPath>
+          <clipPath id="eu-clip-stigma"><circle cx="485" cy="240" r="130"/></clipPath>
+          <clipPath id="eu-clip-cohort"><circle cx="376" cy="338" r="78"/></clipPath>
+        </defs>
+        <circle cx="280" cy="250" r="175" fill="var(--euler-cards)" fill-opacity="0.34"/>
+        <circle cx="485" cy="240" r="130" fill="var(--euler-stigma)" fill-opacity="0.38"/>
+        <circle cx="376" cy="338" r="78" fill="var(--euler-cohort)" fill-opacity="0.5"/>
+        <g clip-path="url(#eu-clip-cards)">
+          <g clip-path="url(#eu-clip-stigma)">
+            <g clip-path="url(#eu-clip-cohort)">
+              <rect width="720" height="500" fill="var(--track-b)" fill-opacity="0.55"/>
+            </g>
+          </g>
+        </g>
+        <circle cx="280" cy="250" r="175" fill="none" stroke="var(--euler-cards)" stroke-width="2.25"/>
+        <circle cx="485" cy="240" r="130" fill="none" stroke="var(--euler-stigma)" stroke-width="2.25"/>
+        <circle cx="376" cy="338" r="78" fill="none" stroke="var(--euler-cohort)" stroke-width="3"/>
+        <text class="venn-set" x="272" y="42" text-anchor="middle" fill="var(--euler-cards)" font-size="15">CARDS</text>
+        <text x="272" y="58" text-anchor="middle" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">7&nbsp;296 comptes · écrire ou RT</text>
+        <rect x="252" y="66" width="40" height="3" rx="1.5" fill="var(--euler-cards)"/>
+        <text class="venn-set" x="505" y="42" text-anchor="middle" fill="var(--euler-stigma)" font-size="15">Infamant</text>
+        <text x="505" y="58" text-anchor="middle" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">1&nbsp;688 comptes · lexique</text>
+        <rect x="485" y="66" width="40" height="3" rx="1.5" fill="var(--euler-stigma)"/>
+        <line class="tick" x1="92" y1="228" x2="168" y2="248"/>
+        <circle cx="168" cy="248" r="3.5" fill="var(--euler-cards)"/>
+        <text class="venn-n" x="88" y="214" text-anchor="end" font-size="20">6&nbsp;345</text>
+        <text x="88" y="230" text-anchor="end" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">CARDS seul</text>
+        <line class="tick" x1="638" y1="218" x2="575" y2="238"/>
+        <circle cx="575" cy="238" r="3.5" fill="var(--euler-stigma)"/>
+        <text class="venn-n" x="642" y="204" text-anchor="start" font-size="20">849</text>
+        <text x="642" y="220" text-anchor="start" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">infamant seul</text>
+        <line class="tick" x1="400" y1="118" x2="400" y2="168"/>
+        <circle cx="400" cy="168" r="3.5" fill="var(--euler-cards)"/>
+        <text class="venn-n" x="400" y="98" text-anchor="middle" font-size="17">753</text>
+        <text x="400" y="113" text-anchor="middle" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">CARDS ∩ infamant · hors 251</text>
+        <line class="tick" x1="214" y1="368" x2="318" y2="350"/>
+        <circle cx="318" cy="350" r="3.5" fill="var(--euler-cohort)"/>
+        <text class="venn-n" x="210" y="360" text-anchor="end" font-size="17">114</text>
+        <text x="210" y="375" text-anchor="end" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">dans CARDS</text>
+        <text x="210" y="388" text-anchor="end" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="10">sans infamant</text>
+        <rect x="364" y="268" width="72" height="50" rx="10" fill="var(--track-b)"/>
+        <text x="400" y="292" text-anchor="middle" fill="#fffcf7" font-family="system-ui, sans-serif" font-size="22" font-weight="700">84</text>
+        <text x="400" y="308" text-anchor="middle" fill="#fffcf7" font-family="system-ui, sans-serif" font-size="10" font-weight="600">triple</text>
+        <line class="tick" x1="548" y1="348" x2="452" y2="340"/>
+        <circle cx="452" cy="340" r="3.5" fill="var(--euler-stigma)"/>
+        <text class="venn-n" x="552" y="344" text-anchor="start" font-size="16">2</text>
+        <text x="552" y="359" text-anchor="start" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="10">infamant</text>
+        <text x="552" y="371" text-anchor="start" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="10">hors CARDS</text>
+        <line class="tick" x1="430" y1="428" x2="408" y2="400"/>
+        <circle cx="408" cy="400" r="3.5" fill="var(--euler-cohort)"/>
+        <text class="venn-n" x="436" y="434" text-anchor="start" font-size="16">51</text>
+        <text x="468" y="434" text-anchor="start" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">hors CARDS</text>
+        <rect x="168" y="456" width="384" height="32" rx="10" fill="var(--euler-cohort)" fill-opacity="0.18" stroke="var(--euler-cohort)" stroke-width="1.25"/>
+        <text x="360" y="477" text-anchor="middle" fill="var(--euler-cohort)" font-family="system-ui, sans-serif" font-size="13" font-weight="700">Cohorte 251  ·  198 / 251 dans CARDS  ·  78,9&nbsp;%</text>
+      </svg>
+      <div>
+        <table class="fig-euler-tally">
+          <thead>
+            <tr><th>Partition de la cohorte</th><th>n</th></tr>
+          </thead>
+          <tbody>
+            <tr class="is-triple"><td><span class="k" style="background:var(--track-b)"></span>triple</td><td>84</td></tr>
+            <tr><td><span class="k" style="background:var(--euler-cards)"></span>cohorte ∩ CARDS, sans lexique</td><td>114</td></tr>
+            <tr><td><span class="k" style="background:var(--euler-stigma)"></span>cohorte ∩ lexique, hors CARDS</td><td>2</td></tr>
+            <tr><td><span class="k" style="background:var(--euler-cohort)"></span>cohorte seule</td><td>51</td></tr>
+          </tbody>
+          <tfoot>
+            <tr><td>dans CARDS (114&nbsp;+&nbsp;84)</td><td>198 · 78,9&nbsp;%</td></tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+    <div class="fig-euler-bar" aria-hidden="true">
+      <span style="flex:84;background:var(--track-b)"></span>
+      <span style="flex:114;background:var(--euler-cards)"></span>
+      <span style="flex:2;background:var(--euler-stigma)"></span>
+      <span style="flex:51;background:var(--euler-cohort);opacity:.55"></span>
+    </div>
+    <p class="fig-euler-bar-lab">Les 251 en une barre&nbsp;: 84 triple · 114 CARDS sans infamant · 2 infamant hors CARDS · 51 hors des deux. Les deux premiers segments = 198 dans CARDS.</p>
+    <figcaption>Figure 20&nbsp;: même Euler que l’analyse CARDS × 251 × infamant. 198&nbsp;/&nbsp;251 (78,9&nbsp;%) du disque cohorte est dans CARDS (écrire ou RT d’une des 3&nbsp;170). Surfaces CARDS / infamant hors échelle.</figcaption>
+  </figure>
 
 <h3 id="des-opérations-dinfluences">Des opérations d’influences</h3><p>Sur ce corpus, <strong>186 des 297</strong> comptes déjà associés à des logiques d’astroturfing sur d’autres thématiques réapparaissent. <strong>76&nbsp;%</strong> se situent en <span class="comm comm-c0" style="color:#196A24">C0</span>, 16&nbsp;% en <span class="comm comm-c14" style="color:#9F2B92">C14</span> (5,5&nbsp;% en <span class="comm comm-c229" style="color:#E97032">C229</span>, 2,5&nbsp;% en <span class="comm comm-c546" style="color:#1c1b19;font-weight:700">C546</span>). Ils totalisent <strong>8&nbsp;889</strong> publications, dont <strong>95,3&nbsp;%</strong> de retweets&nbsp;: un régime d’amplification plus que de production originale.</p>
 <p>Ce chevauchement n’est pas anecdotique. Il relie trois signaux déjà observés&nbsp;: la polarisation communautaire (<span class="comm comm-c0" style="color:#196A24">C0</span>), la concentration des discours CARDS, et, plus loin, la cohorte de coordination des 251 comptes (Brachotte,&nbsp;2026). Il indique qu’une partie de l’infrastructure contestataire n’est pas spécifique à la canicule, mais <strong>réactivée</strong> d’un corpus à l’autre.</p>
