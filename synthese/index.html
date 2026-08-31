@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Analyse du corpus canicule, synthèse</title>
-<meta name="revision" content="cards-llm-p1-louvain"/>
+<meta name="revision" content="euler-legend-below"/>
 <style>
   :root {
     --bg: #f4f2ec;
@@ -1626,18 +1626,22 @@
   }
   .fig-euler-layout {
     display: grid;
-    grid-template-columns: minmax(12rem, 1.2fr) minmax(12.5rem, 0.9fr);
-    gap: 0.15rem 1rem;
-    align-items: center;
+    grid-template-columns: 1fr;
+    gap: 0.85rem;
+    align-items: start;
   }
   .fig-euler svg.fig-chart {
     display: block;
     width: 100%;
-    max-width: 26rem;
+    max-width: 42rem;
     height: auto;
-    max-height: min(32vh, 13.5rem);
-    margin: 0;
+    max-height: min(58vh, 28rem);
+    margin: 0 auto;
     background: transparent;
+  }
+  table.fig-euler-tally {
+    max-width: 42rem;
+    margin: 0 auto;
   }
   .fig-euler .venn-n {
     font-family: system-ui, sans-serif;
@@ -1711,14 +1715,18 @@
     color: var(--muted);
     line-height: 1.35;
   }
+  .fig-euler-read {
+    margin: 0.65rem 0 0;
+    font-size: 1.02rem;
+    line-height: 1.58;
+  }
   .fig-euler figcaption {
     max-width: none;
     margin: 0.45rem 0 0;
     padding: 0;
   }
   @media (max-width: 720px) {
-    .fig-euler-layout { grid-template-columns: 1fr; }
-    .fig-euler svg.fig-chart { max-height: 12.5rem; max-width: 22rem; margin: 0 auto; }
+    .fig-euler svg.fig-chart { max-height: min(52vh, 22rem); }
   }
 
 </style>
@@ -2599,7 +2607,7 @@ Je dois reconmnaitre que si actuellement on peut encore parler librement sur le 
 
 <figure class="fig-euler" id="fig-euler-251">
     <div class="fig-euler-head">
-      <p class="fig-donut-title">Exposition CARDS de la cohorte 251 <span>Euler, pas un Venn symétrique</span></p>
+      <p class="fig-donut-title">Recoupement cohorte 251 / CARDS</p>
       <span class="pill-198">198&nbsp;/&nbsp;251 · 78,9&nbsp;%</span>
     </div>
     <ul class="fig-euler-swatches">
@@ -2609,7 +2617,7 @@ Je dois reconmnaitre que si actuellement on peut encore parler librement sur le 
     </ul>
     <div class="fig-euler-layout">
       <svg class="fig-chart" viewBox="0 0 720 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-euler-251-title fig-euler-251-desc">
-        <title id="fig-euler-251-title">Recoupement CARDS, lexique infamant et cohorte 251</title>
+        <title id="fig-euler-251-title">Recoupement cohorte 251 / CARDS</title>
         <desc id="fig-euler-251-desc">Même géométrie que le canvas d’analyse : disque CARDS rayon 175, infamant 130, cohorte 78. 198 des 251 comptes (78,9 pour cent) sont dans CARDS. Triple 84, hors CARDS 51 plus 2.</desc>
         <defs>
           <clipPath id="eu-clip-cards"><circle cx="280" cy="250" r="175"/></clipPath>
@@ -2692,7 +2700,8 @@ Je dois reconmnaitre que si actuellement on peut encore parler librement sur le 
     </div>
     <p class="fig-euler-bar-lab">Les 251 en une barre&nbsp;: 84 triple · 114 CARDS sans infamant · 2 infamant hors CARDS · 51 hors des deux. Les deux premiers segments = 198 dans CARDS.</p>
     <figcaption>Figure 20&nbsp;: même Euler que l’analyse CARDS × 251 × infamant. 198&nbsp;/&nbsp;251 (78,9&nbsp;%) du disque cohorte est dans CARDS (écrire ou RT d’une des 3&nbsp;170). Surfaces CARDS / infamant hors échelle.</figcaption>
-  </figure>
+      <p class="fig-euler-read">La cohorte des 251 comptes fortement coordonnés recoupe très fortement les comptes produisant ou relayant des discours climatosceptiques, ce qui conforte l’hypothèse d’une opération d’influence au sein du cluster <span class="comm comm-c0" style="color:#196A24">C0</span> associée à de la désinformation climatique.</p>
+</figure>
 
 <h3 id="des-opérations-dinfluences">Des opérations d’influences</h3><p>Sur ce corpus, <strong>186 des 297</strong> comptes déjà associés à des logiques d’astroturfing sur d’autres thématiques réapparaissent. <strong>76&nbsp;%</strong> se situent en <span class="comm comm-c0" style="color:#196A24">C0</span>, 16&nbsp;% en <span class="comm comm-c14" style="color:#9F2B92">C14</span> (5,5&nbsp;% en <span class="comm comm-c229" style="color:#E97032">C229</span>, 2,5&nbsp;% en <span class="comm comm-c546" style="color:#1c1b19;font-weight:700">C546</span>). Ils totalisent <strong>8&nbsp;889</strong> publications, dont <strong>95,3&nbsp;%</strong> de retweets&nbsp;: un régime d’amplification plus que de production originale.</p>
 <p>Ce chevauchement n’est pas anecdotique. Il relie trois signaux déjà observés&nbsp;: la polarisation communautaire (<span class="comm comm-c0" style="color:#196A24">C0</span>), la concentration des discours CARDS, et, plus loin, la cohorte de coordination des 251 comptes (Brachotte,&nbsp;2026). Il indique qu’une partie de l’infrastructure contestataire n’est pas spécifique à la canicule, mais <strong>réactivée</strong> d’un corpus à l’autre.</p>
