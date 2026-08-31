@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Analyse du corpus canicule, synthèse</title>
-<meta name="revision" content="fig19-grid-no-oval"/>
+<meta name="revision" content="venn-full-diagram"/>
 <style>
   :root {
     --bg: #f4f2ec;
@@ -1572,116 +1572,56 @@
   table.cards-codes td:last-child { color: var(--muted); font-size: 0.88em; }
 
   figure.fig-euler {
-    margin: 1.1rem 0 1.45rem;
-    padding: 0.9rem 1.05rem 0.75rem;
+    margin: 1.35rem 0 1.7rem;
+    padding: 0.55rem 0.4rem 0.7rem;
     background: var(--paper);
     border: 1px solid var(--line);
-    border-radius: 8px;
+    border-radius: 10px;
   }
-  .fig-euler .fig-donut-title { margin-bottom: 0.45rem; }
-  .fig-euler-kpi {
-    font-family: system-ui, sans-serif;
-    font-size: 0.98rem;
-    line-height: 1.35;
-    margin: 0 0 0.85rem;
-    padding: 0.55rem 0.75rem;
-    background: var(--track-b-soft);
-    border-radius: 6px;
-    color: var(--ink);
-  }
-  .fig-euler-kpi strong {
-    font-variant-numeric: tabular-nums;
-    font-size: 1.12em;
-  }
-  .fig-euler-kpi span {
+  .fig-euler svg.fig-chart {
     display: block;
-    margin-top: 0.15rem;
-    font-size: 0.86em;
-    color: var(--muted);
-    font-weight: 400;
-  }
-  .fig-euler-layout {
-    display: grid;
-    grid-template-columns: minmax(16rem, 1.15fr) minmax(15rem, 1fr);
-    gap: 0.35rem 1.35rem;
-    align-items: start;
-  }
-  .fig-euler-layout svg.fig-chart {
     width: 100%;
-    max-height: min(52vh, 24rem);
+    max-width: 54rem;
+    height: auto;
+    max-height: none;
+    margin: 0 auto;
     background: transparent;
   }
-  .fig-euler-legend-wrap { font-family: system-ui, sans-serif; }
-  .fig-euler-leg-h {
-    margin: 0.15rem 0 0.2rem;
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .fig-euler-leg-h:not(:first-child) { margin-top: 0.85rem; }
-  .fig-euler-legend {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .fig-euler-legend li {
-    display: grid;
-    grid-template-columns: 0.72rem minmax(0, 1fr) auto;
-    gap: 0.3rem 0.55rem;
-    align-items: baseline;
-    padding: 0.38rem 0.1rem;
-    border-bottom: 1px solid var(--line);
-    font-size: 0.92rem;
-    line-height: 1.3;
-  }
-  .fig-euler-legend li.is-triple {
-    background: var(--track-b-soft);
-    margin: 0 -0.35rem;
-    padding-left: 0.35rem;
-    padding-right: 0.35rem;
-    border-radius: 4px;
-    border-bottom-color: transparent;
-  }
-  .fig-euler-legend .swatch {
-    width: 0.72rem;
-    height: 0.72rem;
-    border-radius: 2px;
-    align-self: center;
-  }
-  .fig-euler-legend .lab { color: var(--ink); }
-  .fig-euler-legend .lab small {
-    display: block;
-    color: var(--muted);
-    font-size: 0.82em;
-  }
-  .fig-euler-legend .nums {
-    font-variant-numeric: tabular-nums;
-    font-weight: 700;
-    text-align: right;
-    white-space: nowrap;
-  }
-  .fig-euler-legend .nums small {
-    display: block;
-    font-weight: 400;
-    color: var(--muted);
-    font-size: 0.78em;
-  }
-  .fig-euler text.halo {
+  .fig-euler .venn-n {
     font-family: system-ui, sans-serif;
+    font-weight: 750;
+    font-variant-numeric: tabular-nums;
+    paint-order: stroke fill;
+    stroke: #fffcf7;
+    stroke-width: 7px;
+    stroke-linejoin: round;
+    fill: var(--ink);
+  }
+  .fig-euler .venn-cap {
+    font-family: system-ui, sans-serif;
+    font-weight: 600;
     paint-order: stroke fill;
     stroke: #fffcf7;
     stroke-width: 5px;
     stroke-linejoin: round;
-    fill: var(--ink);
-    font-weight: 700;
+    fill: var(--muted);
+  }
+  .fig-euler .venn-set {
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 600;
+  }
+  .fig-euler .venn-set-n {
+    font-family: system-ui, sans-serif;
+    font-weight: 600;
     font-variant-numeric: tabular-nums;
+    fill: var(--muted);
   }
-  @media (max-width: 720px) {
-    .fig-euler-layout { grid-template-columns: 1fr; }
-    .fig-euler-layout svg.fig-chart { max-height: 18rem; }
+  .fig-euler figcaption {
+    max-width: 48rem;
+    margin: 0.35rem auto 0;
+    padding: 0 0.75rem;
   }
+
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -2559,95 +2499,58 @@ Je dois reconmnaitre que si actuellement on peut encore parler librement sur le 
 </section>
 
 <figure class="fig-euler" id="fig-euler-251">
-    <p class="fig-donut-title">Recoupement de trois ensembles de comptes</p>
-    <p class="fig-euler-kpi"><strong>198&nbsp;/&nbsp;251</strong> dans CARDS — 78,9&nbsp;%
-      <span>Écrire ou retweeter une des 3&nbsp;170 publications flaguées, pas «&nbsp;avoir publié&nbsp;». 25 auteurs seulement (10&nbsp;%).</span>
-    </p>
-    <div class="fig-euler-layout">
-      <svg class="fig-chart" viewBox="0 0 520 400" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-euler-251-title fig-euler-251-desc">
-        <title id="fig-euler-251-title">Recoupement entre discours climatosceptiques, co-actions et stigmatisation</title>
-        <desc id="fig-euler-251-desc">198 comptes de la cohorte 251 sont dans CARDS (78,9 pour cent). Intersection triple&nbsp;: 84. Surfaces CARDS et infamant hors échelle.</desc>
-        <text x="195" y="28" text-anchor="middle" fill="var(--euler-cards)" font-family="system-ui, sans-serif" font-size="13" font-weight="700">Climatosceptiques (CARDS)</text>
-        <text x="370" y="28" text-anchor="middle" fill="var(--euler-stigma)" font-family="system-ui, sans-serif" font-size="13" font-weight="700">Stigmatisation</text>
-        <g style="isolation:isolate">
-          <circle cx="195" cy="195" r="148" fill="var(--euler-cards)" fill-opacity="0.40" style="mix-blend-mode:multiply"/>
-          <circle cx="370" cy="205" r="108" fill="var(--euler-stigma)" fill-opacity="0.42" style="mix-blend-mode:multiply"/>
-          <circle cx="278" cy="270" r="66" fill="var(--euler-cohort)" fill-opacity="0.48" style="mix-blend-mode:multiply"/>
-        </g>
-        <circle cx="195" cy="195" r="148" fill="none" stroke="var(--euler-cards)" stroke-width="1.6"/>
-        <circle cx="370" cy="205" r="108" fill="none" stroke="var(--euler-stigma)" stroke-width="1.6"/>
-        <circle cx="278" cy="270" r="66" fill="none" stroke="var(--euler-cohort)" stroke-width="2"/>
-        <text class="halo" x="108" y="178" text-anchor="middle" font-size="20">6&nbsp;345</text>
-        <text class="halo" x="448" y="178" text-anchor="middle" font-size="20">849</text>
-        <text class="halo" x="292" y="148" text-anchor="middle" font-size="16">753</text>
-        <text class="halo" x="228" y="272" text-anchor="middle" font-size="16">114</text>
-        <text class="halo" x="328" y="292" text-anchor="middle" font-size="14">2</text>
-        <text class="halo" x="270" y="326" text-anchor="middle" font-size="15">51</text>
-        <rect x="278" y="232" width="48" height="26" rx="4" fill="var(--track-b)"/>
-        <text x="302" y="250" text-anchor="middle" fill="#fffcf7" font-family="system-ui, sans-serif" font-size="15" font-weight="700" font-variant-numeric="tabular-nums">84</text>
-        <text x="278" y="368" text-anchor="middle" fill="var(--euler-cohort)" font-family="system-ui, sans-serif" font-size="13" font-weight="700">Co-actions (251)</text>
-      </svg>
-      <div class="fig-euler-legend-wrap">
-        <p class="fig-euler-leg-h">Légende</p>
-        <ol class="fig-euler-legend">
-          <li>
-            <span class="swatch" style="background:var(--euler-cards)"></span>
-            <span class="lab">Climatosceptiques<small>(re)publication CARDS</small></span>
-          </li>
-          <li>
-            <span class="swatch" style="background:var(--euler-cohort)"></span>
-            <span class="lab">Co-actions<small>liens forts, cohorte 251</small></span>
-          </li>
-          <li>
-            <span class="swatch" style="background:var(--euler-stigma)"></span>
-            <span class="lab">Stigmatisation<small>défenseurs du climat</small></span>
-          </li>
-        </ol>
-        <p class="fig-euler-leg-h">Dans la cohorte 251</p>
-        <ol class="fig-euler-legend">
-          <li class="is-triple">
-            <span class="swatch" style="background:var(--track-b)"></span>
-            <span class="lab">Triple<small>CARDS ∩ 251 ∩ infamant</small></span>
-            <span class="nums">84 <small>33,5&nbsp;% de la cohorte</small></span>
-          </li>
-          <li>
-            <span class="swatch" style="background:var(--euler-cards)"></span>
-            <span class="lab">Dans CARDS, sans infamant</span>
-            <span class="nums">114</span>
-          </li>
-          <li>
-            <span class="swatch" style="background:var(--euler-stigma)"></span>
-            <span class="lab">Infamant, hors CARDS</span>
-            <span class="nums">2</span>
-          </li>
-          <li>
-            <span class="swatch" style="background:var(--euler-cohort)"></span>
-            <span class="lab">Hors CARDS</span>
-            <span class="nums">51</span>
-          </li>
-        </ol>
-        <p class="fig-euler-leg-h">Hors cohorte</p>
-        <ol class="fig-euler-legend">
-          <li>
-            <span class="swatch" style="background:#7a4a52"></span>
-            <span class="lab">CARDS ∩ infamant</span>
-            <span class="nums">753</span>
-          </li>
-          <li>
-            <span class="swatch" style="background:var(--euler-cards);opacity:.55"></span>
-            <span class="lab">CARDS seul</span>
-            <span class="nums">6&nbsp;345</span>
-          </li>
-          <li>
-            <span class="swatch" style="background:var(--euler-stigma);opacity:.55"></span>
-            <span class="lab">Infamant seul</span>
-            <span class="nums">849</span>
-          </li>
-        </ol>
-      </div>
-    </div>
-    <figcaption>Figure 20&nbsp;: recoupement entre comptes ayant (re)publié des discours climatosceptiques, comptes fortement liés par des co-actions, et comptes ayant produit des discours stigmatisant les défenseurs du climat.</figcaption>
-  </figure>
+  <svg class="fig-chart" viewBox="0 0 1000 900" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-euler-251-title fig-euler-251-desc">
+    <title id="fig-euler-251-title">Recoupement entre discours climatosceptiques, co-actions et stigmatisation</title>
+    <desc id="fig-euler-251-desc">Trois ensembles de comptes. Climatosceptiques : 7 296, dont 6 345 hors des deux autres. Stigmatisation : 1 688, dont 849 hors des deux autres. Co-actions : 251, dont 51 hors des deux autres. Intersection des trois : 84. Climatosceptiques et stigmatisation hors cohorte : 753. Climatosceptiques et co-actions sans stigmatisation : 114. Stigmatisation et co-actions sans CARDS : 2.</desc>
+    <g style="isolation:isolate">
+      <circle cx="340" cy="350" r="228" fill="var(--euler-cards)" fill-opacity="0.38" style="mix-blend-mode:multiply"/>
+      <circle cx="660" cy="350" r="228" fill="var(--euler-stigma)" fill-opacity="0.40" style="mix-blend-mode:multiply"/>
+      <circle cx="500" cy="580" r="228" fill="var(--euler-cohort)" fill-opacity="0.42" style="mix-blend-mode:multiply"/>
+    </g>
+    <circle cx="340" cy="350" r="228" fill="none" stroke="var(--euler-cards)" stroke-width="2.4"/>
+    <circle cx="660" cy="350" r="228" fill="none" stroke="var(--euler-stigma)" stroke-width="2.4"/>
+    <circle cx="500" cy="580" r="228" fill="none" stroke="var(--euler-cohort)" stroke-width="2.8"/>
+
+    <g class="venn-set" fill="var(--euler-cards)">
+      <circle cx="108" cy="64" r="8"/>
+      <text x="124" y="58" font-size="22">Climatosceptiques</text>
+      <text class="venn-set-n" x="124" y="82" font-size="15">7&nbsp;296 comptes</text>
+    </g>
+    <g class="venn-set" fill="var(--euler-stigma)">
+      <circle cx="892" cy="64" r="8"/>
+      <text x="876" y="58" text-anchor="end" font-size="22">Stigmatisation</text>
+      <text class="venn-set-n" x="876" y="82" text-anchor="end" font-size="15">1&nbsp;688 comptes</text>
+    </g>
+    <g class="venn-set" fill="var(--euler-cohort)">
+      <circle cx="392" cy="848" r="8"/>
+      <text x="408" y="842" font-size="22">Co-actions</text>
+      <text class="venn-set-n" x="408" y="866" font-size="15">251 comptes · 198 aussi climatosceptiques</text>
+    </g>
+
+    <text class="venn-n" x="215" y="320" text-anchor="middle" font-size="34">6&nbsp;345</text>
+    <text class="venn-cap" x="215" y="344" text-anchor="middle" font-size="13">uniquement</text>
+
+    <text class="venn-n" x="785" y="320" text-anchor="middle" font-size="34">849</text>
+    <text class="venn-cap" x="785" y="344" text-anchor="middle" font-size="13">uniquement</text>
+
+    <text class="venn-n" x="500" y="238" text-anchor="middle" font-size="28">753</text>
+    <text class="venn-cap" x="500" y="260" text-anchor="middle" font-size="12">climato. et stigma.</text>
+
+    <text class="venn-n" x="325" y="520" text-anchor="middle" font-size="28">114</text>
+    <text class="venn-cap" x="325" y="542" text-anchor="middle" font-size="12">climato. et co-act.</text>
+
+    <text class="venn-n" x="675" y="520" text-anchor="middle" font-size="28">2</text>
+    <text class="venn-cap" x="675" y="542" text-anchor="middle" font-size="12">stigma. et co-act.</text>
+
+    <text class="venn-n" x="500" y="675" text-anchor="middle" font-size="28">51</text>
+    <text class="venn-cap" x="500" y="697" text-anchor="middle" font-size="13">uniquement</text>
+
+    <rect x="448" y="388" width="104" height="58" rx="10" fill="var(--track-b)"/>
+    <text x="500" y="420" text-anchor="middle" fill="#fffcf7" font-family="system-ui, sans-serif" font-size="28" font-weight="750" font-variant-numeric="tabular-nums">84</text>
+    <text x="500" y="438" text-anchor="middle" fill="#fffcf7" font-family="system-ui, sans-serif" font-size="11" font-weight="600">les trois · 33&nbsp;%</text>
+  </svg>
+  <figcaption>Figure 20&nbsp;: recoupement entre comptes ayant (re)publié des discours climatosceptiques, comptes fortement liés par des co-actions, et comptes ayant produit des discours stigmatisant les défenseurs du climat.</figcaption>
+</figure>
 
 <h3 id="des-opérations-dinfluences">Des opérations d’influences</h3><p>Sur ce corpus, <strong>186 des 297</strong> comptes déjà associés à des logiques d’astroturfing sur d’autres thématiques réapparaissent. <strong>76&nbsp;%</strong> se situent en <span class="comm comm-c0" style="color:#196A24">C0</span>, 16&nbsp;% en <span class="comm comm-c14" style="color:#9F2B92">C14</span> (5,5&nbsp;% en <span class="comm comm-c229" style="color:#E97032">C229</span>, 2,5&nbsp;% en <span class="comm comm-c546" style="color:#1c1b19;font-weight:700">C546</span>). Ils totalisent <strong>8&nbsp;889</strong> publications, dont <strong>95,3&nbsp;%</strong> de retweets&nbsp;: un régime d’amplification plus que de production originale.</p>
 <p>Ce chevauchement n’est pas anecdotique. Il relie trois signaux déjà observés&nbsp;: la polarisation communautaire (<span class="comm comm-c0" style="color:#196A24">C0</span>), la concentration des discours CARDS, et, plus loin, la cohorte de coordination des 251 comptes (Brachotte,&nbsp;2026). Il indique qu’une partie de l’infrastructure contestataire n’est pas spécifique à la canicule, mais <strong>réactivée</strong> d’un corpus à l’autre.</p>
