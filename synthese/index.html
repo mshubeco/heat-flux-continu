@@ -2274,7 +2274,7 @@
         </li>
         <li>
           <strong>Le plus gros bloc.</strong>
-          Le réseau se découpe en plusieurs groupes. On garde le plus grand&nbsp;: <span class="comm" style="color:#196A24">C0</span>, environ 4&nbsp;100&nbsp;comptes qui co-agissent densément. C’est encore trop large pour une lecture nominative.
+          Le réseau se découpe en plusieurs groupes. On garde le plus grand&nbsp;: la composante principale, environ 4&nbsp;100&nbsp;comptes qui co-agissent densément. C’est encore trop large pour une lecture nominative.
         </li>
         <li>
           <strong>Le resserrement.</strong>
@@ -2282,7 +2282,7 @@
         </li>
         <li>
           <strong>Pourquoi cette liste.</strong>
-          L’objectif est un <em>noyau unique et englobant</em>&nbsp;: une seule liste ordonnée, ancrée dans le cœur dense de <span class="comm" style="color:#196A24">C0</span>, assez courte pour être relue compte par compte.
+          L’objectif est un <em>noyau unique et englobant</em>&nbsp;: une seule liste ordonnée, ancrée dans le cœur dense de la composante principale, assez courte pour être relue compte par compte.
         </li>
       </ol>
     </div>
@@ -2303,8 +2303,8 @@
           Cinq graphes de co-action&nbsp;: <code>RTW</code>, <code>RPL</code>, <code>QTE</code>, <code>MEN</code>, <code>URL</code>. Poids d’arête = nombre de co-occurrences d’objets partagés (filtre overlap + médiane)&nbsp;; la colonne peut encore s’appeler <code>weight_tfidf</code>. Partition multiplexe <strong>MULTI</strong> (Leiden–Mucha, γ&nbsp;=&nbsp;1, ω&nbsp;=&nbsp;0,1) sur les 5 couches.
         </li>
         <li>
-          <strong>Communauté C0.</strong>
-          Plus grande communauté MULTI&nbsp;: <strong>4&nbsp;098</strong> comptes (MULTI ≈&nbsp;31&nbsp;944 nœuds, 844 communautés). Graphes induits sur C0 pour chaque couche.
+          <strong>Composante principale.</strong>
+          Plus grande communauté MULTI&nbsp;: <strong>4&nbsp;098</strong> comptes (MULTI ≈&nbsp;31&nbsp;944 nœuds, 844 communautés). Graphes induits sur cette composante pour chaque couche.
         </li>
         <li>
           <strong>UNFL(sum) + Serrano.</strong>
@@ -2312,7 +2312,7 @@
         </li>
         <li>
           <strong>Choix retenus.</strong>
-          Fusion avant filtre → un seul backbone ordonné. Variante retenue = <code>UNFL_sum</code> (somme des poids). Appartenance communautaire affichée ensuite = Louvain du paysage corpus entier (20&nbsp;mai–29&nbsp;juin), distincte de la C0 MULTI ci-dessus.
+          Fusion avant filtre → un seul backbone ordonné. Variante retenue = <code>UNFL_sum</code> (somme des poids). Appartenance communautaire affichée ensuite = Louvain du paysage corpus entier (20&nbsp;mai–29&nbsp;juin), distincte de la composante principale MULTI ci-dessus.
         </li>
       </ol>
     </div>
@@ -2321,7 +2321,7 @@
   <div class="kpi-row" style="margin-top:1.25rem">
     <div class="kpi"><div class="n">~373k</div><div class="l">Comptes dans le corpus</div></div>
     <div class="kpi"><div class="n">~187k</div><div class="l">Sélection (moitié active)</div></div>
-    <div class="kpi"><div class="n">4&nbsp;098</div><div class="l">Plus grande communauté C0</div></div>
+    <div class="kpi"><div class="n">4&nbsp;098</div><div class="l">Composante principale</div></div>
     <div class="kpi"><div class="n">251</div><div class="l">Après filtre de disparité</div></div>
   </div>
 
