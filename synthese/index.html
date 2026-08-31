@@ -1660,6 +1660,22 @@
     gap: 0.85rem;
     align-items: start;
   }
+  .fig-euler-pair {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.75rem 1.1rem;
+    align-items: start;
+  }
+  @media (min-width: 52rem) {
+    .fig-euler-pair {
+      grid-template-columns: 1.3fr 0.85fr;
+      align-items: center;
+    }
+  }
+  .fig-euler svg.fig-chart-cohorts {
+    max-width: 22rem;
+    max-height: min(38vh, 15rem);
+  }
   .fig-euler svg.fig-chart {
     display: block;
     width: 100%;
@@ -2794,12 +2810,12 @@ Je dois reconmnaitre que si actuellement on peut encore parler librement sur le 
       <li><span class="swatch" style="background:var(--euler-cards)"></span>CARDS · écrire ou RT</li>
       <li><span class="swatch" style="background:var(--euler-stigma)"></span>Infamant · lexique</li>
       <li><span class="swatch" style="background:var(--euler-cohort)"></span>Cohorte AAC 297</li>
-      <li><span class="swatch" style="background:var(--euler-mux)"></span>251 ∩ 297 · 12</li>
+      <li><span class="swatch" style="background:var(--euler-mux)"></span>Multiplexe 251</li>
     </ul>
-    <div class="fig-euler-layout">
+    <div class="fig-euler-pair">
       <svg class="fig-chart" viewBox="0 0 720 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-euler-297-title fig-euler-297-desc">
         <title id="fig-euler-297-title">Recoupement cohorte AAC 297 / CARDS</title>
-        <desc id="fig-euler-297-desc">Même géométrie que la figure 20. 80 des 297 comptes AAC (26,9 pour cent) sont dans CARDS. Triple 17. Petit disque en pointillés : intersection avec le multiplexe 251 (12 comptes).</desc>
+        <desc id="fig-euler-297-desc">Euler CARDS, infamant et liste AAC 297. 80 des 297 (26,9 pour cent) sont dans CARDS. Triple 17. Le multiplexe 251 n’est pas représenté ici.</desc>
         <defs>
           <clipPath id="eu297-clip-cards"><circle cx="280" cy="250" r="175"/></clipPath>
           <clipPath id="eu297-clip-stigma"><circle cx="485" cy="240" r="130"/></clipPath>
@@ -2808,7 +2824,6 @@ Je dois reconmnaitre que si actuellement on peut encore parler librement sur le 
         <circle cx="280" cy="250" r="175" fill="var(--euler-cards)" fill-opacity="0.34"/>
         <circle cx="485" cy="240" r="130" fill="var(--euler-stigma)" fill-opacity="0.38"/>
         <circle cx="376" cy="338" r="78" fill="var(--euler-cohort)" fill-opacity="0.5"/>
-        <circle cx="348" cy="318" r="36" fill="var(--euler-mux)" fill-opacity="0.42"/>
         <g clip-path="url(#eu297-clip-cards)">
           <g clip-path="url(#eu297-clip-stigma)">
             <g clip-path="url(#eu297-clip-cohort)">
@@ -2819,7 +2834,6 @@ Je dois reconmnaitre que si actuellement on peut encore parler librement sur le 
         <circle cx="280" cy="250" r="175" fill="none" stroke="var(--euler-cards)" stroke-width="2.25"/>
         <circle cx="485" cy="240" r="130" fill="none" stroke="var(--euler-stigma)" stroke-width="2.25"/>
         <circle cx="376" cy="338" r="78" fill="none" stroke="var(--euler-cohort)" stroke-width="3"/>
-        <circle cx="348" cy="318" r="36" fill="none" stroke="var(--euler-mux)" stroke-width="2" stroke-dasharray="5 3.5"/>
         <text class="venn-set" x="272" y="42" text-anchor="middle" fill="var(--euler-cards)" font-size="15">CARDS</text>
         <text x="272" y="58" text-anchor="middle" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">7&nbsp;296 comptes · écrire ou RT</text>
         <rect x="252" y="66" width="40" height="3" rx="1.5" fill="var(--euler-cards)"/>
@@ -2855,30 +2869,43 @@ Je dois reconmnaitre que si actuellement on peut encore parler librement sur le 
         <circle cx="408" cy="400" r="3.5" fill="var(--euler-cohort)"/>
         <text class="venn-n" x="436" y="434" text-anchor="start" font-size="16">215</text>
         <text x="468" y="434" text-anchor="start" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">hors CARDS</text>
-        <line class="tick" x1="268" y1="292" x2="340" y2="314"/>
-        <circle cx="340" cy="314" r="3.5" fill="var(--euler-mux)"/>
-        <text class="venn-n" x="262" y="286" text-anchor="end" fill="var(--euler-mux)" font-size="16">12</text>
-        <text x="262" y="300" text-anchor="end" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="10">aussi 251</text>
         <rect x="148" y="456" width="424" height="32" rx="10" fill="var(--euler-cohort)" fill-opacity="0.18" stroke="var(--euler-cohort)" stroke-width="1.25"/>
         <text x="360" y="477" text-anchor="middle" fill="var(--euler-cohort)" font-family="system-ui, sans-serif" font-size="13" font-weight="700">Cohorte AAC 297  ·  80 / 297 dans CARDS  ·  26,9&nbsp;%</text>
       </svg>
-      <div>
-        <table class="fig-euler-tally">
-          <thead>
-            <tr><th>Partition de la 297</th><th>n</th></tr>
-          </thead>
-          <tbody>
-            <tr class="is-triple"><td><span class="k" style="background:var(--track-b)"></span>triple</td><td>17</td></tr>
-            <tr><td><span class="k" style="background:var(--euler-cards)"></span>cohorte ∩ CARDS, sans lexique</td><td>63</td></tr>
-            <tr><td><span class="k" style="background:var(--euler-stigma)"></span>cohorte ∩ lexique, hors CARDS</td><td>2</td></tr>
-            <tr><td><span class="k" style="background:var(--euler-cohort)"></span>cohorte seule</td><td>215</td></tr>
-          </tbody>
-          <tfoot>
-            <tr><td>dans CARDS (63&nbsp;+&nbsp;17)</td><td>80 · 26,9&nbsp;%</td></tr>
-            <tr><td>aussi dans le multiplexe 251</td><td>12 · 4,0&nbsp;%</td></tr>
-          </tfoot>
-        </table>
-      </div>
+      <svg class="fig-chart fig-chart-cohorts" viewBox="0 0 400 268" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-euler-297-251-title fig-euler-297-251-desc">
+        <title id="fig-euler-297-251-title">Recoupement AAC 297 et multiplexe 251</title>
+        <desc id="fig-euler-297-251-desc">Deux disques de tailles comparables. Lentille = 12 comptes. 285 hors 251, 239 hors 297.</desc>
+        <circle cx="118" cy="132" r="92" fill="var(--euler-cohort)" fill-opacity="0.42"/>
+        <circle cx="278" cy="132" r="84" fill="var(--euler-mux)" fill-opacity="0.42"/>
+        <circle cx="118" cy="132" r="92" fill="none" stroke="var(--euler-cohort)" stroke-width="2.5"/>
+        <circle cx="278" cy="132" r="84" fill="none" stroke="var(--euler-mux)" stroke-width="2.5" stroke-dasharray="5 3.5"/>
+        <text class="venn-n" x="88" y="126" text-anchor="middle" font-size="20">285</text>
+        <text x="88" y="144" text-anchor="middle" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">hors 251</text>
+        <text class="venn-n" x="198" y="124" text-anchor="middle" font-size="20">12</text>
+        <text x="198" y="142" text-anchor="middle" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="10">communs</text>
+        <text class="venn-n" x="318" y="126" text-anchor="middle" font-size="20">239</text>
+        <text x="318" y="144" text-anchor="middle" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">hors 297</text>
+        <text class="venn-set" x="118" y="28" text-anchor="middle" fill="var(--euler-cohort)" font-size="14">AAC 297</text>
+        <text class="venn-set" x="278" y="28" text-anchor="middle" fill="var(--euler-mux)" font-size="14">Multiplexe 251</text>
+        <text x="200" y="248" text-anchor="middle" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">Lentille = 12 · 4,0&nbsp;% de la 297 · 4,8&nbsp;% de la 251</text>
+      </svg>
+    </div>
+    <div class="fig-euler-layout">
+      <table class="fig-euler-tally">
+        <thead>
+          <tr><th>Partition de la 297</th><th>n</th></tr>
+        </thead>
+        <tbody>
+          <tr class="is-triple"><td><span class="k" style="background:var(--track-b)"></span>triple</td><td>17</td></tr>
+          <tr><td><span class="k" style="background:var(--euler-cards)"></span>cohorte ∩ CARDS, sans lexique</td><td>63</td></tr>
+          <tr><td><span class="k" style="background:var(--euler-stigma)"></span>cohorte ∩ lexique, hors CARDS</td><td>2</td></tr>
+          <tr><td><span class="k" style="background:var(--euler-cohort)"></span>cohorte seule</td><td>215</td></tr>
+        </tbody>
+        <tfoot>
+          <tr><td>dans CARDS (63&nbsp;+&nbsp;17)</td><td>80 · 26,9&nbsp;%</td></tr>
+          <tr><td>aussi dans le multiplexe 251 (lentille)</td><td>12 · 4,0&nbsp;%</td></tr>
+        </tfoot>
+      </table>
     </div>
     <div class="fig-euler-bar" aria-hidden="true">
       <span style="flex:17;background:var(--track-b)"></span>
@@ -2886,8 +2913,8 @@ Je dois reconmnaitre que si actuellement on peut encore parler librement sur le 
       <span style="flex:2;background:var(--euler-stigma)"></span>
       <span style="flex:215;background:var(--euler-cohort);opacity:.55"></span>
     </div>
-    <p class="fig-euler-bar-lab">Les 297 en une barre&nbsp;: 17 triple · 63 CARDS sans infamant · 2 infamant hors CARDS · 215 hors des deux. Les deux premiers segments = 80 dans CARDS. Petit disque en pointillés = 12 aussi dans les 251.</p>
-    <figcaption>Figure 20b&nbsp;: même Euler, disque = liste AAC 297 (covid / TEP, protocole Minici). 80&nbsp;/&nbsp;297 (26,9&nbsp;%) dans CARDS, contre 78,9&nbsp;% pour le backbone 251. Douze comptes seulement sont dans les deux cohortes. Surfaces CARDS / infamant hors échelle.</figcaption>
+    <p class="fig-euler-bar-lab">Les 297 en une barre&nbsp;: 17 triple · 63 CARDS sans infamant · 2 infamant hors CARDS · 215 hors des deux. À droite&nbsp;: le disque 251 n’est pas inclus dans la 297 — seuls 12 comptes forment la lentille (239 hors 297).</p>
+    <figcaption>Figure 20b&nbsp;: à gauche, Euler CARDS × infamant × liste AAC 297. À droite, les deux cohortes&nbsp;: 285 hors 251, 12 communs, 239 hors 297. 80&nbsp;/&nbsp;297 (26,9&nbsp;%) dans CARDS, contre 78,9&nbsp;% pour le backbone 251. Surfaces CARDS / infamant hors échelle.</figcaption>
     <p class="fig-euler-read">La liste AAC 297 recoupe beaucoup plus faiblement CARDS que le backbone 251 calculé sur HEAT (26,9&nbsp;% contre 78,9&nbsp;%). La continuité opérationnelle tient aux 12 comptes communs (9 relaient du CARDS, 5 sont dans le triple), pas au transfert de la liste entière.</p>
   </figure>
 
