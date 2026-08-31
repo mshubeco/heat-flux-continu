@@ -1212,8 +1212,13 @@
   }
   @media (min-width: 720px) {
     .split-figure.split-figure--wide-media#fig-infamant-types {
-      grid-template-columns: minmax(16rem, 0.4fr) minmax(0, 0.6fr);
+      grid-template-columns: minmax(16rem, 0.48fr) minmax(0, 0.52fr);
       align-items: center;
+    }
+    .split-figure.split-figure--wide-media#fig-infamant-types .split-figure-media img {
+      max-height: min(48vh, 22rem);
+      width: auto;
+      max-width: 100%;
     }
   }
 
@@ -1858,9 +1863,9 @@
   <h2 id="cohort-251-title"><span class="part-num">Partie 3</span> Détection d’amplifications / de coordination inauthentique</h2>
   <p class="lede">Pour aller plus loin dans l’analyse de signaux faibles liés à une manipulation de l’information, nous avons produit une détection d’amplification à partir d’une méthode computationnelle de multiplex de co-action. Concrètement, on part des co-actions (surtout les co-retweets), on extrait le plus gros bloc de comptes qui agissent ensemble, puis on ne garde que les liens anormalement forts. La liste retenue compte <strong>251&nbsp;comptes</strong>.</p>
 
-  <div class="callout">
-    <strong>En une phrase.</strong> Parmi ~373&nbsp;000 comptes du corpus, on resserre d’abord sur les plus actifs, puis sur la plus grande communauté de co-actions (<span class="comm" style="color:#196A24">C0</span>, 4&nbsp;098&nbsp;comptes), puis sur les liens qui sortent vraiment du lot&nbsp;: il reste <strong>251&nbsp;comptes</strong>.
-  </div>
+  <aside class="callout warn" aria-label="Limite de méthode">
+    Il n’existe aucune méthode permettant d’identifier avec certitude des manipulations de l’information ou des coordinations inauthentiques qui ne soient pas évidentes. Celles-ci se dévoilent au croisement d’outils computationnels et de différents faisceaux d’indices. La méthode utilisée rassemble et lisse l’ensemble des co-actions et permet de faire ressortir les comptes qui co-agissent le plus fortement ensemble.
+  </aside>
 
   <h3 id="methode-pas-a-pas">Méthode pas à pas</h3>
   <p class="muted small method-dual-hint">Deux lectures en parallèle&nbsp;: à gauche le sens de la démarche&nbsp;; à droite les paramètres et choix techniques.</p>
