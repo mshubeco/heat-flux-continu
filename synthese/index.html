@@ -960,6 +960,19 @@
   #cohort-251-table.is-expanded tbody tr.row-more { display: table-row; }
   #cohort-251-table.is-expanded tbody tr.row-more.is-filtered-out,
   #cohort-251-table tbody tr.is-filtered-out { display: none !important; }
+  #cohort-251-table thead th:nth-last-child(2),
+  #cohort-251-table thead th:nth-last-child(3) {
+    white-space: normal;
+    max-width: 6.4rem;
+    line-height: 1.2;
+  }
+  @media (min-width: 70rem) {
+    #cohort-251 .table-wrap {
+      width: min(calc(100vw - 2rem), 82rem);
+      max-width: none;
+      margin-left: calc(50% - min(calc(50vw - 1rem), 41rem));
+    }
+  }
   .mono-dup { margin: 1.25rem 0 1.4rem; }
   aside.homonym-box + aside.homonym-box { margin-top: 1rem; }
   .encadres-pair {
