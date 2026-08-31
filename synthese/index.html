@@ -4,7 +4,7 @@
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>Analyse du corpus canicule, synthèse</title>
-<meta name="revision" content="venn-before-operations"/>
+<meta name="revision" content="fig19-grid-no-oval"/>
 <style>
   :root {
     --bg: #f4f2ec;
@@ -1272,22 +1272,34 @@
     }
   }
   .split-figure.split-figure--wide-media#fig-cohort-251.fig-cohort-island {
-    display: flow-root;
-    grid-template-columns: none;
-    gap: 0;
-    align-items: unset;
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "lead"
+      "fig"
+      "text";
+    gap: 1.15rem 1.6rem;
+    align-items: start;
     margin: 1.4rem 0 2.25rem;
   }
   #fig-cohort-251 .cohort-persona-lead {
+    grid-area: lead;
     font-size: 1.09rem;
     line-height: 1.65;
-    margin: 0 0 1.15rem;
+    margin: 0;
     border-left: 3px solid #196A24;
     padding-left: 0.95rem;
   }
   #fig-cohort-251.fig-cohort-island .split-figure-text {
+    grid-area: text;
     padding: 0;
     border: 0;
+    min-width: 0;
+  }
+  #fig-cohort-251.fig-cohort-island .split-figure-media {
+    grid-area: fig;
+    margin: 0;
+    min-width: 0;
   }
   #fig-cohort-251.fig-cohort-island .split-figure-text p {
     font-size: 1.03rem;
@@ -1297,44 +1309,36 @@
   #fig-cohort-251.fig-cohort-island .split-figure-text p:last-child {
     margin-bottom: 0.1rem;
   }
-  @media (min-width: 860px) {
-    #fig-cohort-251.fig-cohort-island .split-figure-media {
-      float: right;
-      width: min(66%, 44rem);
-      position: relative;
-      margin: 0.05rem -0.55rem 0.85rem 0.2rem;
-      shape-outside: ellipse(52% 49% at 50% 45%);
-      shape-margin: 1.05rem;
-    }
-    #fig-cohort-251.fig-cohort-island .split-figure-media img {
-      display: block;
-      width: 100%;
-      height: auto;
-      max-height: none;
-      object-fit: contain;
-      background: radial-gradient(ellipse at 50% 47%, #f7f4ee 0 58%, #f4f1ea 72%, transparent 82%);
-      border-radius: 50%;
-      padding: 0.45rem;
-      box-shadow: 0 0 0 1px rgba(25, 106, 36, 0.18), 0 24px 48px -22px rgba(28, 27, 25, 0.38);
-    }
-    #fig-cohort-251.fig-cohort-island .split-figure-media figcaption {
-      text-align: center;
-      margin: 0.5rem auto 0;
-      max-width: 38ch;
-      font-size: 0.78rem;
-      line-height: 1.35;
-    }
+  #fig-cohort-251.fig-cohort-island .split-figure-media img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: min(72vh, 36rem);
+    object-fit: contain;
+    background: #111;
+    border-radius: 8px;
+    border: 1px solid var(--line);
   }
-  @media (max-width: 859px) {
+  #fig-cohort-251.fig-cohort-island .split-figure-media figcaption {
+    text-align: left;
+    margin: 0.45rem 0 0;
+    max-width: none;
+    font-size: 0.78rem;
+    line-height: 1.4;
+  }
+  @media (min-width: 900px) {
+    .split-figure.split-figure--wide-media#fig-cohort-251.fig-cohort-island {
+      grid-template-columns: minmax(0, 1.08fr) minmax(18rem, 0.92fr);
+      grid-template-areas:
+        "lead lead"
+        "text fig";
+    }
     #fig-cohort-251.fig-cohort-island .split-figure-media {
-      margin: 0.2rem 0 1.15rem;
+      position: sticky;
+      top: 1.1rem;
     }
     #fig-cohort-251.fig-cohort-island .split-figure-media img {
-      width: 100%;
-      max-height: min(78vh, 38rem);
-      object-fit: contain;
-      background: #f4f1ea;
-      border-radius: 12px;
+      max-height: min(68vh, 32rem);
     }
   }
   .cohort-persona {
