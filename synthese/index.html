@@ -1413,14 +1413,15 @@
   }
   table.accounts-table tbody tr:hover { background: #f7f3ec; }
   table.accounts-table a.x-user,
-  .callout a.x-user {
+  a.x-user {
     color: inherit;
     text-decoration: underline;
     text-underline-offset: 0.12em;
   }
   table.accounts-table a.x-user:hover,
-  .callout a.x-user:hover { color: var(--accent); }
-  .callout a {
+  a.x-user:hover { color: var(--accent); }
+  .callout a,
+  #cohort-251 > p a {
     color: var(--accent);
     text-decoration: underline;
     text-underline-offset: 0.12em;
@@ -2100,10 +2101,10 @@ Je dois reconmnaitre que si actuellement on peut encore parler librement sur le 
     <div class="callout">
     <p>Comment lit-on ces 251 comptes&nbsp;? Après avoir repéré, dans le débat canicule, des comptes qui agissent souvent ensemble (mêmes retweets, mêmes cibles, etc.), on applique le <strong>filtre de disparité de Serrano</strong>. Son rôle est simple&nbsp;: pour chaque compte, il compare ses liens à ce que l’on attendrait d’une activité «&nbsp;normale&nbsp;». Ne restent alors que les connexions <strong>trop fortes pour être banales</strong>. Ce resserrement isole le cœur le plus saillant du graphe, là où la co-action devient un signal d’amplification atypique, donc suspect.</p>
     <p>La colonne <strong>Force</strong> ordonne ce noyau&nbsp;: plus la valeur est haute, plus le compte est central dans ce tissu de co-actions retenues (médiane ≈&nbsp;29, extrêmes &gt;&nbsp;1&nbsp;500). Ce n’est pas un score d’«&nbsp;inauthenticité&nbsp;» en soi&nbsp;: c’est un score de centralité dans le backbone des liens anormaux.</p>
+  </div>
     <p>Le régime d’activité de la cohorte identifiée renvoie essentiellement à de l’amplification&nbsp;: <strong>93,8&nbsp;%</strong> de retweets (27&nbsp;030 RT sur 28&nbsp;807 publications)&nbsp;: des comptes qui relaient bien plus qu’ils ne produisent. Au-delà de cette polarisation de l’activité, d’autres similitudes émergent&nbsp;: <strong>95,6&nbsp;%</strong> de la cohorte se situent en <span class="comm" style="color:#196A24">C0</span>, la plupart ont les mêmes comptes pour cibles principales, les comptes centraux de C0&nbsp;: <a class="x-user" href="https://x.com/SirAfuera" target="_blank" rel="noopener">@SirAfuera</a>, <a class="x-user" href="https://x.com/VictorSinclair3" target="_blank" rel="noopener">@VictorSinclair3</a>, <a class="x-user" href="https://x.com/camille_moscow" target="_blank" rel="noopener">@camille_moscow</a>, <a class="x-user" href="https://x.com/FredGaulois" target="_blank" rel="noopener">@FredGaulois</a>, <a class="x-user" href="https://x.com/AssoClimatoReal" target="_blank" rel="noopener">@AssoClimatoReal</a>, principalement des comptes engagés dans des discours climatosceptiques, polarisés à l’extrême droite. Elle est également perceptible dans les éléments de présentation de leurs profils, notamment leurs biographies, qui reprennent parfois explicitement des marqueurs discursifs associés à l’extrême droite ou des formulations déjà identifiées au sein de comptes considérés comme inauthentiques.</p>
     <p>Enfin, on retrouve également des comptes associés à de la désinformation, comme le hub <a class="x-user" href="https://x.com/camille_moscow" target="_blank" rel="noopener">@camille_moscow</a>&nbsp;: <a href="https://www.defense.gouv.fr/desinformation/actualites/decryptage-dune-attaque-informationnelle-accusant-armees-deploiement-ukraine" target="_blank" rel="noopener">Décryptage d’une attaque informationnelle accusant les armées de déploiement en Ukraine</a>.</p>
     <p>D’autres signaux renforcent le faisceau d’indices trahissant une amplification coordonnée, comme des duplications de profils ou de publications.</p>
-  </div>
 
   <script>
   (function(){
