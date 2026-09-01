@@ -1,9 +1,17 @@
 {
-  "n_nodes": 24072,
-  "n_edges": 42978,
-  "title": "P1 CARDS connectome",
-  "n_cards_authors": 714,
-  "n_cards_pubs": 16671,
-  "n_max_cards": 48,
-  "fa2_iter": 5760
+  "n_nodes": 21803,
+  "n_edges": 42557,
+  "title": "Connectome 20 mai – 29 juin 2026",
+  "n_cards_authors": 1728,
+  "n_cards_pubs": 53683,
+  "n_max_cards": 90,
+  "cards_min_pubs": 5,
+  "window": "2026-05-20 → 2026-06-29",
+  "n_cards_orig": 15689,
+  "n_cards_authors_orig": 358,
+  "n_max_cards_orig": 84,
+  "cards_p1": "01_toutes_publications_CARDS.csv",
+  "cards_p2": "p2_cards_flagged_only.csv",
+  "louvain": "ALL (20 mai – 29 juin)",
+  "fa2_iter": 720
 }

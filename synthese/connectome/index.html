@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Connectome P1 — production CARDS</title>
+  <title>Connectome 20 mai – 29 juin 2026 — production CARDS</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { width: 100%; height: 100%; overflow: hidden; background: #000; color: #ccc; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
@@ -144,7 +144,7 @@
   <div id="c"></div>
   <div id="labels"></div>
   <aside id="hud">
-    <b>CARDS · P1 · 20 mai – 7 juin</b>
+    <b>CARDS · 20 mai – 29 juin</b>
     <div id="stats">—</div>
     <div class="row"><span>Lumière liens</span><input id="linkLight" type="range" min="0" max="1" step="0.01" value="0.40"></div>
     <div class="row"><span>Bloom</span><input id="bloom" type="range" min="0" max="2.2" step="0.01" value="0.38"></div>
@@ -230,9 +230,9 @@ if (linkSlider) linkSlider.value = String(P.linkLight);
 if (labelsSlider) labelsSlider.value = String(P.nLabels);
 if (!showCards) {
   document.body.classList.add('no-cards');
-  document.title = 'Connectome P1 · 20 mai – 7 juin 2026';
+  document.title = 'Connectome · 20 mai – 29 juin 2026';
   const hudTitle = document.querySelector('#hud b');
-  if (hudTitle) hudTitle.textContent = 'Connectome · P1 · 20 mai – 7 juin';
+  if (hudTitle) hudTitle.textContent = 'Connectome · 20 mai – 29 juin';
   const hlBox = document.getElementById('hlSelected');
   if (hlBox) hlBox.checked = false;
 }
@@ -241,18 +241,6 @@ function nodeCardCount(n) {
   return n.cards_orig != null ? n.cards_orig : 0;
 }
 function isCardsNode(n) { return nodeCardCount(n) >= MIN_CARDS; }
-/** Taille visuelle des points/labels CARDS : volume de publications, pas le degré. */
-function cardsSizePx(cards, maxCards) {
-  const t = Math.max(0, cards) / Math.max(maxCards, 1);
-  return 3.2 + 24 * Math.pow(t, 0.7);
-}
-function cardsLabelPx(cards, maxCards) {
-  const t = Math.max(0, cards) / Math.max(maxCards, 1);
-  return Math.round(10 + 28 * Math.pow(t, 0.72));
-}
-function cmpHighlightRank(a, b) {
-  return (nodeCardCount(b) - nodeCardCount(a)) || ((b.deg || 0) - (a.deg || 0));
-}
 
 const renderer = new THREE.WebGLRenderer({
   antialias: true,
@@ -587,8 +575,8 @@ function updateCardsHud(nCards) {
   const sub = document.getElementById('hlSub');
   if (sub) {
     sub.textContent = includeRT
-      ? 'Taille points + labels ∝ volume CARDS (RT inclus)'
-      : 'Taille points + labels ∝ volume CARDS (hors RT)';
+      ? 'Points rouges = producteurs (RT inclus)'
+      : 'Points rouges = créateurs (hors RT)';
   }
   if (!graphData) return;
   if (!showCards) {
@@ -613,11 +601,7 @@ function rebuildCardsOverlay() {
   }
   const nodes = graphData.nodes;
   const n = nodes.length;
-  let maxCards = 1;
-  for (let i = 0; i < n; i++) {
-    const c = nodeCardCount(nodes[i]);
-    if (c > maxCards) maxCards = c;
-  }
+  const maxDeg = graphMaxDeg || 1;
   const cPos = [];
   const cCol = [];
   const cSize = [];
@@ -625,7 +609,8 @@ function rebuildCardsOverlay() {
     const nd = nodes[i];
     const cards = nodeCardCount(nd);
     if (cards < MIN_CARDS) continue;
-    const size = cardsSizePx(cards, maxCards);
+    const t = Math.log1p(nd.deg || 1) / Math.log1p(maxDeg);
+    const size = 5.5 + 11.0 * Math.pow(t, 0.82);
     cPos.push(nd.x, nd.y, 0.8);
     cCol.push(1.0, 0.16, 0.12);
     cSize.push(size);
@@ -646,15 +631,11 @@ function rebuildLabels() {
   labelItems = [];
   if (!graphData) return;
 
-  const sizeOf = (n) => highlightSelected
-    ? Math.max(nodeCardCount(n), 1)
-    : Math.max(n.deg || 1, 1);
-
   const scored = graphData.nodes.map((n, i) => ({
     ...n,
     i,
-    gephiSize: sizeOf(n),
-    cardsN: nodeCardCount(n),
+    gephiSize: Math.max(n.deg || 1, 1),
+    cards: n.cards || 0,
   }));
 
   let pool = scored;
@@ -663,50 +644,45 @@ function rebuildLabels() {
   }
   if (!pool.length) return;
 
+  const byCom = new Map();
+  for (const n of pool) {
+    const c = n.com ?? -1;
+    if (!byCom.has(c)) byCom.set(c, []);
+    byCom.get(c).push(n);
+  }
+
+  const comOrder = [...byCom.entries()]
+    .map(([com, arr]) => ({
+      com,
+      arr: arr.sort((a, b) => (b.deg - a.deg) || (nodeCardCount(b) - nodeCardCount(a))),
+      mass: arr.reduce((s, n) => s + Math.log1p(n.deg || 1), 0),
+      size: arr.length,
+    }))
+    .sort((a, b) => b.mass - a.mass);
+
   const budget = P.nLabels;
   const picked = new Map();
+  const mainComs = comOrder.filter((c) => c.size >= 8).slice(0, 28);
 
-  if (highlightSelected) {
-    // Strictement les plus gros volumes CARDS — pas les hubs de degré.
-    const byCards = [...pool].sort(cmpHighlightRank);
-    for (const n of byCards) {
+  for (const c of mainComs) {
+    if (c.arr[0]) picked.set(c.arr[0].i, c.arr[0]);
+  }
+
+  const totalMass = mainComs.reduce((s, c) => s + c.mass, 0) || 1;
+  for (const c of mainComs) {
+    const quota = Math.min(4, Math.max(1, Math.round(1 + (c.mass / totalMass) * 10)));
+    for (let k = 0; k < quota && k < c.arr.length; k++) {
+      if (picked.size >= budget) break;
+      picked.set(c.arr[k].i, c.arr[k]);
+    }
+    if (picked.size >= budget) break;
+  }
+
+  if (picked.size < budget) {
+    const rest = [...pool].sort((a, b) => (b.deg - a.deg) || (nodeCardCount(b) - nodeCardCount(a)));
+    for (const n of rest) {
       if (picked.size >= budget) break;
       picked.set(n.i, n);
-    }
-  } else {
-    const byCom = new Map();
-    for (const n of pool) {
-      const c = n.com ?? -1;
-      if (!byCom.has(c)) byCom.set(c, []);
-      byCom.get(c).push(n);
-    }
-    const comOrder = [...byCom.entries()]
-      .map(([com, arr]) => ({
-        com,
-        arr: arr.sort((a, b) => (b.deg - a.deg) || (nodeCardCount(b) - nodeCardCount(a))),
-        mass: arr.reduce((s, n) => s + Math.log1p(n.deg || 1), 0),
-        size: arr.length,
-      }))
-      .sort((a, b) => b.mass - a.mass);
-    const mainComs = comOrder.filter((c) => c.size >= 8).slice(0, 28);
-    for (const c of mainComs) {
-      if (c.arr[0]) picked.set(c.arr[0].i, c.arr[0]);
-    }
-    const totalMass = mainComs.reduce((s, c) => s + c.mass, 0) || 1;
-    for (const c of mainComs) {
-      const quota = Math.min(4, Math.max(1, Math.round(1 + (c.mass / totalMass) * 10)));
-      for (let k = 0; k < quota && k < c.arr.length; k++) {
-        if (picked.size >= budget) break;
-        picked.set(c.arr[k].i, c.arr[k]);
-      }
-      if (picked.size >= budget) break;
-    }
-    if (picked.size < budget) {
-      const rest = [...pool].sort((a, b) => (b.deg - a.deg) || (nodeCardCount(b) - nodeCardCount(a)));
-      for (const n of rest) {
-        if (picked.size >= budget) break;
-        picked.set(n.i, n);
-      }
     }
   }
 
@@ -715,36 +691,29 @@ function rebuildLabels() {
   );
   if (!ranked.length) return;
 
+  // Font ∝ degré pondéré (même centralité que la taille des nœuds)
   const sMin = Math.min(...ranked.map((n) => n.gephiSize));
   const sMax = Math.max(...ranked.map((n) => n.gephiSize));
   const sSpan = Math.max(sMax - sMin, 1e-6);
-  const maxCards = highlightSelected
-    ? Math.max(...ranked.map((n) => n.cardsN), 1)
-    : 1;
 
   const ordered = [...ranked].sort((a, b) => a.gephiSize - b.gephiSize);
 
   for (const node of ordered) {
     const el = document.createElement('div');
     el.className = 'label';
+    // Match Gephi labels (@handle)
     const text = node.l.startsWith('@') ? node.l : `@${node.l}`;
     const isSelected = highlightSelected && isCardsNode(node);
     if (isSelected) el.classList.add('hl-selected');
     el.textContent = text;
 
-    let mix;
-    let fontPx;
-    if (highlightSelected) {
-      mix = node.cardsN / maxCards;
-      fontPx = cardsLabelPx(node.cardsN, maxCards);
-    } else {
-      const u = (node.gephiSize - sMin) / sSpan;
-      const t = Math.pow(u, 0.7);
-      const abs = Math.pow(node.gephiSize / sMax, 1.25);
-      mix = 0.45 * t + 0.55 * abs;
-      fontPx = Math.round(7 + 32 * mix);
-    }
-    if (isSelected) fontPx = Math.max(fontPx, 11);
+    // Normalize then power-curve amplify tops (like Gephi ranking spline feel)
+    const u = (node.gephiSize - sMin) / sSpan; // 0‥1
+    const t = Math.pow(u, 0.7); // keep mid visible, stretch top
+    const abs = Math.pow(node.gephiSize / sMax, 1.25);
+    const mix = 0.45 * t + 0.55 * abs;
+    let fontPx = Math.round(7 + 32 * mix);
+    if (isSelected) fontPx = Math.max(Math.round(fontPx * 1.15), 12);
 
     el.style.fontSize = `${fontPx}px`;
     el.style.fontWeight = isSelected ? '700' : mix > 0.7 ? '700' : mix > 0.4 ? '600' : '500';
@@ -1277,10 +1246,16 @@ controls.addEventListener('start', () => hideTip());
   projectLabels();
 })();
 
+const DATA_V = 'full20260901';
+function dataUrl(name) {
+  const u = new URL('./data/' + name, import.meta.url);
+  u.searchParams.set('v', DATA_V);
+  return u;
+}
 Promise.all([
-  fetch(new URL('./data/graph.json', import.meta.url)).then((r) => r.json()),
+  fetch(dataUrl('graph.json')).then((r) => r.json()),
   showCards
-    ? fetch(new URL('./data/cards_hover.json', import.meta.url)).then((r) => r.json()).catch(() => ({ users: {} }))
+    ? fetch(dataUrl('cards_hover.json')).then((r) => r.json()).catch(() => ({ users: {} }))
     : Promise.resolve({ users: {} }),
 ])
   .then(([d, hover]) => {
