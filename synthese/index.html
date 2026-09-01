@@ -1654,7 +1654,7 @@
   <p class="lede">Les canicules de mai–juin 2026 ont ouvert, sur X, un espace de débat où se mêlent alerte météorologique, controverses climatiques et polarisation politique. Cette synthèse analyse, entre le 20&nbsp;mai et le 29&nbsp;juin 2026, le corpus d’interactions pour éclairer trois enjeux&nbsp;: la structuration communautaire du débat&nbsp;; la circulation de discours climatosceptiques et contestataires&nbsp;; l’apparition de dynamiques d’amplification et de formes d’inauthenticité.</p>
   <p>L’analyse croise différentes approches computationnelles&nbsp;: analyse de réseau, analyse linguistique, détection de désinformation depuis une typologie de référence et par inférence LLM, identification de mouvements de coordination.</p>
 </header>
-<figure class="hero-connectome" id="fig-connectome-p1"><div class="connectome-tabs" role="tablist" aria-label="Variantes du connectome"><button type="button" role="tab" id="tab-conn-core" aria-selected="true" aria-controls="panel-conn-core" tabindex="0">Cœur (21 803 nœuds)</button><button type="button" role="tab" id="tab-conn-all" aria-selected="false" aria-controls="panel-conn-all" tabindex="-1">Toutes les interactions (365 304 nœuds)</button></div><div class="connectome-frame" id="panel-conn-core" role="tabpanel" aria-labelledby="tab-conn-core"><iframe src="connectome_backbone/index.html?cards=0&amp;v=backbone20260901" title="Connectome cœur, 20 mai – 29 juin 2026" loading="lazy" allow="fullscreen"></iframe></div><div class="connectome-frame" id="panel-conn-all" role="tabpanel" aria-labelledby="tab-conn-all" hidden><iframe data-src="connectome/index.html?cards=0&amp;v=fa2x2_20260901" title="Connectome toutes interactions, 20 mai – 29 juin 2026" allow="fullscreen"></iframe></div><figcaption>Figure 1: Connectome interactif du corpus entier (20 mai – 29 juin 2026). Premier onglet : cœur ForceAtlas2, 21&nbsp;803 nœuds, 42&nbsp;557 liens (arêtes les plus lourdes). Second onglet : toutes les paires d’interaction, 365&nbsp;304 nœuds, 1&nbsp;456&nbsp;191 liens. Couleur = communauté Louvain ALL&nbsp;; taille des labels ∝ degré. Les six hubs du rapport sont toujours labellisés.</figcaption><script>(function(){var root=document.getElementById('fig-connectome-p1');if(!root)return;var tabs=root.querySelectorAll('[role="tab"]');tabs.forEach(function(btn){btn.addEventListener('click',function(){tabs.forEach(function(b){var on=b===btn;b.setAttribute('aria-selected',on?'true':'false');b.tabIndex=on?0:-1;var panel=document.getElementById(b.getAttribute('aria-controls'));if(!panel)return;panel.hidden=!on;if(on){var iframe=panel.querySelector('iframe');if(iframe&&iframe.dataset.src&&!iframe.getAttribute('src'))iframe.src=iframe.dataset.src;}});});});})();</script></figure><aside class="callout louvain-note" aria-label="Définition, algorithme de Louvain"><strong>Louvain.</strong> L’algorithme de Louvain est une méthode de détection de communautés fondée sur l’optimisation itérative de la modularité, permettant d’identifier des ensembles de nœuds présentant une forte densité de connexions internes relativement à leurs connexions avec les autres communautés.</aside><nav class="toc"><strong>Sommaire</strong><ol id="toc-list"><li><a href="#paysage-communautaire">Paysage communautaire</a><ol><li><a href="#verticalité-des-communautés">Verticalité des communautés</a></li><li><a href="#analyse-des-interactions-intercommunautaires">Analyse des interactions intercommunautaires</a></li><li><a href="#activités-communautaires">Activités communautaires</a></li><li><a href="#engagements">Engagements</a></li><li><a href="#persistance-des-communautés">Persistance des communautés</a></li></ol></li><li><a href="#sur-la-désinformation">Sur la désinformation</a><ol><li><a href="#analyse-cards">Analyse CARDS</a></li><li><a href="#les-cibles-de-la-désinformation">Les cibles de la désinformation</a></li><li><a href="#une-désinformation-agressive">Une désinformation agressive</a></li><li><a href="#doù-proviennent-les-discours-climatosceptiques">D’où proviennent les discours climatosceptiques ?</a></li><li><a href="#quels-comptes-recoivent-le-plus-de-cards">Quels comptes reçoivent le plus de CARDS ?</a></li><li><a href="#des-opérations-dinfluences">Des opérations d’influences</a></li></ol></li><li><a href="#cohort-251">Détection d’amplifications / de coordination inauthentique</a><ol><li><a href="#methode-pas-a-pas">Méthode pas à pas</a></li><li><a href="#les-coeurs-de-la-coordination">Les cœurs de la coordination</a></li><li><a href="#duplications-mono-compte">Duplications mono-compte (58)</a></li></ol></li><li><a href="#usurpation-de-legitimite-scientifique">Usurpation de légitimité scientifique</a><ol><li><a href="#inscription-ecosysteme-comptes-suspects">Inscription dans l’écosystème de comptes suspects</a></li></ol></li><li><a href="#conclusion">Conclusion</a></li></ol></nav><figure><img src="synthèse_heat_html_assets/image2.png" alt="Figure 2: Graphique de distribution temporelle de l’activité du corpus (volume de tweet)" loading="lazy"/><figcaption>Figure 2: Graphique de distribution temporelle de l’activité du corpus (volume de tweet)</figcaption></figure><p>L’analyse du corpus illustre un mouvement en deux temps liés aux 2 pics de canicule de mai-juin. Cette analyse s’attachera à analyser au global les tendances associées à ces deux pics, et les discernera si nécessaire.</p><h2 id="paysage-communautaire"><span class="part-num">Partie 1</span>Paysage communautaire</h2><p>Depuis la segmentation en communautés Louvain du réseau d’interaction, l’analyse réseau montre un espace de débats liés à la canicule principalement polarisé autour de positionnements socio-politiques antagonistes. Cette structuration n’évolue que peu entre les deux pics de canicule.</p><div class="split-figure split-figure--figs34">
+<figure class="hero-connectome" id="fig-connectome-p1"><div class="connectome-tabs" role="tablist" aria-label="Variantes du connectome"><button type="button" role="tab" id="tab-conn-core" aria-selected="true" aria-controls="panel-conn-core" tabindex="0">Cœur (21 803 nœuds)</button><button type="button" role="tab" id="tab-conn-all" aria-selected="false" aria-controls="panel-conn-all" tabindex="-1">Toutes les interactions (365 304 nœuds)</button></div><div class="connectome-frame" id="panel-conn-core" role="tabpanel" aria-labelledby="tab-conn-core"><iframe src="connectome_backbone/index.html?cards=0&amp;v=backbone20260901" title="Connectome cœur, 20 mai – 29 juin 2026" loading="lazy" allow="fullscreen"></iframe></div><div class="connectome-frame" id="panel-conn-all" role="tabpanel" aria-labelledby="tab-conn-all" hidden><iframe data-src="connectome/index.html?cards=0&amp;v=fa2x2_20260901" title="Connectome toutes interactions, 20 mai – 29 juin 2026" allow="fullscreen"></iframe></div><figcaption>Figure 1: Connectome interactif du corpus entier (20 mai – 29 juin 2026). Premier onglet : cœur ForceAtlas2, 21&nbsp;803 nœuds, 42&nbsp;557 liens (arêtes les plus lourdes). Second onglet : toutes les paires d’interaction, 365&nbsp;304 nœuds, 1&nbsp;456&nbsp;191 liens. Couleur = communauté Louvain ALL&nbsp;; taille des labels ∝ degré. Les six hubs du rapport sont toujours labellisés.</figcaption><script>(function(){var root=document.getElementById('fig-connectome-p1');if(!root)return;var tabs=root.querySelectorAll('[role="tab"]');tabs.forEach(function(btn){btn.addEventListener('click',function(){tabs.forEach(function(b){var on=b===btn;b.setAttribute('aria-selected',on?'true':'false');b.tabIndex=on?0:-1;var panel=document.getElementById(b.getAttribute('aria-controls'));if(!panel)return;panel.hidden=!on;if(on){var iframe=panel.querySelector('iframe');if(iframe&&iframe.dataset.src&&!iframe.getAttribute('src'))iframe.src=iframe.dataset.src;}});});});})();</script></figure><aside class="callout louvain-note" aria-label="Définition, algorithme de Louvain"><strong>Louvain.</strong> L’algorithme de Louvain est une méthode de détection de communautés fondée sur l’optimisation itérative de la modularité, permettant d’identifier des ensembles de nœuds présentant une forte densité de connexions internes relativement à leurs connexions avec les autres communautés.</aside><nav class="toc"><strong>Sommaire</strong><ol id="toc-list"><li><a href="#paysage-communautaire">Paysage communautaire</a><ol><li><a href="#verticalité-des-communautés">Verticalité des communautés</a></li><li><a href="#analyse-des-interactions-intercommunautaires">Analyse des interactions intercommunautaires</a></li><li><a href="#activités-communautaires">Activités communautaires</a></li><li><a href="#engagements">Engagements</a></li><li><a href="#persistance-des-communautés">Persistance des communautés</a></li></ol></li><li><a href="#sur-la-désinformation">Sur la désinformation</a><ol><li><a href="#analyse-cards">Analyse CARDS</a></li><li><a href="#les-cibles-de-la-désinformation">Les cibles de la désinformation</a></li><li><a href="#une-désinformation-agressive">Une désinformation agressive</a></li><li><a href="#doù-proviennent-les-discours-climatosceptiques">D’où proviennent les discours climatosceptiques ?</a></li><li><a href="#quels-comptes-recoivent-le-plus-de-cards">Quels comptes reçoivent le plus de CARDS ?</a></li></ol></li><li><a href="#cohort-251">Détection d’amplifications / de coordination inauthentique</a><ol><li><a href="#methode-pas-a-pas">Méthode pas à pas</a></li><li><a href="#les-coeurs-de-la-coordination">Les cœurs de la coordination</a></li><li><a href="#duplications-mono-compte">Duplications mono-compte (58)</a></li><li><a href="#des-opérations-dinfluences">Des opérations d’influences</a></li></ol></li><li><a href="#usurpation-de-legitimite-scientifique">Usurpation de légitimité scientifique</a><ol><li><a href="#inscription-ecosysteme-comptes-suspects">Inscription dans l’écosystème de comptes suspects</a></li></ol></li><li><a href="#conclusion">Conclusion</a></li></ol></nav><figure><img src="synthèse_heat_html_assets/image2.png" alt="Figure 2: Graphique de distribution temporelle de l’activité du corpus (volume de tweet)" loading="lazy"/><figcaption>Figure 2: Graphique de distribution temporelle de l’activité du corpus (volume de tweet)</figcaption></figure><p>L’analyse du corpus illustre un mouvement en deux temps liés aux 2 pics de canicule de mai-juin. Cette analyse s’attachera à analyser au global les tendances associées à ces deux pics, et les discernera si nécessaire.</p><h2 id="paysage-communautaire"><span class="part-num">Partie 1</span>Paysage communautaire</h2><p>Depuis la segmentation en communautés Louvain du réseau d’interaction, l’analyse réseau montre un espace de débats liés à la canicule principalement polarisé autour de positionnements socio-politiques antagonistes. Cette structuration n’évolue que peu entre les deux pics de canicule.</p><div class="split-figure split-figure--figs34">
   <div class="split-figure-text">
     <p>Ainsi, une arène se construit autour de différents blocs :</p><ul class="body-list"><li>Un positionné plutôt à gauche (<span class="comm comm-c14" style="color:#9F2B92">C14</span>), avec des acteurs politiques (Clémence Guette, Manuel Bompard, Ilan Gabet, Thomas Portes), et des médias et journalistes dits “de gauche” (MickaCorreia de médiapart, impactmediafr). A ce bloc se greffe un cluster moins politisé (<span class="comm comm-c10" style="color:#CC0000">C10</span>), et davantage axé sur le témoignage ou les publications virales de petits influenceurs, souvent liée à des commentaires sur l’actualité, ou la dénonciation des inégalités associées à la situation météorologique, mais aussi par des médias d’informations: cerfiafr, impactmediafr, alertesinfos, focusmedia_fr. Ce dernier cluster reste assez diffus (le top 20 des comptes ne représentent que 27% des flux entrants)</li><li>Un autre bloc complètement opposé se construit autour de propos anti-institutionnels visant à discréditer l’exécutif, largement autour de propos positionné sur une ligne d’extrême droite, anti-gauche, anti-macron et anti-média souvent assumée (<span class="comm comm-c0" style="color:#196A24">C0</span>). L’essentiel des discours climatosceptiques se retrouvent au sein de ce cluster (cf analyse CARDS). Ici, la thématique de la canicule est surtout un vecteur mobilisé pour créer de la contestation et de la défiance envers les institutions et les élites, la plupart du temps sur une ligne populiste, comme ce que l’on observe sur les thématiques sanitaires. Nous l’appelerons “communauté défiante” pour caractériser ces positionnements observables au-delà de ce corpus pour les comptes principaux qui le constitue.<ul class="plain"><li>Des comptes associatifs comme @verity_france (associations de victimes d’effets secondaires suite aux injections COVID) ou @AssoClimatoReal (association climato-sceptique) qui illustrent une défiance parfois instituée.</li><li>On retrouve également au sein de ce cluster des médias ayant eux aussi diffusés des propos climatosceptiques (CNEWS, Europe1), mais aussi des personnalités politiques comme Sarah Knafo ou Eric Zemmour.</li><li>De nombreux comptes anonymes, déjà identifiés sur d’autres corpus, qui centralisent une défiance anti-institutionnelle autour de phénomènes d’amplifications. C’est au sein de ce cluster que nous retrouvons plus d’une centaine de comptes associés à de l’astroturfing.</li><li>Des comptes créés récemment qui semblent, au regard de l’intensité de leurs publications, de leurs cibles d’interactions, de leur nombre de followers, et de leur discours, conçus à des fins de désinformation climatique : https://x.com/Joe805901184535, https://x.com/DOMTLS, https://x.com/lesamesnoires26</li></ul></li><li>Un troisième bloc à mi-chemin entre les deux précédents persiste également sur la période (<span class="comm comm-c229" style="color:#E97032">C229</span>). Ce dernier, moins homogène, englobe différents acteurs plutôt centriste/libéraux, essentiellement autour des débats liés à la climatisation, ou à ce que la canicule révèle des dysfonctions publiques. On y retrouve des critiques de l’idéologie “anti-clim”, des débats sur l’énergie, et des positionnements techno-solutionnistes. Ce cluster a pour figure de proue le vulgarisateur @maclesggy qui symbolise bien cet entre deux. Ce cluster reste néanmoins un espace d’affrontement qui rassemble des personnalités n’ayant rien à voir, à l’instar de @marinetondelier et @mariomarechal.</li></ul><p>Enfin, à l’interface des trois communautés précédentes, un bloc central renvoie quant à lui aux médias traditionnels, ainsi qu’aux médias et météorologiques. Les expertises scientifiques émergent de ce pôle et font autorité : ils sont à la fois repris par <span class="comm comm-c14" style="color:#9F2B92">C14</span> et <span class="comm comm-c229" style="color:#E97032">C229</span>, et à la fois attaqué par <span class="comm comm-c0" style="color:#196A24">C0</span> notamment pour leur alarmisme climatique (cf analyse CARDS). Symboliquement, le climatologue Serge Zaka, au sein de ce cluster, est à la fois fortement repris et discuté par les différentes communautés <span class="comm comm-c14" style="color:#9F2B92">C14</span> et <span class="comm comm-c229" style="color:#E97032">C229</span> , et discrédités par la communauté défiante <span class="comm comm-c0" style="color:#196A24">C0</span>.Cette communauté est la plus verticale des 6 principales: le top 20 des comptes représente près de 60% des flux entrants.</p>
     <p>Ainsi, nous pouvons qualifier les communautés de la sorte (le nom du compte représente le hub principal de la communauté, en terme d’interactions entrantes) :</p><p></p><p><span class="comm comm-c14" style="color:#9F2B92">C14</span> @fahdoumarconi : Pôle politique/justice sociale, gauche LFI, canicule comme enjeu de droits</p><p><span class="comm comm-c0" style="color:#196A24">C0</span> @sirafuera : : Pôle contestataire, critique anti-institutionnel, complotisme</p><p><span class="comm comm-c10" style="color:#CC0000">C10</span> @cerfiafr : pôle d’alerte info / vécu social de la climatique</p><p><span class="comm comm-c229" style="color:#E97032">C229</span> @maclesggy : pôle débat clim /pragmatique</p><p><span class="comm comm-c546" style="color:#1c1b19;font-weight:700">C546</span>: @bfmtv: Pôle météo institutionnelle</p>
@@ -2040,91 +2040,7 @@
 
   <p>Parmi les cibles principales, on retrouve différents médias d’information (BFMTV, franceinfo), y compris parmi ceux qui ont aussi relayé des publications classées CARDS, comme CNEWS ou Europe&nbsp;1. Les experts du climat, climatologues et comptes de météorologie, sont aussi nettement visés.</p>
   <p>Enfin, de nombreux comptes climato-sceptiques reçoivent des interactions et servent de support à d’autres comptes pairs, à l’image de @GibertiePatrice, dont le blog est diffusé 84&nbsp;fois pour servir de support argumentatif.</p>
-<h3 id="des-opérations-dinfluences">Des opérations d’influences</h3>
-<div class="split-figure split-figure--text-heavy split-figure--eulers" id="ops-297">
-  <div class="split-figure-text">
-    <p>Sur ce corpus, <strong>186 des 297</strong> comptes déjà associés à des logiques d’astroturfing sur les thématiques des élections en 2022 et du Covid en 2021 (Brachotte&nbsp;&amp; Frame,&nbsp;2026) réapparaissent. <strong>76&nbsp;%</strong> se situent en <span class="comm comm-c0" style="color:#196A24">C0</span>, 16&nbsp;% en <span class="comm comm-c14" style="color:#9F2B92">C14</span> (5,5&nbsp;% en <span class="comm comm-c229" style="color:#E97032">C229</span>, 2,5&nbsp;% en <span class="comm comm-c546" style="color:#1c1b19;font-weight:700">C546</span>). Ils totalisent <strong>8&nbsp;889</strong> publications, dont <strong>95,3&nbsp;%</strong> de retweets&nbsp;: un régime d’amplification plus que de production originale. Là encore, si la cohorte des 297 comptes déjà identifiés ne recoupe que très peu les 251 identifiés grâce au multiplex de co-action, eux aussi sont en partie liés à des publications climatosceptiques et infamantes.</p>
-    <p>Ce chevauchement n’est pas anecdotique. Il relie une nouvelle fois trois signaux déjà observés&nbsp;: la polarisation communautaire (<span class="comm comm-c0" style="color:#196A24">C0</span>), la coordination des actions et la concentration des discours climatosceptiques. Il indique qu’une partie de l’infrastructure contestataire/climatosceptique n’est pas spécifique à la canicule, mais <strong>réactivée</strong> d’un corpus à l’autre.</p>
-  </div>
-  <div class="split-figure-media-col fig-euler">
-    <figure class="split-figure-media">
-      <svg class="fig-chart" viewBox="0 0 720 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-euler-297-title fig-euler-297-desc">
-        <title id="fig-euler-297-title">Recoupement cohorte AAC 297 / CARDS</title>
-        <desc id="fig-euler-297-desc">Le disque 297 recoupe CARDS sur environ 27 pour cent de sa surface (80 comptes). 215 hors CARDS. Triple 17.</desc>
-        <defs>
-          <clipPath id="eu297-clip-cards"><circle cx="280" cy="250" r="175"/></clipPath>
-          <clipPath id="eu297-clip-stigma"><circle cx="485" cy="240" r="130"/></clipPath>
-          <clipPath id="eu297-clip-cohort"><circle cx="402" cy="407" r="78"/></clipPath>
-        </defs>
-        <circle cx="280" cy="250" r="175" fill="var(--euler-cards)" fill-opacity="0.34"/>
-        <circle cx="485" cy="240" r="130" fill="var(--euler-stigma)" fill-opacity="0.38"/>
-        <circle cx="402" cy="407" r="78" fill="var(--euler-cohort)" fill-opacity="0.5"/>
-        <g clip-path="url(#eu297-clip-cards)">
-          <g clip-path="url(#eu297-clip-stigma)">
-            <g clip-path="url(#eu297-clip-cohort)">
-              <rect width="720" height="500" fill="var(--track-b)" fill-opacity="0.55"/>
-            </g>
-          </g>
-        </g>
-        <circle cx="280" cy="250" r="175" fill="none" stroke="var(--euler-cards)" stroke-width="2.25"/>
-        <circle cx="485" cy="240" r="130" fill="none" stroke="var(--euler-stigma)" stroke-width="2.25"/>
-        <circle cx="402" cy="407" r="78" fill="none" stroke="var(--euler-cohort)" stroke-width="3"/>
-        <text class="venn-set" x="272" y="42" text-anchor="middle" fill="var(--euler-cards)" font-size="15">CARDS</text>
-        <text x="272" y="58" text-anchor="middle" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">7&nbsp;296 comptes · écrire ou RT</text>
-        <rect x="252" y="66" width="40" height="3" rx="1.5" fill="var(--euler-cards)"/>
-        <text class="venn-set" x="505" y="42" text-anchor="middle" fill="var(--euler-stigma)" font-size="15">Infamant</text>
-        <text x="505" y="58" text-anchor="middle" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">1&nbsp;683 comptes · lexique</text>
-        <rect x="485" y="66" width="40" height="3" rx="1.5" fill="var(--euler-stigma)"/>
-        <line class="tick" x1="92" y1="228" x2="168" y2="248"/>
-        <circle cx="168" cy="248" r="3.5" fill="var(--euler-cards)"/>
-        <text class="venn-n" x="88" y="214" text-anchor="end" font-size="20">6&nbsp;398</text>
-        <text x="88" y="230" text-anchor="end" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">CARDS seul</text>
-        <line class="tick" x1="638" y1="218" x2="575" y2="238"/>
-        <circle cx="575" cy="238" r="3.5" fill="var(--euler-stigma)"/>
-        <text class="venn-n" x="642" y="204" text-anchor="start" font-size="20">846</text>
-        <text x="642" y="220" text-anchor="start" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">infamant seul</text>
-        <line class="tick" x1="400" y1="118" x2="400" y2="168"/>
-        <circle cx="400" cy="168" r="3.5" fill="var(--euler-cards)"/>
-        <text class="venn-n" x="400" y="98" text-anchor="middle" font-size="17">818</text>
-        <text x="400" y="113" text-anchor="middle" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">CARDS ∩ infamant · hors 297</text>
-        <line class="tick" x1="300" y1="390" x2="360" y2="374"/>
-        <circle cx="360" cy="374" r="3.5" fill="var(--euler-cohort)"/>
-        <text class="venn-n" x="294" y="382" text-anchor="end" font-size="17">63</text>
-        <text x="294" y="397" text-anchor="end" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">dans CARDS</text>
-        <text x="294" y="410" text-anchor="end" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="10">sans infamant</text>
-        <rect x="379" y="314" width="72" height="44" rx="10" fill="var(--track-b)"/>
-        <text x="415" y="334" text-anchor="middle" fill="#fffcf7" font-family="system-ui, sans-serif" font-size="20" font-weight="700">17</text>
-        <text x="415" y="348" text-anchor="middle" fill="#fffcf7" font-family="system-ui, sans-serif" font-size="10" font-weight="600">triple</text>
-        <line class="tick" x1="530" y1="348" x2="448" y2="352"/>
-        <circle cx="448" cy="352" r="3.5" fill="var(--euler-stigma)"/>
-        <text class="venn-n" x="536" y="344" text-anchor="start" font-size="16">2</text>
-        <text x="536" y="359" text-anchor="start" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="10">infamant</text>
-        <text x="536" y="371" text-anchor="start" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="10">hors CARDS</text>
-        <text class="venn-n" x="402" y="448" text-anchor="middle" font-size="20">215</text>
-        <text x="402" y="466" text-anchor="middle" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">hors CARDS</text>
-      </svg>
-    </figure>
-    <figure class="split-figure-media">
-      <svg class="fig-chart fig-chart-cohorts" viewBox="0 0 400 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-euler-297-251-title fig-euler-297-251-desc">
-        <title id="fig-euler-297-251-title">Recoupement AAC 297 et multiplexe 251</title>
-        <desc id="fig-euler-297-251-desc">Deux disques de tailles comparables. Lentille = 12 comptes. 285 hors 251, 239 hors 297.</desc>
-        <circle cx="118" cy="132" r="92" fill="var(--euler-cohort)" fill-opacity="0.42"/>
-        <circle cx="278" cy="132" r="84" fill="var(--euler-mux)" fill-opacity="0.42"/>
-        <circle cx="118" cy="132" r="92" fill="none" stroke="var(--euler-cohort)" stroke-width="2.5"/>
-        <circle cx="278" cy="132" r="84" fill="none" stroke="var(--euler-mux)" stroke-width="2.5" stroke-dasharray="5 3.5"/>
-        <text class="venn-n" x="88" y="126" text-anchor="middle" font-size="20">285</text>
-        <text x="88" y="144" text-anchor="middle" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">hors 251</text>
-        <text class="venn-n" x="198" y="124" text-anchor="middle" font-size="20">12</text>
-        <text x="198" y="142" text-anchor="middle" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="10">communs</text>
-        <text class="venn-n" x="318" y="126" text-anchor="middle" font-size="20">239</text>
-        <text x="318" y="144" text-anchor="middle" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">hors 297</text>
-        <text class="venn-set" x="118" y="28" text-anchor="middle" fill="var(--euler-cohort)" font-size="14">AAC 297</text>
-        <text class="venn-set" x="278" y="28" text-anchor="middle" fill="var(--euler-mux)" font-size="14">Multiplexe 251</text>
-      </svg>
-    </figure>
-  </div>
-</div>
-<figure><img src="synthèse_heat_html_assets/image10.png" alt="Figure 18: Positionnement des comptes d’astroturfing déjà identifiés sur 2 autres corpus thématiques" loading="lazy"/><figcaption>Figure 18: Positionnement des comptes d’astroturfing déjà identifiés sur 2 autres corpus thématiques</figcaption></figure>
+
 <section id="cohort-251" class="section-replace">
   <h2 id="cohort-251-title"><span class="part-num">Partie 3</span> Détection d’amplifications / de coordination inauthentique</h2>
   <p class="lede">Pour aller plus loin dans l’analyse de signaux faibles liés à une manipulation de l’information, nous avons produit une détection d’amplification à partir d’une méthode computationnelle de multiplex de co-action. Concrètement, on part des co-actions (surtout les co-retweets), on découpe le graphe en communautés, puis, dans chacune des six plus grandes, on ne garde que les liens anormalement forts <em>des deux côtés</em> (Serrano ET, α&nbsp;=&nbsp;0,05). On écarte ensuite les comptes sous la moyenne de publications de ce backbone, et on retient <strong>100&nbsp;%</strong> de ces comptes&nbsp;: <strong>239</strong>, en une seule liste, classée par force <em>relative</em> au bloc MULTI.</p>
@@ -2671,6 +2587,92 @@ New apostles of neglect, self restraint…</td><td class="num"><span class="comm
   })();
   </script>
   </aside>
+
+<h3 id="des-opérations-dinfluences">Des opérations d’influences</h3>
+<div class="split-figure split-figure--text-heavy split-figure--eulers" id="ops-297">
+  <div class="split-figure-text">
+    <p>Sur ce corpus, <strong>186 des 297</strong> comptes déjà associés à des logiques d’astroturfing sur les thématiques des élections en 2022 et du Covid en 2021 (Brachotte&nbsp;&amp; Frame,&nbsp;2026) réapparaissent. <strong>76&nbsp;%</strong> se situent en <span class="comm comm-c0" style="color:#196A24">C0</span>, 16&nbsp;% en <span class="comm comm-c14" style="color:#9F2B92">C14</span> (5,5&nbsp;% en <span class="comm comm-c229" style="color:#E97032">C229</span>, 2,5&nbsp;% en <span class="comm comm-c546" style="color:#1c1b19;font-weight:700">C546</span>). Ils totalisent <strong>8&nbsp;889</strong> publications, dont <strong>95,3&nbsp;%</strong> de retweets&nbsp;: un régime d’amplification plus que de production originale. Là encore, si la cohorte des 297 comptes déjà identifiés ne recoupe que très peu les 251 identifiés grâce au multiplex de co-action, eux aussi sont en partie liés à des publications climatosceptiques et infamantes.</p>
+    <p>Ce chevauchement n’est pas anecdotique. Il relie une nouvelle fois trois signaux déjà observés&nbsp;: la polarisation communautaire (<span class="comm comm-c0" style="color:#196A24">C0</span>), la coordination des actions et la concentration des discours climatosceptiques. Il indique qu’une partie de l’infrastructure contestataire/climatosceptique n’est pas spécifique à la canicule, mais <strong>réactivée</strong> d’un corpus à l’autre.</p>
+  </div>
+  <div class="split-figure-media-col fig-euler">
+    <figure class="split-figure-media">
+      <svg class="fig-chart" viewBox="0 0 720 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-euler-297-title fig-euler-297-desc">
+        <title id="fig-euler-297-title">Recoupement cohorte AAC 297 / CARDS</title>
+        <desc id="fig-euler-297-desc">Le disque 297 recoupe CARDS sur environ 27 pour cent de sa surface (80 comptes). 215 hors CARDS. Triple 17.</desc>
+        <defs>
+          <clipPath id="eu297-clip-cards"><circle cx="280" cy="250" r="175"/></clipPath>
+          <clipPath id="eu297-clip-stigma"><circle cx="485" cy="240" r="130"/></clipPath>
+          <clipPath id="eu297-clip-cohort"><circle cx="402" cy="407" r="78"/></clipPath>
+        </defs>
+        <circle cx="280" cy="250" r="175" fill="var(--euler-cards)" fill-opacity="0.34"/>
+        <circle cx="485" cy="240" r="130" fill="var(--euler-stigma)" fill-opacity="0.38"/>
+        <circle cx="402" cy="407" r="78" fill="var(--euler-cohort)" fill-opacity="0.5"/>
+        <g clip-path="url(#eu297-clip-cards)">
+          <g clip-path="url(#eu297-clip-stigma)">
+            <g clip-path="url(#eu297-clip-cohort)">
+              <rect width="720" height="500" fill="var(--track-b)" fill-opacity="0.55"/>
+            </g>
+          </g>
+        </g>
+        <circle cx="280" cy="250" r="175" fill="none" stroke="var(--euler-cards)" stroke-width="2.25"/>
+        <circle cx="485" cy="240" r="130" fill="none" stroke="var(--euler-stigma)" stroke-width="2.25"/>
+        <circle cx="402" cy="407" r="78" fill="none" stroke="var(--euler-cohort)" stroke-width="3"/>
+        <text class="venn-set" x="272" y="42" text-anchor="middle" fill="var(--euler-cards)" font-size="15">CARDS</text>
+        <text x="272" y="58" text-anchor="middle" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">7&nbsp;296 comptes · écrire ou RT</text>
+        <rect x="252" y="66" width="40" height="3" rx="1.5" fill="var(--euler-cards)"/>
+        <text class="venn-set" x="505" y="42" text-anchor="middle" fill="var(--euler-stigma)" font-size="15">Infamant</text>
+        <text x="505" y="58" text-anchor="middle" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">1&nbsp;683 comptes · lexique</text>
+        <rect x="485" y="66" width="40" height="3" rx="1.5" fill="var(--euler-stigma)"/>
+        <line class="tick" x1="92" y1="228" x2="168" y2="248"/>
+        <circle cx="168" cy="248" r="3.5" fill="var(--euler-cards)"/>
+        <text class="venn-n" x="88" y="214" text-anchor="end" font-size="20">6&nbsp;398</text>
+        <text x="88" y="230" text-anchor="end" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">CARDS seul</text>
+        <line class="tick" x1="638" y1="218" x2="575" y2="238"/>
+        <circle cx="575" cy="238" r="3.5" fill="var(--euler-stigma)"/>
+        <text class="venn-n" x="642" y="204" text-anchor="start" font-size="20">846</text>
+        <text x="642" y="220" text-anchor="start" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">infamant seul</text>
+        <line class="tick" x1="400" y1="118" x2="400" y2="168"/>
+        <circle cx="400" cy="168" r="3.5" fill="var(--euler-cards)"/>
+        <text class="venn-n" x="400" y="98" text-anchor="middle" font-size="17">818</text>
+        <text x="400" y="113" text-anchor="middle" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">CARDS ∩ infamant · hors 297</text>
+        <line class="tick" x1="300" y1="390" x2="360" y2="374"/>
+        <circle cx="360" cy="374" r="3.5" fill="var(--euler-cohort)"/>
+        <text class="venn-n" x="294" y="382" text-anchor="end" font-size="17">63</text>
+        <text x="294" y="397" text-anchor="end" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">dans CARDS</text>
+        <text x="294" y="410" text-anchor="end" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="10">sans infamant</text>
+        <rect x="379" y="314" width="72" height="44" rx="10" fill="var(--track-b)"/>
+        <text x="415" y="334" text-anchor="middle" fill="#fffcf7" font-family="system-ui, sans-serif" font-size="20" font-weight="700">17</text>
+        <text x="415" y="348" text-anchor="middle" fill="#fffcf7" font-family="system-ui, sans-serif" font-size="10" font-weight="600">triple</text>
+        <line class="tick" x1="530" y1="348" x2="448" y2="352"/>
+        <circle cx="448" cy="352" r="3.5" fill="var(--euler-stigma)"/>
+        <text class="venn-n" x="536" y="344" text-anchor="start" font-size="16">2</text>
+        <text x="536" y="359" text-anchor="start" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="10">infamant</text>
+        <text x="536" y="371" text-anchor="start" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="10">hors CARDS</text>
+        <text class="venn-n" x="402" y="448" text-anchor="middle" font-size="20">215</text>
+        <text x="402" y="466" text-anchor="middle" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">hors CARDS</text>
+      </svg>
+    </figure>
+    <figure class="split-figure-media">
+      <svg class="fig-chart fig-chart-cohorts" viewBox="0 0 400 230" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="fig-euler-297-251-title fig-euler-297-251-desc">
+        <title id="fig-euler-297-251-title">Recoupement AAC 297 et multiplexe 251</title>
+        <desc id="fig-euler-297-251-desc">Deux disques de tailles comparables. Lentille = 12 comptes. 285 hors 251, 239 hors 297.</desc>
+        <circle cx="118" cy="132" r="92" fill="var(--euler-cohort)" fill-opacity="0.42"/>
+        <circle cx="278" cy="132" r="84" fill="var(--euler-mux)" fill-opacity="0.42"/>
+        <circle cx="118" cy="132" r="92" fill="none" stroke="var(--euler-cohort)" stroke-width="2.5"/>
+        <circle cx="278" cy="132" r="84" fill="none" stroke="var(--euler-mux)" stroke-width="2.5" stroke-dasharray="5 3.5"/>
+        <text class="venn-n" x="88" y="126" text-anchor="middle" font-size="20">285</text>
+        <text x="88" y="144" text-anchor="middle" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">hors 251</text>
+        <text class="venn-n" x="198" y="124" text-anchor="middle" font-size="20">12</text>
+        <text x="198" y="142" text-anchor="middle" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="10">communs</text>
+        <text class="venn-n" x="318" y="126" text-anchor="middle" font-size="20">239</text>
+        <text x="318" y="144" text-anchor="middle" fill="var(--muted)" font-family="system-ui, sans-serif" font-size="11">hors 297</text>
+        <text class="venn-set" x="118" y="28" text-anchor="middle" fill="var(--euler-cohort)" font-size="14">AAC 297</text>
+        <text class="venn-set" x="278" y="28" text-anchor="middle" fill="var(--euler-mux)" font-size="14">Multiplexe 251</text>
+      </svg>
+    </figure>
+  </div>
+</div>
+<figure><img src="synthèse_heat_html_assets/image10.png" alt="Figure 18: Positionnement des comptes d’astroturfing déjà identifiés sur 2 autres corpus thématiques" loading="lazy"/><figcaption>Figure 18: Positionnement des comptes d’astroturfing déjà identifiés sur 2 autres corpus thématiques</figcaption></figure>
 
 </section>
 
