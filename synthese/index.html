@@ -2309,7 +2309,7 @@
   </aside>
 
   <h3 id="methode-pas-a-pas">Méthode pas à pas</h3>
-  <p class="muted small method-dual-hint">Deux lectures en parallèle&nbsp;: à gauche le sens de la démarche&nbsp;; à droite les paramètres et choix techniques.</p>
+  <p class="muted small method-dual-hint">Même démarche, deux lectures&nbsp;: à gauche le fil&nbsp;; à droite les paramètres. Six étapes, de tout le corpus jusqu’aux six cœurs.</p>
 
   <div class="method-dual">
     <div class="method-col method-lay">
@@ -2324,20 +2324,20 @@
           On ne cherche pas des ressemblances parmi tous les comptes. On se concentre sur la moitié la plus active&nbsp;: ceux qui retweetent, répondent ou publient le plus.
         </li>
         <li>
-          <strong>Cinq façons d’être «&nbsp;ensemble&nbsp;».</strong>
-          Deux comptes se ressemblent s’ils touchent les mêmes objets&nbsp;: mêmes tweets retweetés, mêmes interlocuteurs, mêmes citations, mêmes mentions, ou mêmes sites partagés. Chaque façon forme une couche du réseau.
+          <strong>Cinq façons d’agir ensemble.</strong>
+          Deux comptes sont liés s’ils touchent les mêmes objets&nbsp;: mêmes tweets retweetés, mêmes interlocuteurs, mêmes citations, mêmes mentions, ou mêmes sites partagés. Chaque façon forme une couche du réseau.
         </li>
         <li>
-          <strong>Six blocs.</strong>
-          Le réseau se découpe en plusieurs groupes. On retient les six plus grandes communautés MULTI, chacune trop large pour une lecture nominative (de 1&nbsp;578 à 4&nbsp;098 comptes).
+          <strong>Le réseau se découpe.</strong>
+          Lues ensemble, ces cinq couches font apparaître des groupes de comptes qui co-agissent. On retient les six plus grands. Chacun est encore trop large pour une lecture nominative (de 1&nbsp;578 à 4&nbsp;098 comptes).
         </li>
         <li>
-          <strong>Le resserrement.</strong>
-          Dans chaque bloc, on fusionne les couches (<code>UNFL_sum</code>), puis on ne garde un lien que s’il est «&nbsp;surprenant&nbsp;» <em>pour les deux comptes</em> (Serrano ET, α&nbsp;=&nbsp;0,05). Six cœurs, <strong>642&nbsp;comptes</strong> au total, classés par force de connexion.
+          <strong>Le cœur de chaque groupe.</strong>
+          Dans chaque bloc, on fusionne les couches, puis on ne garde un lien que s’il est trop fort pour être banal <em>des deux côtés</em>&nbsp;: pas seulement «&nbsp;A est très lié à B&nbsp;», mais aussi «&nbsp;B est très lié à A&nbsp;». Il reste six cœurs disjoints, <strong>642&nbsp;comptes</strong> au total, classés par force de connexion.
         </li>
         <li>
-          <strong>Pourquoi ces listes.</strong>
-          L’objectif n’est plus un noyau unique, mais les <em>cœurs de coordination</em> de chaque grande communauté de co-action, assez courts pour une relecture nominative, et comparables entre eux.
+          <strong>Ce qu’on lit ensuite.</strong>
+          Un onglet par cœur, pour comparer des coordinations distinctes (défiante, médias, LFI, débat…) plutôt qu’un noyau unique. Ce n’est pas un score d’inauthenticité&nbsp;: c’est le tissu de co-action mutuellement concentrée de chaque grande communauté.
         </li>
       </ol>
     </div>
@@ -2355,19 +2355,19 @@
         </li>
         <li>
           <strong>Couches MCA.</strong>
-          Cinq graphes de co-action&nbsp;: <code>RTW</code>, <code>RPL</code>, <code>QTE</code>, <code>MEN</code>, <code>URL</code>. Poids d’arête (<code>weight</code>)&nbsp;: nombre d’objets partagés. Overlap&nbsp;: seuil minimal d’objets communs par couche, pour éviter l’explosion des calculs (RT&nbsp;≥&nbsp;3, mention&nbsp;≥&nbsp;3, reply&nbsp;≥&nbsp;2, quote et URL&nbsp;≥&nbsp;1). On garde les poids supérieurs à la médiane. Partition multiplexe <strong>MULTI</strong> (Leiden–Mucha, γ&nbsp;=&nbsp;1, ω&nbsp;=&nbsp;0,1) sur les 5 couches.
+          Cinq graphes de co-action&nbsp;: <code>RTW</code>, <code>RPL</code>, <code>QTE</code>, <code>MEN</code>, <code>URL</code>. Poids d’arête&nbsp;: nombre d’objets partagés. Seuil d’overlap par couche (RT et mention&nbsp;≥&nbsp;3, reply&nbsp;≥&nbsp;2, quote et URL&nbsp;≥&nbsp;1), puis poids au-dessus de la médiane.
         </li>
         <li>
-          <strong>Six communautés MULTI.</strong>
-          Leiden–Mucha sur ≈&nbsp;31&nbsp;944 nœuds, 844 communautés. On isole les 6 plus grandes (C0 à C5), graphe induit par communauté, 5 couches.
+          <strong>Partition MULTI, six plus grandes.</strong>
+          Leiden–Mucha (γ&nbsp;=&nbsp;1, ω&nbsp;=&nbsp;0,1) sur les 5 couches&nbsp;: ≈&nbsp;31&nbsp;944 nœuds, 844 communautés. On isole C0 à C5 (4&nbsp;098, 3&nbsp;570, 3&nbsp;385, 2&nbsp;855, 2&nbsp;685, 1&nbsp;578) et le graphe induit à 5 couches de chacune.
         </li>
         <li>
           <strong>UNFL(sum) + Serrano ET.</strong>
-          Aplatissement&nbsp;: pour chaque paire (u,v), somme des poids (<code>UNFL_sum</code>). Filtre de disparité Serrano α&nbsp;=&nbsp;0,05, règle <strong>ET</strong> (p_u&nbsp;&lt;&nbsp;α <em>et</em> p_v&nbsp;&lt;&nbsp;α)&nbsp;; pas de repli deg2. Force = force de nœud sur le backbone. C0&nbsp;132, C1&nbsp;75, C2&nbsp;176, C3&nbsp;132, C4&nbsp;122, C5&nbsp;5.
+          Dans chaque communauté, aplatissement par somme des poids (<code>UNFL_sum</code>), puis filtre de disparité Serrano α&nbsp;=&nbsp;0,05, règle <strong>ET</strong> (p_u&nbsp;&lt;&nbsp;α <em>et</em> p_v&nbsp;&lt;&nbsp;α)&nbsp;; pas de repli deg2. Force = force de nœud sur ce backbone. Cœurs&nbsp;: 132, 75, 176, 132, 122, 5.
         </li>
         <li>
-          <strong>Choix retenus.</strong>
-          Variante <code>UNFL_sum</code>. ET plutôt que OU&nbsp;: on écarte les nœuds seulement «&nbsp;tirés&nbsp;» par l’autre bout du lien. Colonne Comm. = Louvain du paysage corpus entier (20&nbsp;mai–29&nbsp;juin), distincte des communautés MULTI.
+          <strong>Choix de lecture.</strong>
+          ET plutôt que OU&nbsp;: on écarte les comptes seulement «&nbsp;tirés&nbsp;» par l’autre bout du lien. La colonne Comm. des tableaux est le Louvain du paysage corpus entier (20&nbsp;mai–29&nbsp;juin), distinct de la partition MULTI qui découpe les cœurs.
         </li>
       </ol>
     </div>
@@ -2376,11 +2376,11 @@
   <div class="kpi-row" style="margin-top:1.25rem">
     <div class="kpi"><div class="n">~373k</div><div class="l">Comptes dans le corpus</div></div>
     <div class="kpi"><div class="n">~187k</div><div class="l">Sélection (moitié active)</div></div>
-    <div class="kpi"><div class="n">6</div><div class="l">Communautés MULTI</div></div>
+    <div class="kpi"><div class="n">6</div><div class="l">Plus grandes comm. MULTI</div></div>
     <div class="kpi"><div class="n">642</div><div class="l">Cœurs Serrano ET (α=0,05)</div></div>
   </div>
 
-    <h3 id="les-coeurs-de-la-coordination">Les cœurs de la coordination</h3>
+  <h3 id="les-coeurs-de-la-coordination">Les cœurs de la coordination</h3>
 
   <div class="callout">
     <p>Comment lit-on ces listes&nbsp;? Après avoir découpé le multiplexe de co-action en communautés MULTI, on applique dans <strong>chacune des six plus grandes</strong> le <strong>filtre de disparité de Serrano</strong>, en version <strong>ET</strong>&nbsp;: un lien n’est gardé que s’il est trop fort au regard des <em>deux</em> comptes. Ne restent alors que des paires de co-action <strong>mutuellement concentrées</strong>. Chaque onglet est le cœur d’un bloc distinct (défiante, médias, LFI, débat…), pas une seule liste fusionnée.</p>
