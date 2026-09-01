@@ -1,17 +1,19 @@
 {
-  "n_nodes": 21803,
-  "n_edges": 42557,
+  "n_nodes": 365304,
+  "n_edges": 1456191,
   "title": "Connectome 20 mai – 29 juin 2026",
-  "n_cards_authors": 1728,
+  "n_cards_authors": 1993,
   "n_cards_pubs": 53683,
   "n_max_cards": 90,
   "cards_min_pubs": 5,
   "window": "2026-05-20 → 2026-06-29",
   "n_cards_orig": 15689,
-  "n_cards_authors_orig": 358,
+  "n_cards_authors_orig": 477,
   "n_max_cards_orig": 84,
-  "cards_p1": "01_toutes_publications_CARDS.csv",
-  "cards_p2": "p2_cards_flagged_only.csv",
   "louvain": "ALL (20 mai – 29 juin)",
-  "fa2_iter": 720
+  "fa2_iter": 8640,
+  "fa2_extra": 2880,
+  "min_edge_weight": 1,
+  "n_edges_directed_raw": 1488297,
+  "note_edges": "Toutes paires user–user (RT, reply, quote, mention), poids ≥ 1, sans plafond 45k. Layout FA2 sur le cœur (arêtes lourdes) puis satellites autour du voisin le plus fort."
 }

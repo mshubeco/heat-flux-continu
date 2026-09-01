@@ -1,0 +1,18 @@
+{
+  "n_nodes": 24072,
+  "n_edges": 42978,
+  "title": "P1 CARDS connectome",
+  "n_cards_authors": 714,
+  "n_cards_pubs": 16671,
+  "n_max_cards": 48,
+  "fa2_iter": 5760,
+  "fa2_linlog": false,
+  "fa2_prevent_overlap": true,
+  "fa2_scale_percentile": 99.3,
+  "fa2_target_span": 1100.0,
+  "cards_min_pubs": 5,
+  "n_cards_orig": 3170,
+  "n_cards_authors_orig": 88,
+  "n_max_cards_orig": 44,
+  "window": "2026-05-20 → 2026-06-07"
+}

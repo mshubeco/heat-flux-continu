@@ -1,0 +1,1298 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connectome P1 — production CARDS</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { width: 100%; height: 100%; overflow: hidden; background: #000; color: #ccc; font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; }
+    #c { position: fixed; inset: 0; }
+    canvas { display: block; width: 100%; height: 100%; }
+    #labels { position: fixed; inset: 0; pointer-events: none; z-index: 2; overflow: hidden; }
+    .label {
+      position: absolute; transform: translate(-50%, -130%);
+      color: #fff; letter-spacing: 0.015em;
+      text-shadow: 0 0 6px rgba(0,0,0,0.85), 0 1px 2px rgba(0,0,0,0.7);
+      white-space: nowrap; opacity: 0.95;
+      line-height: 1.05;
+    }
+    #hud {
+      position: fixed; top: 12px; left: 12px; z-index: 5;
+      background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px; padding: 12px 14px; width: 248px;
+      font-size: 11px; color: #8b93a0;
+    }
+    #hud b { color: #c5ccd6; font-weight: 600; display: block; margin-bottom: 6px; font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
+    .row span { width: 72px; flex-shrink: 0; }
+    .row input, .row select { flex: 1; accent-color: #8ab4ff; min-width: 0; }
+    .hl-toggle {
+      margin-top: 12px;
+      padding: 10px 10px 10px 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,70,55,0.55);
+      background: linear-gradient(180deg, rgba(255,50,40,0.22), rgba(255,50,40,0.06));
+      display: flex; align-items: flex-start; gap: 10px;
+      cursor: pointer; user-select: none;
+    }
+    .hl-toggle:has(#hlSelected:checked) {
+      border-color: rgba(255,80,60,0.9);
+      box-shadow: 0 0 0 1px rgba(255,60,40,0.35), 0 0 18px rgba(255,40,30,0.28);
+    }
+    .hl-toggle input[type="checkbox"] {
+      width: 18px; height: 18px; min-width: 18px; margin: 1px 0 0;
+      accent-color: #ff3b30; cursor: pointer;
+    }
+    .hl-toggle .hl-title { display: block; color: #ff8a7a; font-size: 12px; font-weight: 700; }
+    .hl-toggle .hl-sub { display: block; margin-top: 3px; color: #c07068; font-size: 10px; line-height: 1.35; }
+    .opt-toggle {
+      margin-top: 8px;
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      display: flex; align-items: flex-start; gap: 10px;
+      cursor: pointer; user-select: none;
+    }
+    .opt-toggle:has(#includeRt:checked) {
+      border-color: rgba(255,80,60,0.45);
+      background: rgba(255,50,40,0.08);
+    }
+    .opt-toggle input[type="checkbox"] {
+      width: 16px; height: 16px; min-width: 16px; margin: 1px 0 0;
+      accent-color: #ff3b30; cursor: pointer;
+    }
+    .opt-toggle .hl-title { display: block; color: #c5ccd6; font-size: 11px; font-weight: 650; }
+    .opt-toggle .hl-sub { display: block; margin-top: 3px; color: #8b93a0; font-size: 10px; line-height: 1.35; }
+    .label.hl-selected {
+      color: #ff6b5c !important; font-weight: 700 !important;
+      text-shadow: 0 0 14px rgba(255,50,40,0.95), 0 0 5px rgba(255,80,60,0.7), 0 0 4px rgba(0,0,0,0.9) !important;
+      opacity: 1 !important;
+    }
+    .row select {
+      background: #111; color: #c5ccd6; border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 4px; padding: 3px 4px; font-size: 11px;
+    }
+    #exportBtn {
+      margin-top: 10px; width: 100%; padding: 8px 10px; border: 0; border-radius: 6px;
+      background: #1a4a7a; color: #e8eef7; font-size: 11px; font-weight: 600;
+      cursor: pointer; letter-spacing: 0.03em;
+    }
+    #exportBtn:hover { background: #2563a0; }
+    #exportBtn:disabled { opacity: 0.55; cursor: wait; }
+    #exportStatus { margin-top: 6px; font-size: 10px; color: #6a7380; line-height: 1.35; min-height: 1.2em; }
+    body.no-cards .hl-toggle,
+    body.no-cards .opt-toggle { display: none; }
+    body.no-cards #tip { display: none !important; }
+    #loading { position: fixed; inset: 0; z-index: 10; display: grid; place-items: center; background: #000; color: #666; font-size: 13px; }
+    #loading.hidden { display: none; }
+    #tip {
+      position: fixed; z-index: 20; display: none;
+      max-width: min(420px, calc(100vw - 24px));
+      max-height: min(62vh, 520px);
+      overflow: hidden;
+      background: rgba(8, 8, 10, 0.94);
+      border: 1px solid rgba(255, 90, 70, 0.45);
+      border-radius: 10px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.55);
+      color: #d6dbe3;
+      font-size: 12px;
+      line-height: 1.4;
+      pointer-events: auto;
+    }
+    #tip.open { display: flex; flex-direction: column; }
+    #tip .tip-head {
+      padding: 10px 12px 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      flex-shrink: 0;
+    }
+    #tip .tip-user { color: #ff8a7a; font-weight: 700; font-size: 13px; letter-spacing: 0.02em; }
+    #tip .tip-meta { color: #8b93a0; font-size: 10px; margin-top: 3px; }
+    #tip .tip-list {
+      overflow-y: auto; padding: 6px 12px 10px;
+      max-height: min(52vh, 440px);
+    }
+    #tip article {
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    #tip article:last-child { border-bottom: 0; }
+    #tip .tip-type {
+      display: inline-block;
+      font-size: 10px; font-weight: 600; letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: #ffb0a4;
+      margin-bottom: 4px;
+    }
+    #tip .tip-text {
+      white-space: pre-wrap; word-break: break-word;
+      color: #e8edf4; font-size: 12px; line-height: 1.45;
+    }
+  </style>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+    }
+  }
+  </script>
+</head>
+<body>
+  <div id="loading">Chargement…</div>
+  <div id="c"></div>
+  <div id="labels"></div>
+  <aside id="hud">
+    <b>CARDS · P1 · 20 mai – 7 juin</b>
+    <div id="stats">—</div>
+    <div class="row"><span>Lumière liens</span><input id="linkLight" type="range" min="0" max="1" step="0.01" value="0.40"></div>
+    <div class="row"><span>Bloom</span><input id="bloom" type="range" min="0" max="2.2" step="0.01" value="0.38"></div>
+    <div class="row"><span>Opacité</span><input id="op" type="range" min="0" max="0.45" step="0.005" value="0.07"></div>
+    <div class="row"><span>Labels</span><input id="nLabels" type="range" min="0" max="80" step="1" value="80"></div>
+    <label class="hl-toggle" for="hlSelected">
+      <input id="hlSelected" type="checkbox" checked />
+      <span class="hl-copy">
+        <span class="hl-title">Highlight CARDS ≥ 5</span>
+        <span class="hl-sub" id="hlSub">Points rouges = créateurs (hors RT)</span>
+      </span>
+    </label>
+    <label class="opt-toggle" for="includeRt">
+      <input id="includeRt" type="checkbox" />
+      <span class="hl-copy">
+        <span class="hl-title">Inclure les retweets CARDS</span>
+        <span class="hl-sub">Décoché : originaux, réponses, citations seulement</span>
+      </span>
+    </label>
+    <div class="row"><span>Export</span>
+      <select id="exportSize">
+        <option value="3840x2160">4K · 3840×2160</option>
+        <option value="4096x4096" selected>Carré 4K</option>
+        <option value="5120x2880">5K · 5120×2880</option>
+        <option value="6144x6144">Carré 6K</option>
+        <option value="7680x4320">8K · 7680×4320</option>
+        <option value="8192x8192">Carré 8K</option>
+        <option value="screen">Écran actuel ×2</option>
+      </select>
+    </div>
+    <button type="button" id="exportBtn">Exporter PNG HQ</button>
+    <div id="exportStatus"></div>
+  </aside>
+  <div id="tip"></div>
+
+  <script type="module">
+import * as THREE from 'three';
+import { MapControls } from 'three/addons/controls/MapControls.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+const wrap = document.getElementById('c');
+const labelsEl = document.getElementById('labels');
+const loading = document.getElementById('loading');
+
+const P = {
+  linkLight: 0.40,
+  bloom: 0.38,
+  radius: 0.08,
+  threshold: 0.22,
+  opacity: 0.07,
+  strands: 4,
+  segments: 18,
+  nLabels: 80,
+  exposure: 0.72,
+};
+const MIN_CARDS = 5;
+const params = new URLSearchParams(location.search);
+const showCards = !(
+  params.get('cards') === '0' ||
+  params.get('cards') === 'false' ||
+  params.get('nocards') === '1'
+);
+let includeRT = params.get('rt') === '1' || params.get('rt') === 'true';
+const linkQ = params.get('link') ?? params.get('linkLight');
+if (linkQ != null) {
+  const v = parseFloat(linkQ);
+  if (Number.isFinite(v)) P.linkLight = Math.max(0, Math.min(1, v));
+}
+const labelsQ = params.get('labels') ?? params.get('nLabels');
+if (labelsQ != null) {
+  let v = parseFloat(labelsQ);
+  if (Number.isFinite(v)) {
+    if (v >= 0 && v <= 1) v = Math.round(v * 80);
+    P.nLabels = Math.max(0, Math.min(80, Math.round(v)));
+  }
+}
+const linkSlider = document.getElementById('linkLight');
+const labelsSlider = document.getElementById('nLabels');
+if (linkSlider) linkSlider.value = String(P.linkLight);
+if (labelsSlider) labelsSlider.value = String(P.nLabels);
+if (!showCards) {
+  document.body.classList.add('no-cards');
+  document.title = 'Connectome P1 · 20 mai – 7 juin 2026';
+  const hudTitle = document.querySelector('#hud b');
+  if (hudTitle) hudTitle.textContent = 'Connectome P1 · 20 mai – 7 juin';
+  const hlBox = document.getElementById('hlSelected');
+  if (hlBox) hlBox.checked = false;
+}
+function nodeCardCount(n) {
+  if (includeRT) return n.cards || 0;
+  return n.cards_orig != null ? n.cards_orig : 0;
+}
+function isCardsNode(n) { return nodeCardCount(n) >= MIN_CARDS; }
+
+const renderer = new THREE.WebGLRenderer({
+  antialias: true,
+  powerPreference: 'high-performance',
+  alpha: false,
+  preserveDrawingBuffer: true,
+});
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.setSize(innerWidth, innerHeight);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = P.exposure;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+wrap.appendChild(renderer.domElement);
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x000000);
+
+const aspect = innerWidth / innerHeight;
+const frustum = 480;
+const camera = new THREE.OrthographicCamera(
+  -frustum * aspect, frustum * aspect, frustum, -frustum, -2000, 2000
+);
+camera.position.set(0, 0, 400);
+
+const controls = new MapControls(camera, renderer.domElement);
+controls.enableDamping = true;
+controls.dampingFactor = 0.1;
+controls.enableRotate = false;
+controls.screenSpacePanning = true;
+controls.minZoom = 0.12;
+controls.maxZoom = 20;
+controls.target.set(0, 0, 0);
+
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+const bloomPass = new UnrealBloomPass(
+  new THREE.Vector2(innerWidth, innerHeight),
+  P.bloom, P.radius, P.threshold
+);
+composer.addPass(bloomPass);
+composer.addPass(new OutputPass());
+
+let lineMat = null;
+let lineGeo = null;
+let lineColorsBase = null;
+let graphData = null;
+let labelItems = [];
+let cardsPts = null;
+let highlightSelected = showCards;
+let cardsHit = [];
+let hoverData = { users: {} };
+let hoverHandle = null;
+let hideTipTimer = 0;
+let graphMaxDeg = 1;
+
+function lift(rgb, mul = 1.15) {
+  return [
+    Math.min(1.05, (rgb[0] / 255) * mul),
+    Math.min(1.05, (rgb[1] / 255) * mul),
+    Math.min(1.05, (rgb[2] / 255) * mul),
+  ];
+}
+function rgbCss(rgb) {
+  if (!rgb || rgb.length < 3) return '#c8c8c8';
+  return `rgb(${Math.round(rgb[0])},${Math.round(rgb[1])},${Math.round(rgb[2])})`;
+}
+
+/** Luminosité des liens : 0 = aucune lumière / liens invisibles, 1 = intensité max. */
+function applyLinkLight(level = P.linkLight) {
+  P.linkLight = Math.max(0, Math.min(1, level));
+  const slider = document.getElementById('linkLight');
+  if (slider && slider.value !== String(P.linkLight)) slider.value = String(P.linkLight);
+  if (!lineGeo || !lineColorsBase || !lineMat) return;
+  const col = lineGeo.attributes.color.array;
+  const k = P.linkLight;
+  for (let i = 0; i < lineColorsBase.length; i++) col[i] = lineColorsBase[i] * k;
+  lineGeo.attributes.color.needsUpdate = true;
+  lineMat.opacity = k * P.opacity;
+  lineMat.visible = k > 0.0005;
+}
+
+function fitGraph(nodes) {
+  if (!nodes || !nodes.length) return;
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+  for (const n of nodes) {
+    if (n.x < minX) minX = n.x;
+    if (n.x > maxX) maxX = n.x;
+    if (n.y < minY) minY = n.y;
+    if (n.y > maxY) maxY = n.y;
+  }
+  const cx = (minX + maxX) * 0.5;
+  const cy = (minY + maxY) * 0.5;
+  const span = Math.max(maxX - minX, maxY - minY, 1);
+  const visible = 2 * frustum;
+  const zoom = visible / (span * 1.12);
+  camera.zoom = Math.max(controls.minZoom, Math.min(controls.maxZoom, zoom));
+  camera.position.set(cx, cy, 400);
+  controls.target.set(cx, cy, 0);
+  camera.updateProjectionMatrix();
+  controls.update();
+}
+
+function lerp3(a, b, t) {
+  return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
+}
+
+function hash(i) {
+  const x = Math.sin(i * 127.1 + 311.7) * 43758.5453;
+  return x - Math.floor(x);
+}
+
+/** Quadratic bezier samples for one hair strand. */
+function strandPoints(ax, ay, bx, by, segs, seed) {
+  const dx = bx - ax, dy = by - ay;
+  const len = Math.hypot(dx, dy) || 1;
+  const bulge = Math.min(42, len * (0.05 + 0.12 * hash(seed)));
+  const sign = hash(seed + 3) > 0.5 ? 1 : -1;
+  const px = -dy / len, py = dx / len;
+  // lateral offset between strands (hair separation)
+  const off = (hash(seed + 7) - 0.5) * Math.min(10, len * 0.05);
+  const cx = (ax + bx) * 0.5 + px * bulge * sign + px * off;
+  const cy = (ay + by) * 0.5 + py * bulge * sign + py * off;
+  // tiny endpoint jitter so strands don't share the exact same tip
+  const j = Math.min(3.5, len * 0.012);
+  const ax2 = ax + px * (hash(seed + 11) - 0.5) * j;
+  const ay2 = ay + py * (hash(seed + 13) - 0.5) * j;
+  const bx2 = bx + px * (hash(seed + 17) - 0.5) * j;
+  const by2 = by + py * (hash(seed + 19) - 0.5) * j;
+
+  const pts = [];
+  for (let i = 0; i <= segs; i++) {
+    const t = i / segs;
+    const u = 1 - t;
+    pts.push(
+      u * u * ax2 + 2 * u * t * cx + t * t * bx2,
+      u * u * ay2 + 2 * u * t * cy + t * t * by2,
+      0
+    );
+  }
+  return pts;
+}
+
+function buildGraph(data) {
+  graphData = data;
+  while (scene.children.length) scene.remove(scene.children[0]);
+
+  const nodes = data.nodes;
+  const edges = data.edges;
+  let maxW = 1;
+  for (let i = 0; i < edges.length; i++) {
+    const w = edges[i].w;
+    if (w > maxW) maxW = w;
+  }
+
+  // Auto-tune hair density for large graphs (GPU/RAM)
+  const huge = edges.length > 200_000;
+  if (edges.length > 400_000) {
+    P.strands = 1;
+    P.segments = 2;
+  } else if (edges.length > 80_000) {
+    P.strands = 2;
+    P.segments = 10;
+  } else if (edges.length > 30_000) {
+    P.strands = 3;
+    P.segments = 12;
+  }
+
+  const positions = [];
+  const colors = [];
+  let seed = 1;
+
+  for (const e of edges) {
+    const a = nodes[e.s];
+    const b = nodes[e.t];
+    if (!a || !b) continue;
+
+    const ca = lift(a.c, 1.18);
+    const cb = lift(b.c, 1.18);
+    const wNorm = Math.pow(e.w / maxW, 0.45);
+    const bright = 0.28 + 0.55 * wNorm;
+
+    if (huge) {
+      const k = bright * 0.85;
+      positions.push(a.x, a.y, 0, b.x, b.y, 0);
+      colors.push(
+        ca[0] * k, ca[1] * k, ca[2] * k,
+        cb[0] * k, cb[1] * k, cb[2] * k
+      );
+      continue;
+    }
+
+    for (let s = 0; s < P.strands; s++) {
+      const strandBright = bright * (1 - s * 0.12);
+      const pts = strandPoints(a.x, a.y, b.x, b.y, P.segments, seed++);
+      const nSeg = pts.length / 3;
+      for (let i = 0; i < nSeg - 1; i++) {
+        const t0 = i / (nSeg - 1);
+        const t1 = (i + 1) / (nSeg - 1);
+        const c0 = lerp3(ca, cb, t0);
+        const c1 = lerp3(ca, cb, t1);
+        positions.push(
+          pts[i * 3], pts[i * 3 + 1], pts[i * 3 + 2],
+          pts[(i + 1) * 3], pts[(i + 1) * 3 + 1], pts[(i + 1) * 3 + 2]
+        );
+        colors.push(
+          c0[0] * strandBright, c0[1] * strandBright, c0[2] * strandBright,
+          c1[0] * strandBright, c1[1] * strandBright, c1[2] * strandBright
+        );
+      }
+    }
+  }
+
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geo.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+  lineGeo = geo;
+  lineColorsBase = new Float32Array(colors);
+
+  lineMat = new THREE.LineBasicMaterial({
+    vertexColors: true,
+    transparent: true,
+    opacity: 0,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
+    depthTest: false,
+  });
+
+  const lines = new THREE.LineSegments(geo, lineMat);
+  lines.frustumCulled = false;
+  scene.add(lines);
+  applyLinkLight(P.linkLight);
+
+  // microscopic hubs (edges carry the look) — same as ebola
+  const n = nodes.length;
+  const nPos = new Float32Array(n * 3);
+  const nCol = new Float32Array(n * 3);
+  const nSize = new Float32Array(n);
+  let maxDeg = 1;
+  for (let i = 0; i < nodes.length; i++) {
+    const d = nodes[i].deg || 1;
+    if (d > maxDeg) maxDeg = d;
+  }
+  graphMaxDeg = maxDeg;
+  for (let i = 0; i < n; i++) {
+    const nd = nodes[i];
+    nPos[i * 3] = nd.x;
+    nPos[i * 3 + 1] = nd.y;
+    nPos[i * 3 + 2] = 0.15;
+    const c = lift(nd.c, 1.1);
+    nCol[i * 3] = c[0];
+    nCol[i * 3 + 1] = c[1];
+    nCol[i * 3 + 2] = c[2];
+    nSize[i] = 0.4 + 2.2 * Math.sqrt((nd.deg || 1) / maxDeg);
+  }
+  const pGeo = new THREE.BufferGeometry();
+  pGeo.setAttribute('position', new THREE.BufferAttribute(nPos, 3));
+  pGeo.setAttribute('color', new THREE.BufferAttribute(nCol, 3));
+  pGeo.setAttribute('size', new THREE.BufferAttribute(nSize, 1));
+  const pMat = new THREE.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    blending: THREE.AdditiveBlending,
+    uniforms: { uPR: { value: renderer.getPixelRatio() } },
+    vertexShader: `
+      attribute float size; attribute vec3 color;
+      varying vec3 vC;
+      uniform float uPR;
+      void main() {
+        vC = color;
+        vec4 mv = modelViewMatrix * vec4(position,1.0);
+        gl_PointSize = size * uPR;
+        gl_Position = projectionMatrix * mv;
+      }`,
+    fragmentShader: `
+      varying vec3 vC;
+      void main() {
+        float d = length(gl_PointCoord - 0.5);
+        float a = smoothstep(0.4, 0.0, d) * 0.35;
+        gl_FragColor = vec4(vC, a);
+        if (a < 0.01) discard;
+      }`,
+  });
+  const pts = new THREE.Points(pGeo, pMat);
+  pts.frustumCulled = false;
+  scene.add(pts);
+
+  rebuildCardsOverlay();
+  applyLayerVis();
+  fitGraph(nodes);
+}
+
+function makePoints(posArr, colArr, sizeArr, shader, renderOrder, blending) {
+  if (!posArr.length) return null;
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(posArr, 3));
+  g.setAttribute('color', new THREE.Float32BufferAttribute(colArr, 3));
+  g.setAttribute('size', new THREE.Float32BufferAttribute(sizeArr, 1));
+  const m = new THREE.ShaderMaterial({
+    transparent: true,
+    depthWrite: false,
+    depthTest: false,
+    blending: blending || THREE.NormalBlending,
+    uniforms: { uPR: { value: renderer.getPixelRatio() } },
+    vertexShader: `
+      attribute float size; attribute vec3 color;
+      varying vec3 vC;
+      uniform float uPR;
+      void main() {
+        vC = color;
+        vec4 mv = modelViewMatrix * vec4(position,1.0);
+        gl_PointSize = size * uPR;
+        gl_Position = projectionMatrix * mv;
+      }`,
+    fragmentShader: shader,
+  });
+  const overlay = new THREE.Points(g, m);
+  overlay.frustumCulled = false;
+  overlay.renderOrder = renderOrder;
+  scene.add(overlay);
+  return overlay;
+}
+
+const cardsShader = `
+  varying vec3 vC;
+  void main() {
+    vec2 p = gl_PointCoord - 0.5;
+    float d = length(p);
+    if (d > 0.5) discard;
+    float core = 1.0 - smoothstep(0.0, 0.16, d);
+    float disc = 1.0 - smoothstep(0.10, 0.32, d);
+    float halo = 1.0 - smoothstep(0.18, 0.50, d);
+    vec3 hot = vec3(1.00, 0.78, 0.58);
+    vec3 red = vec3(1.00, 0.14, 0.10);
+    vec3 col = red * halo + red * disc + hot * core * 1.15;
+    float a = max(core, max(disc * 0.88, halo * 0.42));
+    gl_FragColor = vec4(col * a, a);
+  }`;
+
+function disposePts(pts) {
+  if (!pts) return;
+  scene.remove(pts);
+  pts.geometry?.dispose?.();
+  pts.material?.dispose?.();
+}
+
+function syncRtParam() {
+  const u = new URL(location.href);
+  if (includeRT) u.searchParams.set('rt', '1');
+  else u.searchParams.delete('rt');
+  history.replaceState(null, '', u);
+}
+
+function updateCardsHud(nCards) {
+  const sub = document.getElementById('hlSub');
+  if (sub) {
+    sub.textContent = includeRT
+      ? 'Points rouges = producteurs (RT inclus)'
+      : 'Points rouges = créateurs (hors RT)';
+  }
+  if (!graphData) return;
+  if (!showCards) {
+    document.getElementById('stats').textContent =
+      `${graphData.meta.n_nodes.toLocaleString('fr-FR')} nœuds · ${graphData.meta.n_edges.toLocaleString('fr-FR')} liens`;
+    return;
+  }
+  const mode = includeRT ? 'RT inclus' : 'hors RT';
+  document.getElementById('stats').textContent =
+    `${nCards.toLocaleString('fr-FR')} CARDS ≥${MIN_CARDS} (${mode}) / ${graphData.meta.n_nodes.toLocaleString('fr-FR')} nœuds · ${graphData.meta.n_edges.toLocaleString('fr-FR')} liens`;
+}
+
+function rebuildCardsOverlay() {
+  disposePts(cardsPts);
+  cardsPts = null;
+  cardsHit = [];
+  if (!graphData) return;
+  if (!showCards) {
+    updateCardsHud(0);
+    rebuildLabels();
+    return;
+  }
+  const nodes = graphData.nodes;
+  const n = nodes.length;
+  let nMax = 1;
+  for (let i = 0; i < n; i++) {
+    const c = nodeCardCount(nodes[i]);
+    if (c > nMax) nMax = c;
+  }
+  const cPos = [];
+  const cCol = [];
+  const cSize = [];
+  for (let i = 0; i < n; i++) {
+    const nd = nodes[i];
+    const cards = nodeCardCount(nd);
+    if (cards < MIN_CARDS) continue;
+    const t = Math.log1p(cards) / Math.log1p(nMax);
+    const size = 5.5 + 11.0 * Math.pow(t, 0.82);
+    cPos.push(nd.x, nd.y, 0.8);
+    cCol.push(1.0, 0.16, 0.12);
+    cSize.push(size);
+    cardsHit.push({ x: nd.x, y: nd.y, size, handle: String(nd.l || ''), n: cards });
+  }
+  cardsPts = makePoints(cPos, cCol, cSize, cardsShader, 3, THREE.AdditiveBlending);
+  applyLayerVis();
+  updateCardsHud(cSize.length);
+  rebuildLabels();
+}
+
+function applyLayerVis() {
+  if (cardsPts) cardsPts.visible = highlightSelected;
+}
+
+function rebuildLabels() {
+  labelsEl.innerHTML = '';
+  labelItems = [];
+  if (!graphData) return;
+
+  const cardsMode = showCards && highlightSelected;
+  const scored = graphData.nodes.map((n, i) => ({
+    ...n,
+    i,
+    gephiSize: cardsMode
+      ? Math.max(nodeCardCount(n), 1)
+      : Math.max(n.deg || 1, 1),
+    cards: n.cards || 0,
+  }));
+
+  let pool = scored;
+  if (highlightSelected) {
+    pool = scored.filter((n) => isCardsNode(n));
+  }
+  if (!pool.length) return;
+
+  const byCom = new Map();
+  for (const n of pool) {
+    const c = n.com ?? -1;
+    if (!byCom.has(c)) byCom.set(c, []);
+    byCom.get(c).push(n);
+  }
+
+  const comOrder = [...byCom.entries()]
+    .map(([com, arr]) => ({
+      com,
+      arr: arr.sort((a, b) => (b.gephiSize - a.gephiSize) || (nodeCardCount(b) - nodeCardCount(a))),
+      mass: arr.reduce((s, n) => s + Math.log1p(n.gephiSize || 1), 0),
+      size: arr.length,
+    }))
+    .sort((a, b) => b.mass - a.mass);
+
+  const budget = P.nLabels;
+  const picked = new Map();
+  const mainComs = comOrder.filter((c) => c.size >= 8).slice(0, 28);
+
+  for (const c of mainComs) {
+    if (c.arr[0]) picked.set(c.arr[0].i, c.arr[0]);
+  }
+
+  const totalMass = mainComs.reduce((s, c) => s + c.mass, 0) || 1;
+  for (const c of mainComs) {
+    const quota = Math.min(4, Math.max(1, Math.round(1 + (c.mass / totalMass) * 10)));
+    for (let k = 0; k < quota && k < c.arr.length; k++) {
+      if (picked.size >= budget) break;
+      picked.set(c.arr[k].i, c.arr[k]);
+    }
+    if (picked.size >= budget) break;
+  }
+
+  if (picked.size < budget) {
+    const rest = [...pool].sort((a, b) => (b.gephiSize - a.gephiSize) || (nodeCardCount(b) - nodeCardCount(a)));
+    for (const n of rest) {
+      if (picked.size >= budget) break;
+      picked.set(n.i, n);
+    }
+  }
+
+  const ranked = [...picked.values()].sort(
+    (a, b) => (b.gephiSize - a.gephiSize) || (b.deg - a.deg)
+  );
+  if (!ranked.length) return;
+
+  // Font ∝ nombre de publications CARDS (highlight) ou degré pondéré
+  const sMin = Math.min(...ranked.map((n) => n.gephiSize));
+  const sMax = Math.max(...ranked.map((n) => n.gephiSize));
+  const sSpan = Math.max(sMax - sMin, 1e-6);
+
+  const ordered = [...ranked].sort((a, b) => a.gephiSize - b.gephiSize);
+
+  for (const node of ordered) {
+    const el = document.createElement('div');
+    el.className = 'label';
+    // Match Gephi labels (@handle)
+    const text = node.l.startsWith('@') ? node.l : `@${node.l}`;
+    const isSelected = highlightSelected && isCardsNode(node);
+    if (isSelected) el.classList.add('hl-selected');
+    el.textContent = text;
+
+    // Normalize then power-curve amplify tops (like Gephi ranking spline feel)
+    const u = (node.gephiSize - sMin) / sSpan; // 0‥1
+    const t = Math.pow(u, 0.7); // keep mid visible, stretch top
+    const abs = Math.pow(node.gephiSize / sMax, 1.25);
+    const mix = 0.45 * t + 0.55 * abs;
+    let fontPx = Math.round(7 + 32 * mix);
+    if (isSelected) fontPx = Math.max(Math.round(fontPx * 1.15), 12);
+
+    el.style.fontSize = `${fontPx}px`;
+    el.style.fontWeight = isSelected ? '700' : mix > 0.7 ? '700' : mix > 0.4 ? '600' : '500';
+    el.style.zIndex = String(Math.round(10 + 90 * mix) + (isSelected ? 50 : 0));
+    el.style.opacity = isSelected ? '1' : '0.94';
+    el.style.color = isSelected ? '#ff5c4a' : rgbCss(node.c);
+    el.style.textShadow = isSelected
+      ? '0 0 14px rgba(255,45,35,0.95), 0 0 6px rgba(255,80,50,0.7), 0 1px 2px rgba(0,0,0,0.85)'
+      : '0 0 6px rgba(0,0,0,0.85), 0 1px 2px rgba(0,0,0,0.75)';
+    labelsEl.appendChild(el);
+
+    labelItems.push({
+      el,
+      text,
+      x: node.x,
+      y: node.y,
+      pr: node.pr,
+      deg: node.deg || 0,
+      gephiSize: node.gephiSize,
+      fontPx,
+      t: mix,
+      boxW: Math.max(28, text.length * fontPx * 0.55 + 12),
+      boxH: fontPx * 1.35,
+      com: node.com,
+      isSelected,
+      visible: false,
+      ox: 0,
+      oy: 0,
+    });
+  }
+
+  // Refine box sizes from real DOM metrics (better anti-overlap)
+  requestAnimationFrame(() => {
+    for (const it of labelItems) {
+      const r = it.el.getBoundingClientRect();
+      if (r.width > 0) {
+        it.boxW = r.width + 6;
+        it.boxH = r.height + 4;
+      }
+    }
+  });
+}
+
+function labelScreenBox(cx, cy, boxW, boxH, ox, oy) {
+  // CSS: left/top = node, then translate(-50%, -130%)
+  // label top-left ≈ (cx - boxW/2 + ox, cy - 1.3*boxH + oy)
+  const left = cx - boxW * 0.5 + ox;
+  const top = cy - boxH * 1.3 + oy;
+  return { left, top, right: left + boxW, bottom: top + boxH, w: boxW, h: boxH };
+}
+
+function boxesHit(a, b, pad = 6) {
+  return !(
+    a.right + pad <= b.left ||
+    a.left - pad >= b.right ||
+    a.bottom + pad <= b.top ||
+    a.top - pad >= b.bottom
+  );
+}
+
+function projectLabels() {
+  const w = innerWidth;
+  const h = innerHeight;
+  const z = camera.zoom || 1;
+
+  // Zoom: prefer largest Gephi sizes first
+  const maxShow = labelItems.length;
+  const revealN = Math.max(
+    4,
+    Math.min(maxShow, Math.ceil(maxShow * Math.min(1, Math.max(0.3, (z - 0.3) / 2.2))))
+  );
+  const bySize = [...labelItems].sort(
+    (a, b) => (b.gephiSize - a.gephiSize) || (b.deg - a.deg)
+  );
+  const allowed = new Set(bySize.slice(0, revealN));
+
+  // Place largest Gephi size first — they win collisions
+  const candidates = bySize.filter((it) => allowed.has(it));
+  const placed = [];
+
+  for (const it of labelItems) {
+    it.visible = false;
+    it.el.style.display = 'none';
+  }
+
+  const offsets = (bw, bh) => [
+    [0, 0],
+    [0, -bh * 0.4],
+    [0, bh * 0.5],
+    [bw * 0.4, 0],
+    [-bw * 0.4, 0],
+    [bw * 0.3, -bh * 0.35],
+    [-bw * 0.3, -bh * 0.35],
+    [bw * 0.3, bh * 0.4],
+    [-bw * 0.3, bh * 0.4],
+  ];
+
+  for (const it of candidates) {
+    const v = new THREE.Vector3(it.x, it.y, 0).project(camera);
+    if (v.z > 1) continue;
+    const cx = (v.x * 0.5 + 0.5) * w;
+    const cy = (-v.y * 0.5 + 0.5) * h;
+    if (cx < -80 || cx > w + 80 || cy < -80 || cy > h + 80) continue;
+
+    let placedOk = false;
+    for (const [ox, oy] of offsets(it.boxW, it.boxH)) {
+      const box = labelScreenBox(cx, cy, it.boxW, it.boxH, ox, oy);
+      if (box.left < 2 || box.right > w - 2 || box.top < 2 || box.bottom > h - 2) continue;
+      if (placed.some((p) => boxesHit(box, p.box, 8))) continue;
+
+      it.visible = true;
+      it.ox = ox;
+      it.oy = oy;
+      it.sx = cx + ox;
+      it.sy = cy + oy;
+      it.el.style.display = 'block';
+      it.el.style.left = `${it.sx}px`;
+      it.el.style.top = `${it.sy}px`;
+      placed.push({ box, it });
+      placedOk = true;
+      break;
+    }
+    if (!placedOk) {
+      it.visible = false;
+      it.el.style.display = 'none';
+    }
+  }
+}
+
+function onResize() {
+  const a = innerWidth / innerHeight;
+  camera.left = -frustum * a;
+  camera.right = frustum * a;
+  camera.top = frustum;
+  camera.bottom = -frustum;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+  composer.setSize(innerWidth, innerHeight);
+  bloomPass.resolution.set(innerWidth, innerHeight);
+}
+addEventListener('resize', onResize);
+
+document.getElementById('linkLight').oninput = (e) => { applyLinkLight(+e.target.value); };
+document.getElementById('bloom').oninput = (e) => { bloomPass.strength = +e.target.value; P.bloom = +e.target.value; };
+document.getElementById('op').oninput = (e) => { P.opacity = +e.target.value; applyLinkLight(P.linkLight); };
+document.getElementById('nLabels').oninput = (e) => { P.nLabels = +e.target.value; rebuildLabels(); };
+document.getElementById('hlSelected').onchange = (e) => {
+  highlightSelected = !!e.target.checked;
+  applyLayerVis();
+  rebuildLabels();
+};
+const includeRtEl = document.getElementById('includeRt');
+if (includeRtEl) {
+  includeRtEl.checked = includeRT;
+  includeRtEl.onchange = (e) => {
+    includeRT = !!e.target.checked;
+    syncRtParam();
+    hideTip();
+    rebuildCardsOverlay();
+  };
+}
+
+const exportBtn = document.getElementById('exportBtn');
+const exportStatus = document.getElementById('exportStatus');
+let exporting = false;
+
+function parseExportSize(val) {
+  if (val === 'screen') {
+    const pr = Math.min(devicePixelRatio, 2);
+    return {
+      w: Math.round(innerWidth * pr * 2),
+      h: Math.round(innerHeight * pr * 2),
+    };
+  }
+  const [w, h] = val.split('x').map(Number);
+  return { w, h };
+}
+
+function maxGpuSize() {
+  const gl = renderer.getContext();
+  const a = gl.getParameter(gl.MAX_RENDERBUFFER_SIZE) || 8192;
+  const b = gl.getParameter(gl.MAX_TEXTURE_SIZE) || 8192;
+  // leave headroom for bloom mip chain
+  return Math.min(a, b, 8192);
+}
+
+function drawLabelsOnCtx(ctx, w, h, scale) {
+  if (!labelItems.length) return;
+  const candidates = [...labelItems].sort(
+    (a, b) => (b.gephiSize - a.gephiSize) || (b.deg - a.deg)
+  );
+  const placed = [];
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'bottom';
+
+  for (const it of candidates) {
+    const v = new THREE.Vector3(it.x, it.y, 0).project(camera);
+    if (v.z > 1) continue;
+    const cx = (v.x * 0.5 + 0.5) * w;
+    const cy = (-v.y * 0.5 + 0.5) * h;
+    const fontPx = Math.max(10, Math.round((it.fontPx || 12) * scale));
+    const text = it.text || it.el.textContent;
+    const boxW = Math.max(28, text.length * fontPx * 0.55 + 12);
+    const boxH = fontPx * 1.35;
+    const offs = [
+      [0, 0], [0, -boxH * 0.4], [0, boxH * 0.5],
+      [boxW * 0.4, 0], [-boxW * 0.4, 0],
+      [boxW * 0.3, -boxH * 0.35], [-boxW * 0.3, -boxH * 0.35],
+    ];
+
+    for (const [ox, oy] of offs) {
+      const box = labelScreenBox(cx, cy, boxW, boxH, ox, oy);
+      if (box.left < 2 || box.right > w - 2 || box.top < 2 || box.bottom > h - 2) continue;
+      if (placed.some((p) => boxesHit(box, p, 8))) continue;
+
+      const weight = it.isSelected ? '700' : (it.t || 0) > 0.7 ? '700' : (it.t || 0) > 0.4 ? '600' : '500';
+      ctx.font = `${weight} ${fontPx}px "Helvetica Neue", Helvetica, Arial, sans-serif`;
+      ctx.globalAlpha = it.isSelected ? 1 : 0.94;
+      ctx.fillStyle = it.isSelected ? '#ff5c4a' : (it.el.style.color || '#ffffff');
+      ctx.fillText(text, cx + ox, cy + oy - fontPx * 0.25);
+      placed.push(box);
+      break;
+    }
+  }
+  ctx.globalAlpha = 1;
+}
+
+/** Read WebGL default framebuffer → ImageData (Y-flipped for 2D canvas). */
+function readGlToImageData(w, h) {
+  const gl = renderer.getContext();
+  const bw = gl.drawingBufferWidth;
+  const bh = gl.drawingBufferHeight;
+  if (bw < 1 || bh < 1) throw new Error('drawingBuffer vide');
+
+  const pixels = new Uint8Array(bw * bh * 4);
+  // ensure pending GPU cmds flushed into default FB
+  renderer.getContext().finish?.();
+  gl.readPixels(0, 0, bw, bh, gl.RGBA, gl.UNSIGNED_BYTE, pixels);
+
+  // sanity: count non-black pixels
+  let lit = 0;
+  for (let i = 0; i < pixels.length; i += 16) {
+    if (pixels[i] > 2 || pixels[i + 1] > 2 || pixels[i + 2] > 2) lit++;
+  }
+  if (lit < 8) {
+    throw new Error('framebuffer quasi-noir (bloom/GPU?)');
+  }
+
+  const img = new ImageData(bw, bh);
+  // flip Y (GL origin = bottom-left)
+  const row = bw * 4;
+  for (let y = 0; y < bh; y++) {
+    const src = (bh - 1 - y) * row;
+    img.data.set(pixels.subarray(src, src + row), y * row);
+  }
+  return { img, bw, bh };
+}
+
+function applyExportCamera(prev, w, h) {
+  const halfW = ((prev.right - prev.left) * 0.5) / prev.zoom;
+  const halfH = ((prev.top - prev.bottom) * 0.5) / prev.zoom;
+  const exportAspect = w / h;
+  let expHalfW;
+  let expHalfH;
+  if (halfW / halfH > exportAspect) {
+    expHalfW = halfW;
+    expHalfH = halfW / exportAspect;
+  } else {
+    expHalfH = halfH;
+    expHalfW = halfH * exportAspect;
+  }
+  camera.left = -expHalfW;
+  camera.right = expHalfW;
+  camera.top = expHalfH;
+  camera.bottom = -expHalfH;
+  camera.zoom = 1;
+  camera.updateProjectionMatrix();
+}
+
+async function renderExportFrame(w, h, useBloom) {
+  renderer.setPixelRatio(1);
+  renderer.setSize(w, h, false);
+  renderer.setRenderTarget(null);
+  renderer.clear();
+
+  if (useBloom) {
+    composer.setSize(w, h);
+    bloomPass.resolution.set(w, h);
+    // force last pass onto default framebuffer
+    composer.renderToScreen = true;
+    composer.render();
+  } else {
+    renderer.render(scene, camera);
+  }
+
+  // double rAF so buffer is ready
+  await new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+  return readGlToImageData(w, h);
+}
+
+async function exportPng() {
+  if (exporting || !graphData) return;
+  exporting = true;
+  exportBtn.disabled = true;
+
+  const { w: wantW, h: wantH } = parseExportSize(document.getElementById('exportSize').value);
+  const maxS = maxGpuSize();
+  let w = wantW;
+  let h = wantH;
+  // soft cap: bloom needs ~2–4× memory; stay safer on big graphs
+  const softCap = graphData.edges.length > 50_000 ? 4096 : 6144;
+  const cap = Math.min(maxS, softCap);
+  if (Math.max(w, h) > cap) {
+    const s = cap / Math.max(w, h);
+    w = Math.max(1, Math.floor(w * s));
+    h = Math.max(1, Math.floor(h * s));
+    exportStatus.textContent = `Plafond ${cap}px → ${w}×${h}…`;
+  } else {
+    exportStatus.textContent = `Rendu ${w}×${h}…`;
+  }
+
+  const prev = {
+    pr: renderer.getPixelRatio(),
+    cssW: innerWidth,
+    cssH: innerHeight,
+    left: camera.left,
+    right: camera.right,
+    top: camera.top,
+    bottom: camera.bottom,
+    zoom: camera.zoom,
+  };
+
+  try {
+    await new Promise((r) => requestAnimationFrame(r));
+    controls.update();
+    applyExportCamera(prev, w, h);
+
+    let frame;
+    try {
+      exportStatus.textContent = `Rendu bloom ${w}×${h}…`;
+      frame = await renderExportFrame(w, h, true);
+    } catch (e1) {
+      console.warn('export bloom failed, fallback sans bloom', e1);
+      exportStatus.textContent = `Fallback sans bloom ${w}×${h}…`;
+      // shrink further if needed
+      if (Math.max(w, h) > 4096) {
+        const s = 4096 / Math.max(w, h);
+        w = Math.floor(w * s);
+        h = Math.floor(h * s);
+        applyExportCamera(prev, w, h);
+      }
+      frame = await renderExportFrame(w, h, false);
+    }
+
+    const { img, bw, bh } = frame;
+    const out = document.createElement('canvas');
+    out.width = bw;
+    out.height = bh;
+    const ctx = out.getContext('2d');
+    ctx.putImageData(img, 0, 0);
+
+    const labelScale = Math.max(bw, bh) / 1400;
+    drawLabelsOnCtx(ctx, bw, bh, labelScale);
+
+    exportStatus.textContent = `Encodage PNG ${bw}×${bh}…`;
+    await new Promise((r) => requestAnimationFrame(r));
+
+    const blob = await new Promise((resolve, reject) => {
+      out.toBlob((b) => (b ? resolve(b) : reject(new Error('toBlob failed'))), 'image/png');
+    });
+
+    const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+    const name = `connectome_${bw}x${bh}_${stamp}.png`;
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = name;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+
+    const mb = (blob.size / (1024 * 1024)).toFixed(1);
+    exportStatus.textContent = `OK · ${name} · ${mb} Mo`;
+  } catch (err) {
+    console.error(err);
+    exportStatus.textContent = `Erreur: ${err.message || err}`;
+  } finally {
+    camera.left = prev.left;
+    camera.right = prev.right;
+    camera.top = prev.top;
+    camera.bottom = prev.bottom;
+    camera.zoom = prev.zoom;
+    camera.updateProjectionMatrix();
+    renderer.setRenderTarget(null);
+    renderer.setPixelRatio(prev.pr);
+    renderer.setSize(prev.cssW, prev.cssH, true);
+    composer.setSize(prev.cssW, prev.cssH);
+    bloomPass.resolution.set(prev.cssW, prev.cssH);
+    composer.renderToScreen = true;
+    exporting = false;
+    exportBtn.disabled = false;
+  }
+}
+
+exportBtn.addEventListener('click', () => { exportPng(); });
+
+const tipEl = document.getElementById('tip');
+let overTip = false;
+
+function esc(s) {
+  return String(s || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function hideTip() {
+  hoverHandle = null;
+  tipEl.classList.remove('open');
+  tipEl.innerHTML = '';
+}
+
+function showTip(hit, clientX, clientY) {
+  const key = String(hit.handle || '').toLowerCase();
+  const pack = hoverData.users[key];
+  const handle = pack?.handle || hit.handle;
+  const allTweets = pack?.tweets || [];
+  const tweets = includeRT ? allTweets : allTweets.filter((tw) => tw.type !== 'retweet');
+  const n = tweets.length;
+  const cacheKey = key + (includeRT ? ':rt' : ':orig');
+  if (hoverHandle === cacheKey && tipEl.classList.contains('open')) {
+    placeTip(clientX, clientY);
+    return;
+  }
+  hoverHandle = cacheKey;
+  const items = tweets.length
+    ? tweets.map((tw) => {
+        const typ = esc(tw.type_fr || tw.type || 'publication');
+        const text = esc(tw.text || '—');
+        return `<article><div class="tip-type">${typ}</div><div class="tip-text">${text}</div></article>`;
+      }).join('')
+    : '<article><div class="tip-text">Tweets CARDS non chargés pour ce compte.</div></article>';
+  const meta = includeRT
+    ? `${n.toLocaleString('fr-FR')} publication${n > 1 ? 's' : ''} CARDS (RT inclus)`
+    : `${n.toLocaleString('fr-FR')} publication${n > 1 ? 's' : ''} originale${n > 1 ? 's' : ''} CARDS`;
+  tipEl.innerHTML =
+    `<div class="tip-head"><div class="tip-user">@${esc(handle)}</div>` +
+    `<div class="tip-meta">${meta}</div></div>` +
+    `<div class="tip-list">${items}</div>`;
+  tipEl.classList.add('open');
+  placeTip(clientX, clientY);
+}
+
+function placeTip(clientX, clientY) {
+  const pad = 14;
+  const tw = tipEl.offsetWidth || 320;
+  const th = tipEl.offsetHeight || 200;
+  let x = clientX + 16;
+  let y = clientY + 16;
+  if (x + tw > innerWidth - pad) x = clientX - tw - 12;
+  if (y + th > innerHeight - pad) y = clientY - th - 12;
+  x = Math.max(pad, Math.min(x, innerWidth - tw - pad));
+  y = Math.max(pad, Math.min(y, innerHeight - th - pad));
+  tipEl.style.left = `${x}px`;
+  tipEl.style.top = `${y}px`;
+}
+
+function pickCardsHit(clientX, clientY) {
+  if (!showCards || !cardsHit.length) return null;
+  const ndcX = (clientX / innerWidth) * 2 - 1;
+  const ndcY = -(clientY / innerHeight) * 2 + 1;
+  const world = new THREE.Vector3(ndcX, ndcY, 0).unproject(camera);
+  const worldPerPx = ((camera.right - camera.left) / camera.zoom) / innerWidth;
+  let best = null;
+  let bestD = Infinity;
+  for (const hit of cardsHit) {
+    const dx = hit.x - world.x;
+    const dy = hit.y - world.y;
+    const d = Math.hypot(dx, dy);
+    const r = Math.max(10, hit.size * 0.55) * worldPerPx;
+    if (d <= r && d < bestD) {
+      best = hit;
+      bestD = d;
+    }
+  }
+  return best;
+}
+
+tipEl.addEventListener('mouseenter', () => {
+  overTip = true;
+  if (hideTipTimer) {
+    clearTimeout(hideTipTimer);
+    hideTipTimer = 0;
+  }
+});
+tipEl.addEventListener('mouseleave', () => {
+  overTip = false;
+  hideTip();
+});
+
+renderer.domElement.addEventListener('pointermove', (ev) => {
+  if (exporting || overTip) return;
+  if (hideTipTimer) {
+    clearTimeout(hideTipTimer);
+    hideTipTimer = 0;
+  }
+  const hit = pickCardsHit(ev.clientX, ev.clientY);
+  renderer.domElement.style.cursor = hit ? 'pointer' : '';
+  if (!hit) {
+    hideTipTimer = setTimeout(() => {
+      if (!overTip) hideTip();
+    }, 120);
+    return;
+  }
+  showTip(hit, ev.clientX, ev.clientY);
+});
+renderer.domElement.addEventListener('pointerleave', () => {
+  if (overTip) return;
+  hideTipTimer = setTimeout(() => {
+    if (!overTip) hideTip();
+  }, 160);
+});
+controls.addEventListener('start', () => hideTip());
+
+(function loop() {
+  requestAnimationFrame(loop);
+  if (exporting) return;
+  controls.update();
+  composer.render();
+  projectLabels();
+})();
+
+const DATA_V = 'p1cards20260901';
+function dataUrl(name) {
+  const u = new URL('./data/' + name, import.meta.url);
+  u.searchParams.set('v', DATA_V);
+  return u;
+}
+Promise.all([
+  fetch(dataUrl('graph.json')).then((r) => r.json()),
+  showCards
+    ? fetch(dataUrl('cards_hover.json')).then((r) => r.json()).catch(() => ({ users: {} }))
+    : Promise.resolve({ users: {} }),
+])
+  .then(([d, hover]) => {
+    hoverData = hover && hover.users ? hover : { users: {} };
+    buildGraph(d);
+    loading.classList.add('hidden');
+  })
+  .catch((err) => { loading.textContent = String(err); });
+  </script>
+</body>
+</html>

@@ -389,10 +389,18 @@ function buildGraph(data) {
 
   const nodes = data.nodes;
   const edges = data.edges;
-  const maxW = Math.max(...edges.map((e) => e.w), 1);
+  let maxW = 1;
+  for (let i = 0; i < edges.length; i++) {
+    const w = edges[i].w;
+    if (w > maxW) maxW = w;
+  }
 
-  // Auto-tune hair density for large graphs (GPU/RAM) — same as ebola
-  if (edges.length > 80_000) {
+  // Auto-tune hair density for large graphs (GPU/RAM)
+  const huge = edges.length > 200_000;
+  if (edges.length > 400_000) {
+    P.strands = 1;
+    P.segments = 2;
+  } else if (edges.length > 80_000) {
     P.strands = 2;
     P.segments = 10;
   } else if (edges.length > 30_000) {
@@ -413,6 +421,16 @@ function buildGraph(data) {
     const cb = lift(b.c, 1.18);
     const wNorm = Math.pow(e.w / maxW, 0.45);
     const bright = 0.28 + 0.55 * wNorm;
+
+    if (huge) {
+      const k = bright * 0.85;
+      positions.push(a.x, a.y, 0, b.x, b.y, 0);
+      colors.push(
+        ca[0] * k, ca[1] * k, ca[2] * k,
+        cb[0] * k, cb[1] * k, cb[2] * k
+      );
+      continue;
+    }
 
     for (let s = 0; s < P.strands; s++) {
       const strandBright = bright * (1 - s * 0.12);
@@ -460,7 +478,11 @@ function buildGraph(data) {
   const nPos = new Float32Array(n * 3);
   const nCol = new Float32Array(n * 3);
   const nSize = new Float32Array(n);
-  const maxDeg = Math.max(...nodes.map((x) => x.deg || 1), 1);
+  let maxDeg = 1;
+  for (let i = 0; i < nodes.length; i++) {
+    const d = nodes[i].deg || 1;
+    if (d > maxDeg) maxDeg = d;
+  }
   graphMaxDeg = maxDeg;
   for (let i = 0; i < n; i++) {
     const nd = nodes[i];
@@ -1246,7 +1268,7 @@ controls.addEventListener('start', () => hideTip());
   projectLabels();
 })();
 
-const DATA_V = 'full20260901';
+const DATA_V = 'alllinks20260901';
 function dataUrl(name) {
   const u = new URL('./data/' + name, import.meta.url);
   u.searchParams.set('v', DATA_V);
