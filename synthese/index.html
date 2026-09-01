@@ -2355,7 +2355,7 @@
         </li>
         <li>
           <strong>Couches MCA.</strong>
-          Cinq graphes de co-action&nbsp;: <code>RTW</code>, <code>RPL</code>, <code>QTE</code>, <code>MEN</code>, <code>URL</code>. Poids d’arête = nombre de co-occurrences d’objets partagés (filtre overlap + médiane)&nbsp;; la colonne peut encore s’appeler <code>weight_tfidf</code>. Partition multiplexe <strong>MULTI</strong> (Leiden–Mucha, γ&nbsp;=&nbsp;1, ω&nbsp;=&nbsp;0,1) sur les 5 couches.
+          Cinq graphes de co-action&nbsp;: <code>RTW</code>, <code>RPL</code>, <code>QTE</code>, <code>MEN</code>, <code>URL</code>. Poids d’arête (<code>weight</code>)&nbsp;: nombre d’objets partagés. Overlap&nbsp;: seuil minimal d’objets communs par couche, pour éviter l’explosion des calculs (RT&nbsp;≥&nbsp;3, mention&nbsp;≥&nbsp;3, reply&nbsp;≥&nbsp;2, quote et URL&nbsp;≥&nbsp;1). On garde les poids supérieurs à la médiane. Partition multiplexe <strong>MULTI</strong> (Leiden–Mucha, γ&nbsp;=&nbsp;1, ω&nbsp;=&nbsp;0,1) sur les 5 couches.
         </li>
         <li>
           <strong>Composante principale.</strong>
