@@ -11,9 +11,11 @@
   "n_cards_authors_orig": 477,
   "n_max_cards_orig": 84,
   "louvain": "ALL (20 mai – 29 juin)",
-  "fa2_iter": 8640,
-  "fa2_extra": 2880,
+  "fa2_iter": 17280,
+  "fa2_extra": 8640,
   "min_edge_weight": 1,
   "n_edges_directed_raw": 1488297,
-  "note_edges": "Toutes paires user–user (RT, reply, quote, mention), poids ≥ 1, sans plafond 45k. Layout FA2 sur le cœur (arêtes lourdes) puis satellites autour du voisin le plus fort."
+  "note_edges": "Toutes paires user–user (RT, reply, quote, mention), poids ≥ 1. Layout FA2 17280 it. sur le cœur (42,557 arêtes lourdes) puis satellites autour du voisin le plus fort.",
+  "fa2_total_target": 17280,
+  "fa2_engine": "numpy_grid_knn"
 }
