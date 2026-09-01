@@ -1638,6 +1638,112 @@
     .fig-euler svg.fig-chart { max-height: min(52vh, 22rem); }
   }
 
+
+  .fig-bars {
+    margin: 0.7rem 0 1.15rem;
+    padding: 0.65rem 0.8rem 0.55rem;
+    background: var(--paper);
+    border: 1px solid var(--line);
+  }
+  .fig-bars-meta {
+    font-family: system-ui, sans-serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+    color: var(--muted);
+    margin: 0 0 0.55rem;
+  }
+  .fig-bars-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+  .fig-bars-list li {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.12rem;
+    align-items: center;
+  }
+  .fig-bars-lab {
+    font-family: system-ui, sans-serif;
+    font-size: 0.86rem;
+    line-height: 1.3;
+    color: var(--ink);
+  }
+  .fig-bars-lab b { font-weight: 700; margin-right: 0.2rem; }
+  .fig-bars-lab i { font-style: normal; color: var(--muted); }
+  .fig-bars-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 4.5rem;
+    gap: 0.45rem;
+    align-items: center;
+    min-width: 0;
+  }
+  .fig-bars-track {
+    display: block;
+    height: 0.95rem;
+    background: #efeae0;
+    min-width: 0;
+  }
+  .fig-bars-fill {
+    display: block;
+    height: 100%;
+    width: var(--w);
+    background: var(--c);
+  }
+  .fig-bars-n {
+    font-family: system-ui, sans-serif;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.86rem;
+    font-weight: 650;
+    color: var(--ink);
+    text-align: right;
+    line-height: 1.15;
+  }
+  .fig-bars-n small {
+    display: block;
+    font-weight: 500;
+    font-size: 0.68rem;
+    color: var(--muted);
+  }
+  .fig-bars-axis { margin-top: 0.3rem; }
+  .fig-bars-ticks {
+    display: flex;
+    justify-content: space-between;
+    font-family: system-ui, sans-serif;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.72rem;
+    color: var(--muted);
+    padding-right: 4.95rem;
+    border-top: 1px solid var(--line);
+    padding-top: 0.28rem;
+  }
+  .fig-bars-axis-label {
+    font-family: system-ui, sans-serif;
+    font-size: 0.75rem;
+    color: var(--muted);
+    margin: 0.15rem 0 0;
+    padding-right: 4.95rem;
+    text-align: center;
+  }
+  .stigma-regs > li p {
+    margin: 0 0 0.4rem;
+    font-size: 0.98rem;
+  }
+  @media (min-width: 720px) {
+    .split-figure.split-figure--wide-media#fig-infamant-types {
+      grid-template-columns: minmax(16rem, 0.56fr) minmax(0, 0.44fr);
+      align-items: center;
+    }
+    .split-figure.split-figure--wide-media#fig-infamant-types .split-figure-media img {
+      max-height: min(40vh, 18rem);
+      width: auto;
+      max-width: 100%;
+    }
+  }
+
 </style>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -1667,7 +1773,7 @@
 <figure><img src="synthese_heat_html_assets/image8.png" alt="Figure 7: Heatmaps des flux intercommunautaires sortant. Lire: 80.4% des interactions de la communauté C0 est dirigée vers elle-même, 6% vers C14" loading="lazy"/><figcaption>Figure 7: Heatmaps des flux intercommunautaires sortant. Lire: 80.4% des interactions de la communauté <span class="comm comm-c0" style="color:#196A24">C0</span> est dirigée vers elle-même, 6% vers <span class="comm comm-c14" style="color:#9F2B92">C14</span></figcaption></figure>
 <figure><img src="synthese_heat_html_assets/image9.png" alt="Figure 8: Heatmaps des flux intercommunautaires entrant. Lire: 57.9% des interactions de la communauté C546 proviennent d’elle-même, 19% depuis C229" loading="lazy"/><figcaption>Figure 8: Heatmaps des flux intercommunautaires entrant. Lire: 57.9% des interactions de la communauté <span class="comm comm-c546" style="color:#1c1b19;font-weight:700">C546</span> proviennent d’elle-même, 19% depuis <span class="comm comm-c229" style="color:#E97032">C229</span></figcaption></figure>
 
-</div><p></p><p>L’analyse des interactions entre communauté permet d’identifier les flux les plus caractéristiques. Dans un premier temps, notons que les communautés <span class="comm comm-c14" style="color:#9F2B92">C14</span>@fahdoumarconi et <span class="comm comm-c10" style="color:#CC0000">C10</span> @cerfiafr sont largement sujettes à des retweets. La communauté <span class="comm comm-c229" style="color:#E97032">C229</span>@maclessgy est quant à elle davantage sujette à des interactions REPLY et QUOTE, ce qui en fait un espace de débat plutôt qu’un espace de reprise.</p><ul class="body-list"><li>Notons que la communauté <span class="comm comm-c546" style="color:#1c1b19;font-weight:700">C546</span> liée aux médias traditionnels et aux experts climatiques, est la seule à interagir presque pour moitié avec les autres communautés (toutes les autres intéragissent principalement avec elles-mêmes). Cette communauté a un rôle central puisqu’elle est le pôle d’autorité informationnel du réseau (grand média, et scientifiques spécialisés), ce qui implique qu’elle est prise à partie au regard de ses déclarations : <span class="comm comm-c14" style="color:#9F2B92">C14</span> utilise l’actualité pour pointer l’inaction politique au sujet du climat et l’inconsidération des décideurs pour ceux qui souffrent de chaleur tandis que <span class="comm comm-c0" style="color:#196A24">C0</span> s’en prend aux journalistes pour leur alarmisme, et attaque les climatologues sur leur légitimité. En mai, La prise à partie de Daniel Riolo (<span class="comm comm-c0" style="color:#196A24">C0</span>) par le météorologue Serge Zaka sur ses propos à RMC faisant peu de cas des conséquences de la canicule, cristallise une défiance intercommunautaire entre l’arc <span class="comm comm-c546" style="color:#1c1b19;font-weight:700">C546</span>/<span class="comm comm-c14" style="color:#9F2B92">C14</span>/<span class="comm comm-c10" style="color:#CC0000">C10</span>, et la communauté défiante <span class="comm comm-c0" style="color:#196A24">C0</span>.</li></ul><p>Parmi les flux intercommunautaires principaux:</p><ul class="body-list"><li><span class="comm comm-c10" style="color:#CC0000">C10</span> &lt;&lt; &gt;&gt; <span class="comm comm-c14" style="color:#9F2B92">C14</span> : orienté principalement sur les conséquences sociales de la canicule</li><li><span class="comm comm-c229" style="color:#E97032">C229</span> &lt;&lt; &gt;&gt; <span class="comm comm-c0" style="color:#196A24">C0</span>: Les deux communautés partagent une proximité entre certains acteurs, ce qui explique des soutiens de <span class="comm comm-c0" style="color:#196A24">C0</span> vers <span class="comm comm-c229" style="color:#E97032">C229</span> mais aussi de <span class="comm comm-c229" style="color:#E97032">C229</span> vers <span class="comm comm-c0" style="color:#196A24">C0</span>.</li></ul><h3 id="activités-communautaires">Activités communautaires</h3><p>On remarque que la communauté la plus active est <span class="comm comm-c10" style="color:#CC0000">C10</span>@Cerfia. On peut attribuer ce volume à la part des RT (91%) produits vers un pôle essentiellement liés à des médias internet sensationnalistes (“FLASH”, “ALERTE INFO”, “INSOLITE”) et à une pluralité d’acteurs gravitant autour d’eux qui y réagissent. Le fait que cette communauté se distingue des autres semble justement indiquer qu’elle regroupe une masse d’utilisateur réagissant à un pôle d’actualité sans s’affilier à d’autres discours/acteurs/communautés davantage engagés dans les débats et controverses.</p><p>Le cluster défiant <span class="comm comm-c0" style="color:#196A24">C0</span>@sirafuera oscille entre une place de second et de premier. Dans son cas, l’approche des publications est bien plus contestataire, et principalement nourri de sa propre communauté (ainsi que de <span class="comm comm-c229" style="color:#E97032">C229</span>)</p><figure><img src="synthese_heat_html_assets/imagea.png" alt="Figure 9: Distribution de l’activité quotidienne par communauté principale" loading="lazy"/><figcaption>Figure 9: Distribution de l’activité quotidienne par communauté principale</figcaption></figure><p>Cette activité est cohérente avec le volume d’utilisateur de chaque communauté (<span class="comm comm-c10" style="color:#CC0000">C10</span> est premier et <span class="comm comm-c0" style="color:#196A24">C0</span> second). On remarquera une nécessaire suractivité de <span class="comm comm-c0" style="color:#196A24">C0</span> puisque malgré le fait qu’il ait 30k de moins que <span class="comm comm-c10" style="color:#CC0000">C10</span>, il demeure parfois plus actif que ce dernier.</p><figure><img src="synthese_heat_html_assets/imageb.png" alt="Figure 10: Nombre d’utilisateurs par communauté principale" loading="lazy"/><figcaption>Figure 10: Nombre d’utilisateurs par communauté principale</figcaption></figure><p>La distribution du nombre d'utilisateurs apporte également une lecture complémentaire à l'activité des communautés. <span class="comm comm-c10" style="color:#CC0000">C10</span>@cerfiaFR regroupe près d'1/3 de tous les utilisateurs, suivi par <span class="comm comm-c0" style="color:#196A24">C0</span>@Sirafuera. Le pôle des spécialistes et des médias <span class="comm comm-c546" style="color:#1c1b19;font-weight:700">C546</span>@BFMTV ne représente que 7,6&nbsp;% de tous les utilisateurs.</p><h3 id="engagements">Engagements</h3><div class="split-figure split-figure--engagements">
+</div><p></p><p>L’analyse des interactions entre communauté permet d’identifier les flux les plus caractéristiques. Dans un premier temps, notons que les communautés <span class="comm comm-c14" style="color:#9F2B92">C14</span>@fahdoumarconi et <span class="comm comm-c10" style="color:#CC0000">C10</span> @cerfiafr sont largement sujettes à des retweets. La communauté <span class="comm comm-c229" style="color:#E97032">C229</span>@maclessgy est quant à elle davantage sujette à des interactions REPLY et QUOTE, ce qui en fait un espace de débat plutôt qu’un espace de reprise.</p><ul class="body-list"><li>Notons que la communauté <span class="comm comm-c546" style="color:#1c1b19;font-weight:700">C546</span> liée aux médias traditionnels et aux experts climatiques, est la seule à interagir presque pour moitié avec les autres communautés (toutes les autres intéragissent principalement avec elles-mêmes). Cette communauté a un rôle central puisqu’elle est le pôle d’autorité informationnel du réseau (grand média, et scientifiques spécialisés), ce qui implique qu’elle est prise à partie au regard de ses déclarations : <span class="comm comm-c14" style="color:#9F2B92">C14</span> utilise l’actualité pour pointer l’inaction politique au sujet du climat et l’inconsidération des décideurs pour ceux qui souffrent de chaleur tandis que <span class="comm comm-c0" style="color:#196A24">C0</span> s’en prend aux journalistes pour leur alarmisme, et attaque les climatologues sur leur légitimité. En mai, La prise à partie de Daniel Riolo (<span class="comm comm-c0" style="color:#196A24">C0</span>) par le météorologue Serge Zaka sur ses propos à RMC faisant peu de cas des conséquences de la canicule, cristallise une défiance intercommunautaire entre l’arc <span class="comm comm-c546" style="color:#1c1b19;font-weight:700">C546</span>/<span class="comm comm-c14" style="color:#9F2B92">C14</span>/<span class="comm comm-c10" style="color:#CC0000">C10</span>, et la communauté défiante <span class="comm comm-c0" style="color:#196A24">C0</span>.</li></ul><p>Parmi les flux intercommunautaires principaux:</p><ul class="body-list"><li><span class="comm comm-c10" style="color:#CC0000">C10</span> &lt;&lt; &gt;&gt; <span class="comm comm-c14" style="color:#9F2B92">C14</span> : orienté principalement sur les conséquences sociales de la canicule</li><li><span class="comm comm-c229" style="color:#E97032">C229</span> &lt;&lt; &gt;&gt; <span class="comm comm-c0" style="color:#196A24">C0</span>: Les deux communautés partagent une proximité entre certains acteurs, ce qui explique des soutiens de <span class="comm comm-c0" style="color:#196A24">C0</span> vers <span class="comm comm-c229" style="color:#E97032">C229</span> mais aussi de <span class="comm comm-c229" style="color:#E97032">C229</span> vers <span class="comm comm-c0" style="color:#196A24">C0</span>.</li></ul><p>Ces configurations préparent la lecture des discours climatosceptiques&nbsp;: la production se concentre dans <span class="comm comm-c0" style="color:#196A24">C0</span>, tandis que les cibles se situent souvent dans ou au contact de <span class="comm comm-c546" style="color:#1c1b19;font-weight:700">C546</span>.</p><h3 id="activités-communautaires">Activités communautaires</h3><p>On remarque que la communauté la plus active est <span class="comm comm-c10" style="color:#CC0000">C10</span>@Cerfia. On peut attribuer ce volume à la part des RT (91%) produits vers un pôle essentiellement liés à des médias internet sensationnalistes (“FLASH”, “ALERTE INFO”, “INSOLITE”) et à une pluralité d’acteurs gravitant autour d’eux qui y réagissent. Le fait que cette communauté se distingue des autres semble justement indiquer qu’elle regroupe une masse d’utilisateur réagissant à un pôle d’actualité sans s’affilier à d’autres discours/acteurs/communautés davantage engagés dans les débats et controverses.</p><p>Le cluster défiant <span class="comm comm-c0" style="color:#196A24">C0</span>@sirafuera oscille entre une place de second et de premier. Dans son cas, l’approche des publications est bien plus contestataire, et principalement nourri de sa propre communauté (ainsi que de <span class="comm comm-c229" style="color:#E97032">C229</span>)</p><figure><img src="synthese_heat_html_assets/imagea.png" alt="Figure 9: Distribution de l’activité quotidienne par communauté principale" loading="lazy"/><figcaption>Figure 9: Distribution de l’activité quotidienne par communauté principale</figcaption></figure><p>Cette activité est cohérente avec le volume d’utilisateur de chaque communauté (<span class="comm comm-c10" style="color:#CC0000">C10</span> est premier et <span class="comm comm-c0" style="color:#196A24">C0</span> second). On remarquera une nécessaire suractivité de <span class="comm comm-c0" style="color:#196A24">C0</span> puisque malgré le fait qu’il ait 30k de moins que <span class="comm comm-c10" style="color:#CC0000">C10</span>, il demeure parfois plus actif que ce dernier.</p><figure><img src="synthese_heat_html_assets/imageb.png" alt="Figure 10: Nombre d’utilisateurs par communauté principale" loading="lazy"/><figcaption>Figure 10: Nombre d’utilisateurs par communauté principale</figcaption></figure><p>La distribution du nombre d'utilisateurs apporte également une lecture complémentaire à l'activité des communautés. <span class="comm comm-c10" style="color:#CC0000">C10</span>@cerfiaFR regroupe près d'1/3 de tous les utilisateurs, suivi par <span class="comm comm-c0" style="color:#196A24">C0</span>@Sirafuera. Le pôle des spécialistes et des médias <span class="comm comm-c546" style="color:#1c1b19;font-weight:700">C546</span>@BFMTV ne représente que 7,6&nbsp;% de tous les utilisateurs.</p><h3 id="engagements">Engagements</h3><div class="split-figure split-figure--engagements">
   <div class="split-figure-text">
     <p>La communauté <span class="comm comm-c0" style="color:#196A24">C0</span>, depuis laquelle émerge une large majorité des propos climatosceptiques, est aussi celle qui centralise le plus d’engagements en termes de volume, suivi de <span class="comm comm-c10" style="color:#CC0000">C10</span> et <span class="comm comm-c14" style="color:#9F2B92">C14</span>. Autrement dit, le cluster incluant les sources de vérités scientifiques, tout comme celui lié à un espace de débat ne représentent qu’une part minoritaire des engagements.</p>
   </div>
@@ -1961,11 +2067,75 @@
 <h3 id="une-désinformation-agressive">Une désinformation agressive</h3>
 <p>Concernant Zaka, principale cible chez les spécialistes météo, plusieurs arguments lui sont opposés :</p><ul class="arg-list"><li><span class="arg-label">Contre-calendrier historique (déjà vu)</span><ul class="arg-examples"><li>« en 1922 cetait pas une vague de chaleur du coup ? vu qu&#x27;elle n&#x27;apparaît pas sur le graphique ? l&#x27;indicateur thermique nationale n&#x27;existait pas sûrement ? »</li></ul></li></ul>
 <p>L’analyse linguistique révèle la multiplicité de références historiques pour mettre en perspective l’événement climatique, et souvent le remettre en cause&nbsp;: 1922, 1947, 1976, 2000, 2003, 2004, 2019, 2022. L’année 2003 est la plus récurrente et sert de référentiel extrême pour comparer l’épisode de 2026 à l’aune de différents prismes&nbsp;: relativiser l’intensité, souligner que le pays n’a pas tiré les leçons depuis, ou objectiver le dépassement de cette borne. Plus de 80&nbsp;% des utilisations de références historiques proviennent du cluster <span class="comm comm-c546" style="color:#1c1b19;font-weight:700">C546</span>@<a class="x-user" href="https://x.com/BFMTV" target="_blank" rel="noopener">BFMTV</a>.</p>
-<ul class="arg-list"><li><span class="arg-label">Banalisation du label (ce n’est pas une canicule)</span><ul class="arg-examples"><li>« Pour moi la canicule la plus marquante était celle de 2003. Or le petit épisode que mai 2026 n&#x27;a strictement rien à voir. »</li></ul></li><li><span class="arg-label">Détournement des cartes (dénonciation d’alarmisme, de signaux manipulateurs)</span><ul class="arg-examples"><li>« Vous ne faites que des tweets alarmistes et des cartes tout en rouge pour faire peur ! […] C&#x27;est moins putaclic hein ? »</li><li>« vous arrivez avec vos cartes plus rouges, elles n&#x27;ont plus aucun sens avec la réalité. Vous faites de la désinformation... »</li></ul></li><li><span class="arg-label">Invalidations des records</span><ul class="arg-examples"><li>« Toujours cette histoire de station de plus de 50 ans. […] stations […] enclavées dans les îlots de chaleur urbain »</li><li>« Pourquoi les records de chaleur viennent-ils de stations météo dont l&#x27;emplacement est un aéroport ? »</li></ul></li><li><span class="arg-label">Attaque</span><ul class="arg-examples"><li>« gourou apocalyptique Dr. Serge Zaka […] menteur pathologique et marchand de peur »</li><li>« Quelle arnaque ce mec […] sortir un post alarmiste dès qu&#x27;il y&#x27;a une monté de chaleur […] Combien tu gagné pour faire ça ? »</li></ul></li></ul><p>Les attaques prennent souvent la forme de désignation stigmatisantes, le plus souvent des néologismes qui associent les écologistes à différents adjectifs infamants :</p><div class="split-figure split-figure--wide-media">
-  <div class="split-figure-text">
-    <p class="taxo"><span class="taxo-label">Climato-stigmatisation</span><span class="taxo-body">climato-apocalyptique(s) (310), climato-alarmiste(s) (130), , climato-terroriste(s) / climato-terrorisme (15), climato-condriaque(s) (9), climato-fasciste(s) (8), climato-machin(s) (8), climato-névrosé(s) (8), climato-brailleur(s), climato-bigot (1), climato-facheux (1), climatodictateur(s), climato-anxieux / anxieux (34), climato-hystérique(s) / hystérisme (17), climato-dépressif(s) (7), climato-complotiste(s), climato-findumonde (3),climato-gaga(s) (3),</span></p><p class="taxo"><span class="taxo-label">L’écologie comme une dictature</span><span class="taxo-body">réchauffiste(s) (191),khmers verts (119), zécolo(s) (46), secte verte / secte écolo / secte du climat (7), écolo-terroriste(s) / écolo-fasciste(s) (4)(3), intégriste(s) (climat/vert) (3), ayatollahs de [climat / décroissance / vert] (44), écolo-bobo(s) (37),</span></p><p class="taxo"><span class="taxo-label">Insultes et pathologisation</span><span class="taxo-body">crétin / débile / cinglé / timbré / mongol / teubé  (36),</span></p><p class="taxo"><span class="taxo-label">L’écologie comme une arnaque</span><span class="taxo-body">escrologie / escrologiste / escrolo/ escrologue, et variantes (1318)</span></p><p>Sur les 2269 tweets utilisant ce procédé de désignations infamantes : 34% sont issus de tweets originaux, 39% sont des retweets, 23% des replies et 3.5% des quotes.</p><p>Les publications originales (hors RT) reçoivent au total 26688 likes (19 en moyenne), 3049 replies, 364 quotes, et 8223 retweets (6 en moyenne)</p><p>Là aussi, ces qualifications proviennent essentiellement du cluster <span class="comm comm-c0" style="color:#196A24">C0</span>.</p>
+<ul class="arg-list"><li><span class="arg-label">Banalisation du label (ce n’est pas une canicule)</span><ul class="arg-examples"><li>« Pour moi la canicule la plus marquante était celle de 2003. Or le petit épisode que mai 2026 n&#x27;a strictement rien à voir. »</li></ul></li><li><span class="arg-label">Détournement des cartes (dénonciation d’alarmisme, de signaux manipulateurs)</span><ul class="arg-examples"><li>« Vous ne faites que des tweets alarmistes et des cartes tout en rouge pour faire peur ! […] C&#x27;est moins putaclic hein ? »</li><li>« vous arrivez avec vos cartes plus rouges, elles n&#x27;ont plus aucun sens avec la réalité. Vous faites de la désinformation... »</li></ul></li><li><span class="arg-label">Invalidations des records</span><ul class="arg-examples"><li>« Toujours cette histoire de station de plus de 50 ans. […] stations […] enclavées dans les îlots de chaleur urbain »</li><li>« Pourquoi les records de chaleur viennent-ils de stations météo dont l&#x27;emplacement est un aéroport ? »</li></ul></li><li><span class="arg-label">Attaque</span><ul class="arg-examples"><li>« gourou apocalyptique Dr. Serge Zaka […] menteur pathologique et marchand de peur »</li><li>« Quelle arnaque ce mec […] sortir un post alarmiste dès qu&#x27;il y&#x27;a une monté de chaleur […] Combien tu gagné pour faire ça ? »</li></ul></li></ul>
+<p>L’analyse linguistique met en évidence une dimension fortement stigmatisante de ces discours. Les attaques visant les acteurs de la cause climatique prennent fréquemment la forme de désignations péjoratives, notamment de néologismes ou des termes renvoyant à la tromperie, à la pathologie ou à l’autoritarisme. Ces procédés contribuent à disqualifier les acteurs et les discours associés à la cause climatique, en les inscrivant dans des cadres interprétatifs qui mettent en cause leur rationalité, leur intégrité ou leur légitimité.</p>
+<p>À partir de l’extraction des cofixations associées à la racine <em>climato-</em>, des télescopages lexicaux et des analogies mobilisées pour désigner les mouvements ou acteurs de la défense du climat, <strong>1&nbsp;697</strong> occurrences ont été identifiées et regroupées en quatre registres de stigmatisation&nbsp;:</p>
+<figure class="fig-bars" id="fig-climato-stigma">
+  <p class="fig-bars-meta">1&nbsp;697 occurrences, 31 formes, corpus P1 complet (375&nbsp;654 publications)</p>
+  <div class="fig-bars-plot">
+    <ol class="fig-bars-list">
+      <li style="--w:98.2%;--c:#7a4468">
+        <span class="fig-bars-lab"><b>D.</b> Écologie comme arnaque <i>(escrologie…)</i></span>
+        <span class="fig-bars-row"><span class="fig-bars-track"><span class="fig-bars-fill"></span></span><span class="fig-bars-n">589 <small>34,7&nbsp;%</small></span></span>
+      </li>
+      <li style="--w:79.2%;--c:#c45c32">
+        <span class="fig-bars-lab"><b>A.</b> Pathologisation psychiatrique <i>(climato-anxieux…)</i></span>
+        <span class="fig-bars-row"><span class="fig-bars-track"><span class="fig-bars-fill"></span></span><span class="fig-bars-n">475 <small>28,0&nbsp;%</small></span></span>
+      </li>
+      <li style="--w:77.2%;--c:#8b8680">
+        <span class="fig-bars-lab"><b>C.</b> Insultes et pathologisation directe</span>
+        <span class="fig-bars-row"><span class="fig-bars-track"><span class="fig-bars-fill"></span></span><span class="fig-bars-n">463 <small>27,3&nbsp;%</small></span></span>
+      </li>
+      <li style="--w:28.3%;--c:#3d4f6f">
+        <span class="fig-bars-lab"><b>B.</b> Écologie comme dictature <i>(réchauffiste…)</i></span>
+        <span class="fig-bars-row"><span class="fig-bars-track"><span class="fig-bars-fill"></span></span><span class="fig-bars-n">170 <small>10,0&nbsp;%</small></span></span>
+      </li>
+    </ol>
+    <div class="fig-bars-axis" aria-hidden="true">
+      <span class="fig-bars-ticks"><span>0</span><span>100</span><span>200</span><span>300</span><span>400</span><span>500</span><span>600</span></span>
+      <span class="fig-bars-axis-label">Occurrences (corpus P1, 375&nbsp;654 publications)</span>
+    </div>
   </div>
-  <figure class="split-figure-media"><img src="synthese_heat_html_assets/image18_p1.png" alt="Figure 17: Distribution temporelle par communauté Louvain des publications associées à un qualificatifs infamant des militants écologistes (P1, 20 mai – 7 juin)" loading="lazy"/><figcaption>Figure 17: Distribution temporelle par communauté Louvain des publications associées à un qualificatifs infamant des militants écologistes (P1, 20 mai – 7 juin)</figcaption></figure>
+  <figcaption>Figure 17: Répartition du lexique de climato-stigmatisation par catégorie</figcaption>
+</figure>
+<ul class="arg-list stigma-regs">
+  <li>
+    <span class="arg-label">Tromperie et arnaque</span>
+    <p>Le registre de la tromperie et de l’arnaque constitue le registre le plus représenté, avec <strong>34,7&nbsp;%</strong> des occurrences. Il se structure principalement autour du terme <em>escrologie</em> et de ses variantes, mobilisées par 536 comptes distincts. Ces désignations construisent l’écologie comme une entreprise de tromperie, et déplacent ainsi la contestation du terrain de la validité scientifique vers celui de l’intégrité des acteurs qui portent ces discours.</p>
+    <ul class="arg-examples">
+      <li>escrologie / escrologiste / escrolo / escrologue, et variantes</li>
+    </ul>
+  </li>
+  <li>
+    <span class="arg-label">Registre psychologisant et apocalyptique</span>
+    <p>Le registre psychologisant et apocalyptique vise quant à lui la rationalité des acteurs et des discours climatiques. Il s’organise notamment autour de qualificatifs tels que <em>climato-apocalyptique</em>, qui associent la prise de position en faveur de l’action climatique à des formes d’excès, d’irrationalité ou de catastrophisme.</p>
+    <ul class="arg-examples">
+      <li>climato-apocalyptique(s) (310), climato-alarmiste(s) (130), climato-anxieux (34), climato-hystérique(s) (17), climato-condriaque(s) (9), climato-névrosé(s) (8), climato-dépressif(s) (7), climato-gaga(s) (3)</li>
+    </ul>
+  </li>
+  <li>
+    <span class="arg-label">Insulte et disqualification directe</span>
+    <p>Le registre de l’insulte et de la disqualification directe constitue un autre mode récurrent d’attaque. Le qualificatif <em>débile</em> représente à lui seul 68&nbsp;% des occurrences de cette catégorie, témoignant d’une stratégie de disqualification qui ne porte plus sur les arguments avancés, mais directement sur les capacités intellectuelles ou la rationalité des personnes visées.</p>
+    <ul class="arg-examples">
+      <li>débile, crétin, cinglé, timbré, mongol, teubé</li>
+    </ul>
+  </li>
+  <li>
+    <span class="arg-label">Politisation autoritaire</span>
+    <p>Enfin, le registre de la politisation autoritaire associe la cause écologique à des formes de contrainte, de contrôle ou d’autoritarisme. Le terme <em>réchauffisme</em> participe notamment à cette construction discursive en présentant la défense de la thèse du réchauffement climatique comme une posture idéologique ou politique plutôt que comme une position fondée sur un consensus scientifique.</p>
+    <ul class="arg-examples">
+      <li>réchauffiste(s) (191), khmers verts (119), zécolo(s) (46), ayatollahs de [climat / décroissance / vert] (44), écolo-bobo(s) (37), secte verte / secte écolo (7), écolo-terroriste(s) / écolo-fasciste(s), climatodictateur(s)</li>
+    </ul>
+  </li>
+</ul>
+<p>En cohérence avec la domination de la super-catégorie CARDS&nbsp;5 («&nbsp;Les mouvements pour le climat ne sont pas fiables&nbsp;»), les résultats montrent que ces discours ne se limitent pas à contester l’existence ou l’intensité d’un phénomène météorologique particulier. Ils opèrent également, et souvent prioritairement, une disqualification des acteurs, des institutions et des savoirs associés à la cause climatique. Trois mécanismes discursifs principaux peuvent ainsi être distingués&nbsp;: la mise en doute de l’intégrité des acteurs, la disqualification de leur rationalité et leur construction comme agents idéologiques ou autoritaires.</p>
+<div class="split-figure split-figure--wide-media" id="fig-infamant-types">
+  <div class="split-figure-text">
+    <div class="taxo-grid">
+<p class="taxo"><span class="taxo-label">Climato-stigmatisation</span><span class="taxo-body">climato-apocalyptique(s) (310), climato-alarmiste(s) (130), , climato-terroriste(s) / climato-terrorisme (15), climato-condriaque(s) (9), climato-fasciste(s) (8), climato-machin(s) (8), climato-névrosé(s) (8), climato-brailleur(s), climato-bigot (1), climato-facheux (1), climatodictateur(s), climato-anxieux / anxieux (34), climato-hystérique(s) / hystérisme (17), climato-dépressif(s) (7), climato-complotiste(s), climato-findumonde (3),climato-gaga(s) (3),</span></p><p class="taxo"><span class="taxo-label">L’écologie comme une dictature</span><span class="taxo-body">réchauffiste(s) (191),khmers verts (119), zécolo(s) (46), secte verte / secte écolo / secte du climat (7), écolo-terroriste(s) / écolo-fasciste(s) (4)(3), intégriste(s) (climat/vert) (3), ayatollahs de [climat / décroissance / vert] (44), écolo-bobo(s) (37),</span></p><p class="taxo"><span class="taxo-label">Insultes et pathologisation</span><span class="taxo-body">crétin / débile / cinglé / timbré / mongol / teubé  (36),</span></p><p class="taxo"><span class="taxo-label">L’écologie comme une arnaque</span><span class="taxo-body">escrologie / escrologiste / escrolo/ escrologue, et variantes (1318)</span></p></div>
+<p>Sur les 2269 tweets utilisant ce procédé de désignations infamantes : 34% sont issus de tweets originaux, 39% sont des retweets, 23% des replies et 3.5% des quotes.</p><p>Les publications originales (hors RT) reçoivent au total 26688 likes (19 en moyenne), 3049 replies, 364 quotes, et 8223 retweets (6 en moyenne)</p><p>Là aussi, ces qualifications proviennent essentiellement du cluster <span class="comm comm-c0" style="color:#196A24">C0</span>.</p>
+  </div>
+  <figure class="split-figure-media"><img src="synthese_heat_html_assets/image18_p1.png" alt="Figure 18: Distribution temporelle par communauté Louvain des publications associées à des qualificatifs infamants des militants écologistes (P1, 20 mai – 7 juin)" loading="lazy"/><figcaption>Figure 18: Distribution temporelle par communauté Louvain des publications associées à des qualificatifs infamants des militants écologistes (P1, 20 mai – 7 juin)</figcaption></figure>
 </div><h3 id="doù-proviennent-les-discours-climatosceptiques">D’où proviennent les discours climatosceptiques ?</h3><p>L’analyse CARDS montre que l’essentiel des auteurs de discours climatosceptiques se situe dans ce pôle défiant, caractérisé par la présence de comptes antivax, antisystème, rattachés aux mouvances d’extrême droite, ce qui était déjà observé depuis quelques années déjà.</p>
 <figure class="hero-connectome" id="fig-cards-connectome">
   <div class="connectome-frame">
