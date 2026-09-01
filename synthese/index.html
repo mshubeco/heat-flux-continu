@@ -346,8 +346,14 @@
   }
 
   .split-figure--figs34 .split-figure-media-col {
-    position: static;
     gap: 1rem;
+  }
+  @media (min-width: 980px) {
+    .split-figure--figs34 .split-figure-media-col {
+      position: sticky;
+      top: 1.1rem;
+      align-self: start;
+    }
   }
   .split-figure--figs34 .split-figure-media img {
     max-height: min(34vh, 18rem);
