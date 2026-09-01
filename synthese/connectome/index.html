@@ -204,6 +204,13 @@ const P = {
   exposure: 0.72,
 };
 const MIN_CARDS = 5;
+/** Hubs d'in-strength du rapport (Louvain ALL) — toujours labellisés en figure 1. */
+const REPORT_HUBS = new Set([
+  'sirafuera', 'cerfiafr', 'fahdoumarconi', 'maclesggy', 'bfmtv', 'actufoot_',
+]);
+function isReportHub(n) {
+  return REPORT_HUBS.has(String(n.l || '').replace(/^@/, '').toLowerCase());
+}
 const params = new URLSearchParams(location.search);
 const showCards = !(
   params.get('cards') === '0' ||
@@ -658,6 +665,7 @@ function rebuildLabels() {
     i,
     gephiSize: Math.max(n.deg || 1, 1),
     cards: n.cards || 0,
+    isHub: isReportHub(n),
   }));
 
   let pool = scored;
@@ -684,6 +692,11 @@ function rebuildLabels() {
 
   const budget = P.nLabels;
   const picked = new Map();
+  if (!showCards) {
+    for (const n of scored) {
+      if (n.isHub) picked.set(n.i, n);
+    }
+  }
   const mainComs = comOrder.filter((c) => c.size >= 8).slice(0, 28);
 
   for (const c of mainComs) {
@@ -727,6 +740,7 @@ function rebuildLabels() {
     const text = node.l.startsWith('@') ? node.l : `@${node.l}`;
     const isSelected = highlightSelected && isCardsNode(node);
     if (isSelected) el.classList.add('hl-selected');
+    if (node.isHub && !showCards) el.classList.add('hub');
     el.textContent = text;
 
     // Normalize then power-curve amplify tops (like Gephi ranking spline feel)
@@ -736,10 +750,11 @@ function rebuildLabels() {
     const mix = 0.45 * t + 0.55 * abs;
     let fontPx = Math.round(7 + 32 * mix);
     if (isSelected) fontPx = Math.max(Math.round(fontPx * 1.15), 12);
+    if (node.isHub && !showCards) fontPx = Math.max(fontPx, 16);
 
     el.style.fontSize = `${fontPx}px`;
-    el.style.fontWeight = isSelected ? '700' : mix > 0.7 ? '700' : mix > 0.4 ? '600' : '500';
-    el.style.zIndex = String(Math.round(10 + 90 * mix) + (isSelected ? 50 : 0));
+    el.style.fontWeight = (isSelected || (node.isHub && !showCards)) ? '700' : mix > 0.7 ? '700' : mix > 0.4 ? '600' : '500';
+    el.style.zIndex = String(Math.round(10 + 90 * mix) + (isSelected ? 50 : 0) + (node.isHub && !showCards ? 80 : 0));
     el.style.opacity = isSelected ? '1' : '0.94';
     el.style.color = isSelected ? '#ff5c4a' : rgbCss(node.c);
     el.style.textShadow = isSelected
@@ -761,6 +776,7 @@ function rebuildLabels() {
       boxH: fontPx * 1.35,
       com: node.com,
       isSelected,
+      isHub: !!(node.isHub && !showCards),
       visible: false,
       ox: 0,
       oy: 0,
@@ -811,9 +827,15 @@ function projectLabels() {
     (a, b) => (b.gephiSize - a.gephiSize) || (b.deg - a.deg)
   );
   const allowed = new Set(bySize.slice(0, revealN));
+  for (const it of labelItems) {
+    if (it.isHub) allowed.add(it);
+  }
 
-  // Place largest Gephi size first — they win collisions
-  const candidates = bySize.filter((it) => allowed.has(it));
+  // Hubs du rapport d'abord (ils gagnent les collisions), puis plus gros degrés
+  const candidates = [
+    ...labelItems.filter((it) => it.isHub).sort((a, b) => (b.gephiSize - a.gephiSize) || (b.deg - a.deg)),
+    ...bySize.filter((it) => allowed.has(it) && !it.isHub),
+  ];
   const placed = [];
 
   for (const it of labelItems) {
@@ -1268,7 +1290,7 @@ controls.addEventListener('start', () => hideTip());
   projectLabels();
 })();
 
-const DATA_V = 'alllinks20260901';
+const DATA_V = 'hubs20260901';
 function dataUrl(name) {
   const u = new URL('./data/' + name, import.meta.url);
   u.searchParams.set('v', DATA_V);
