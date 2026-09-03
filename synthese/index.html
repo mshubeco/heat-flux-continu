@@ -1713,6 +1713,50 @@
     width: var(--w);
     background: var(--c);
   }
+  .fig-bars-title {
+    font-family: system-ui, sans-serif;
+    font-size: 0.95rem;
+    font-weight: 650;
+    color: var(--ink);
+    margin: 0 0 0.4rem;
+    line-height: 1.35;
+  }
+  .fig-bars-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 0.9rem;
+    list-style: none;
+    margin: 0 0 0.7rem;
+    padding: 0;
+    font-family: system-ui, sans-serif;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+  .fig-bars-legend li {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  .fig-bars-legend .sw {
+    width: 0.7rem;
+    height: 0.7rem;
+    flex-shrink: 0;
+  }
+  .fig-bars-legend .sw.is-rt, .fig-bars-seg.is-rt { background: #1e3a5f; }
+  .fig-bars-legend .sw.is-quote, .fig-bars-seg.is-quote { background: #E97032; }
+  .fig-bars-legend .sw.is-reply, .fig-bars-seg.is-reply { background: #2f6f9a; }
+  .fig-bars-legend .sw.is-mention, .fig-bars-seg.is-mention { background: #b8a06a; }
+  .fig-bars-stack {
+    display: flex;
+    height: 100%;
+    width: var(--w);
+    min-width: 0;
+  }
+  .fig-bars-seg {
+    display: block;
+    height: 100%;
+    flex: none;
+  }
   .fig-bars-n {
     font-family: system-ui, sans-serif;
     font-variant-numeric: tabular-nums;
@@ -1796,40 +1840,46 @@
 </div>
 
 <figure class="fig-bars" id="fig-ext-in">
-  <p class="fig-bars-meta">Louvain ALL · 20 mai – 29 juin 2026 · interactions reçues (in-strength)</p>
+  <p class="fig-bars-title">Part des interactions reçues depuis l’extérieur de la communauté</p>
+  <ul class="fig-bars-legend" aria-label="Types d’interaction">
+    <li><span class="sw is-rt"></span>RT</li>
+    <li><span class="sw is-quote"></span>Quote</li>
+    <li><span class="sw is-reply"></span>Reply</li>
+    <li><span class="sw is-mention"></span>Mention</li>
+  </ul>
   <div class="fig-bars-plot">
     <ol class="fig-bars-list">
-      <li style="--w:87.5%;--c:#1c1b19">
+      <li style="--w:87.5%">
         <span class="fig-bars-lab"><b>C546</b> <i>@bfmtv · média / météo</i></span>
-        <span class="fig-bars-row"><span class="fig-bars-track"><span class="fig-bars-fill"></span></span><span class="fig-bars-n">43,7&nbsp;%</span></span>
+        <span class="fig-bars-row"><span class="fig-bars-track"><span class="fig-bars-stack"><span class="fig-bars-seg is-rt" style="width:65.6%" title="RT 65,6 %"></span><span class="fig-bars-seg is-quote" style="width:0.5%" title="Quote 0,5 %"></span><span class="fig-bars-seg is-reply" style="width:6.9%" title="Reply 6,9 %"></span><span class="fig-bars-seg is-mention" style="width:27.0%" title="Mention 27,0 %"></span></span></span><span class="fig-bars-n">43,7&nbsp;%</span></span>
       </li>
-      <li style="--w:64.6%;--c:#9F2B92">
+      <li style="--w:64.6%">
         <span class="fig-bars-lab"><b>C14</b> <i>@fahdoumarconi · gauche / social</i></span>
-        <span class="fig-bars-row"><span class="fig-bars-track"><span class="fig-bars-fill"></span></span><span class="fig-bars-n">32,3&nbsp;%</span></span>
+        <span class="fig-bars-row"><span class="fig-bars-track"><span class="fig-bars-stack"><span class="fig-bars-seg is-rt" style="width:81.2%" title="RT 81,2 %"></span><span class="fig-bars-seg is-quote" style="width:0.2%" title="Quote 0,2 %"></span><span class="fig-bars-seg is-reply" style="width:4.7%" title="Reply 4,7 %"></span><span class="fig-bars-seg is-mention" style="width:13.9%" title="Mention 13,9 %"></span></span></span><span class="fig-bars-n">32,3&nbsp;%</span></span>
       </li>
-      <li style="--w:52.5%;--c:#7a7a7a">
+      <li style="--w:52.5%">
         <span class="fig-bars-lab"><b>C75</b> <i>@actufoot_ · sport</i></span>
-        <span class="fig-bars-row"><span class="fig-bars-track"><span class="fig-bars-fill"></span></span><span class="fig-bars-n">26,2&nbsp;%</span></span>
+        <span class="fig-bars-row"><span class="fig-bars-track"><span class="fig-bars-stack"><span class="fig-bars-seg is-rt" style="width:72.4%" title="RT 72,4 %"></span><span class="fig-bars-seg is-quote" style="width:0.1%" title="Quote 0,1 %"></span><span class="fig-bars-seg is-reply" style="width:4.2%" title="Reply 4,2 %"></span><span class="fig-bars-seg is-mention" style="width:23.3%" title="Mention 23,3 %"></span></span></span><span class="fig-bars-n">26,2&nbsp;%</span></span>
       </li>
-      <li style="--w:51.4%;--c:#E97032">
+      <li style="--w:51.4%">
         <span class="fig-bars-lab"><b>C229</b> <i>@maclesggy · débat clim</i></span>
-        <span class="fig-bars-row"><span class="fig-bars-track"><span class="fig-bars-fill"></span></span><span class="fig-bars-n">25,7&nbsp;%</span></span>
+        <span class="fig-bars-row"><span class="fig-bars-track"><span class="fig-bars-stack"><span class="fig-bars-seg is-rt" style="width:54.0%" title="RT 54,0 %"></span><span class="fig-bars-seg is-quote" style="width:0.3%" title="Quote 0,3 %"></span><span class="fig-bars-seg is-reply" style="width:24.8%" title="Reply 24,8 %"></span><span class="fig-bars-seg is-mention" style="width:20.9%" title="Mention 20,9 %"></span></span></span><span class="fig-bars-n">25,7&nbsp;%</span></span>
       </li>
-      <li style="--w:41.7%;--c:#CC0000">
+      <li style="--w:41.7%">
         <span class="fig-bars-lab"><b>C10</b> <i>@cerfiafr · alerte info</i></span>
-        <span class="fig-bars-row"><span class="fig-bars-track"><span class="fig-bars-fill"></span></span><span class="fig-bars-n">20,8&nbsp;%</span></span>
+        <span class="fig-bars-row"><span class="fig-bars-track"><span class="fig-bars-stack"><span class="fig-bars-seg is-rt" style="width:84.7%" title="RT 84,7 %"></span><span class="fig-bars-seg is-reply" style="width:4.1%" title="Reply 4,1 %"></span><span class="fig-bars-seg is-mention" style="width:11.2%" title="Mention 11,2 %"></span></span></span><span class="fig-bars-n">20,8&nbsp;%</span></span>
       </li>
-      <li style="--w:39.0%;--c:#196A24">
+      <li style="--w:39.0%">
         <span class="fig-bars-lab"><b>C0</b> <i>@sirafuera · défiante</i></span>
-        <span class="fig-bars-row"><span class="fig-bars-track"><span class="fig-bars-fill"></span></span><span class="fig-bars-n">19,5&nbsp;%</span></span>
+        <span class="fig-bars-row"><span class="fig-bars-track"><span class="fig-bars-stack"><span class="fig-bars-seg is-rt" style="width:72.7%" title="RT 72,7 %"></span><span class="fig-bars-seg is-quote" style="width:0.2%" title="Quote 0,2 %"></span><span class="fig-bars-seg is-reply" style="width:6.2%" title="Reply 6,2 %"></span><span class="fig-bars-seg is-mention" style="width:20.9%" title="Mention 20,9 %"></span></span></span><span class="fig-bars-n">19,5&nbsp;%</span></span>
       </li>
     </ol>
     <div class="fig-bars-axis" aria-hidden="true">
       <span class="fig-bars-ticks"><span>0</span><span>10</span><span>20</span><span>30</span><span>40</span><span>50&nbsp;%</span></span>
-      <span class="fig-bars-axis-label">Part des interactions reçues depuis une autre communauté</span>
+      <span class="fig-bars-axis-label">Échelle 0–50&nbsp;%</span>
     </div>
   </div>
-  <figcaption>Figure 8: Part des interactions reçues depuis l’extérieur de la communauté. <span class="comm comm-c546" style="color:#1c1b19;font-weight:700">C546</span> est la plus poreuse (43,7&nbsp;%)&nbsp;; <span class="comm comm-c0" style="color:#196A24">C0</span> et <span class="comm comm-c10" style="color:#CC0000">C10</span> restent les plus endogènes (~20&nbsp;%). Échelle 0–50&nbsp;%.</figcaption>
+  <figcaption>Figure 8: Part des interactions reçues depuis l’extérieur de la communauté. <span class="comm comm-c546" style="color:#1c1b19;font-weight:700">C546</span> est la plus poreuse (43,7&nbsp;%)&nbsp;; <span class="comm comm-c0" style="color:#196A24">C0</span> et <span class="comm comm-c10" style="color:#CC0000">C10</span> restent les plus endogènes (~20&nbsp;%). Couleur dans la barre = type d’interaction (un tweet n’est compté qu’une fois).</figcaption>
 </figure>
 <p></p><p>L’analyse des interactions entre communauté permet d’identifier les flux les plus caractéristiques. Dans un premier temps, notons que les communautés <span class="comm comm-c14" style="color:#9F2B92">C14</span>@fahdoumarconi et <span class="comm comm-c10" style="color:#CC0000">C10</span> @cerfiafr sont largement sujettes à des retweets. La communauté <span class="comm comm-c229" style="color:#E97032">C229</span>@maclessgy est quant à elle davantage sujette à des interactions REPLY et QUOTE, ce qui en fait un espace de débat plutôt qu’un espace de reprise.</p><ul class="body-list"><li>Notons que la communauté <span class="comm comm-c546" style="color:#1c1b19;font-weight:700">C546</span> liée aux médias traditionnels et aux experts climatiques, est la seule à interagir presque pour moitié avec les autres communautés (toutes les autres intéragissent principalement avec elles-mêmes). Cette communauté a un rôle central puisqu’elle est le pôle d’autorité informationnel du réseau (grand média, et scientifiques spécialisés), ce qui implique qu’elle est prise à partie au regard de ses déclarations : <span class="comm comm-c14" style="color:#9F2B92">C14</span> utilise l’actualité pour pointer l’inaction politique au sujet du climat et l’inconsidération des décideurs pour ceux qui souffrent de chaleur tandis que <span class="comm comm-c0" style="color:#196A24">C0</span> s’en prend aux journalistes pour leur alarmisme, et attaque les climatologues sur leur légitimité. En mai, La prise à partie de Daniel Riolo (<span class="comm comm-c0" style="color:#196A24">C0</span>) par le météorologue Serge Zaka sur ses propos à RMC faisant peu de cas des conséquences de la canicule, cristallise une défiance intercommunautaire entre l’arc <span class="comm comm-c546" style="color:#1c1b19;font-weight:700">C546</span>/<span class="comm comm-c14" style="color:#9F2B92">C14</span>/<span class="comm comm-c10" style="color:#CC0000">C10</span>, et la communauté défiante <span class="comm comm-c0" style="color:#196A24">C0</span>.</li></ul><p>Parmi les flux intercommunautaires principaux:</p><ul class="body-list"><li><span class="comm comm-c10" style="color:#CC0000">C10</span> &lt;&lt; &gt;&gt; <span class="comm comm-c14" style="color:#9F2B92">C14</span> : orienté principalement sur les conséquences sociales de la canicule</li><li><span class="comm comm-c229" style="color:#E97032">C229</span> &lt;&lt; &gt;&gt; <span class="comm comm-c0" style="color:#196A24">C0</span>: Les deux communautés partagent une proximité entre certains acteurs, ce qui explique des soutiens de <span class="comm comm-c0" style="color:#196A24">C0</span> vers <span class="comm comm-c229" style="color:#E97032">C229</span> mais aussi de <span class="comm comm-c229" style="color:#E97032">C229</span> vers <span class="comm comm-c0" style="color:#196A24">C0</span>.</li></ul><p>Ces configurations préparent la lecture des discours climatosceptiques&nbsp;: la production se concentre dans <span class="comm comm-c0" style="color:#196A24">C0</span>, tandis que les cibles se situent souvent dans ou au contact de <span class="comm comm-c546" style="color:#1c1b19;font-weight:700">C546</span>.</p><h3 id="activités-communautaires">Activités communautaires</h3><p>On remarque que la communauté la plus active est <span class="comm comm-c10" style="color:#CC0000">C10</span>@Cerfia. On peut attribuer ce volume à la part des RT (91%) produits vers un pôle essentiellement liés à des médias internet sensationnalistes (“FLASH”, “ALERTE INFO”, “INSOLITE”) et à une pluralité d’acteurs gravitant autour d’eux qui y réagissent. Le fait que cette communauté se distingue des autres semble justement indiquer qu’elle regroupe une masse d’utilisateur réagissant à un pôle d’actualité sans s’affilier à d’autres discours/acteurs/communautés davantage engagés dans les débats et controverses.</p><p>Le cluster défiant <span class="comm comm-c0" style="color:#196A24">C0</span>@sirafuera oscille entre une place de second et de premier. Dans son cas, l’approche des publications est bien plus contestataire, et principalement nourri de sa propre communauté (ainsi que de <span class="comm comm-c229" style="color:#E97032">C229</span>)</p><figure><img src="synthese_heat_html_assets/imagea.png" alt="Figure 9: Distribution de l’activité quotidienne par communauté principale" loading="lazy"/><figcaption>Figure 9: Distribution de l’activité quotidienne par communauté principale</figcaption></figure><p>Cette activité est cohérente avec le volume d’utilisateur de chaque communauté (<span class="comm comm-c10" style="color:#CC0000">C10</span> est premier et <span class="comm comm-c0" style="color:#196A24">C0</span> second). On remarquera une nécessaire suractivité de <span class="comm comm-c0" style="color:#196A24">C0</span> puisque malgré le fait qu’il ait 30k de moins que <span class="comm comm-c10" style="color:#CC0000">C10</span>, il demeure parfois plus actif que ce dernier.</p><figure><img src="synthese_heat_html_assets/imageb.png" alt="Figure 10: Nombre d’utilisateurs par communauté principale" loading="lazy"/><figcaption>Figure 10: Nombre d’utilisateurs par communauté principale</figcaption></figure><p>La distribution du nombre d'utilisateurs apporte également une lecture complémentaire à l'activité des communautés. <span class="comm comm-c10" style="color:#CC0000">C10</span>@cerfiaFR regroupe près d'1/3 de tous les utilisateurs, suivi par <span class="comm comm-c0" style="color:#196A24">C0</span>@Sirafuera. Le pôle des spécialistes et des médias <span class="comm comm-c546" style="color:#1c1b19;font-weight:700">C546</span>@BFMTV ne représente que 7,6&nbsp;% de tous les utilisateurs.</p><h3 id="engagements">Engagements</h3><div class="split-figure split-figure--engagements">
   <div class="split-figure-text">
