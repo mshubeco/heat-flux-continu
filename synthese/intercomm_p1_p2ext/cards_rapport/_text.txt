@@ -1,0 +1,827 @@
+
+
+
+Analyse de la désinformation climatique sur X
+
+Premier pic de chaleur, 20 mai – 7 juin 2026
+
+Projet HEAT — Rapport d'analyse · Version du 15 juillet 2026
+
+Résumé
+
+Ce rapport décrit comment des messages climato-sceptiques se sont organisés sur X (ex-Twitter) pendant le premier épisode de chaleur de mai–juin 2026 en France. Nous avons collecté 375 654 tweets sur la période, dont 112 040
+non-retweet. Chaque tweet a été rattaché à une communauté d'interaction (algorithme de Louvain) et, pour une partie du corpus, classé selon la grille CARDS qui recense les formes habituelles de contestation climatique.
+
+Trois résultats ressortent. D'abord, la production sceptique est très inégalement répartie :
+la communauté C31 (autour de l'éditorialiste @danielriolo) produit à elle seule 55,5 % de tous les tweets CARDS du corpus, avec un taux interne de 23,3 %, contre 25,4 % du total et un taux de 6,5 % pour la communauté météo (C13).
+Ce discours climatosceptique s’organise essentiellement autour d’une défiance
+anti-science et anti-média, complémentaire à une négation de l’épisode de chaleur comme symptôme d’un réchauffement climatique. En dehors des
+acteurs au Coeur de cette désinformation,
+les
+cibles principales de ces publications sont les
+médias
+traditionnels
+reçoivent le plus d'attaques
+ainsi que les experts du climats.
+L'amplification par retweet représente 81 % des expositions
+totales de ces discours climatosceptiques.
+
+Pour lire ce rapport : quelques
+definitions
+
+Tweet CARDS
+:
+Tweet classé comme contestation climatique explicite selon la grille CARDS et nos règles de lecture (voir section Méthode).
+
+Communauté Louvain:
+Groupe de comptes qui interagissent beaucoup entre eux. Le nom C31 ou C13 renvoie à un numéro de communauté. Le « hub » (ex. danielriolo, sergezaka) est le compte le plus
+central
+à l'intérieur du groupe
+(celui qui reçoit le plus d’interactions ici).
+
+CARDS reçu
+
+— Tweet CARDS adressé à un compte (réponse ou mention). Mesure à quel point un compte est pris pour cible.
+
+Production CARDS — Tweet CARDS publié par le compte lui-même.
+
+1. Données et méthode
+
+1.1 Corpus
+
+Le corpus
+thématique, construit depuis une collecte de tweet sur l’API X depuis différents mots clés liés à la vague de
+chaleur, couvre
+le premier pic
+de
+canicule du
+20 mai au 7 juin 2026. Les analyses de contenu portent sur les 112 040 publications hors retweet. Les retweets sont réintégrés uniquement pour mesurer l'amplification.
+
+Élément
+
+Volume
+
+Tweets P1 (tous types)
+
+375 654
+
+Publications hors RT analysées
+
+112 040
+
+Tweets classés avec note de lecture
+
+80 730
+
+Tweets flagués CARDS (après corrections)
+
+4 466
+
+Taux sur tweets classés
+
+5,53 %
+
+1.2 Classification CARDS : comment elle a été faite concrètement
+
+L’étude de la désinformation climatique repose sur la grille CARDS (Coan et al., 2021), qui est une taxonomie de référence qui recense les arguments climato-sceptiques en cinq grandes familles (le réchauffement n'existe pas ; ce n'est pas humain ; les impacts sont mineurs ; les solutions ne marchent pas ; le mouvement climatique n'est pas fiable), déclinées en codes fins (ex. 1.7 « les extrêmes n'augmentent pas », 5.2.2 « médias alarmistes »).
+
+ 
+
+Figure
+1:
+Computer-assisted classification of contrarian claims about climate change: 
+Farrell, J., McConnell, K. &amp; Brulle, R. Evidence-based strategies to combat scientific misinformation. Nat. Clim. Chang. 9, 191–195 (2019).
+
+La classification n'a pas été faite par un algorithme à mots-clés ni par un modèle entraîné spécifiquement, mais par un grand modèle de langage (LLM, assistant Claude dans l'éditeur Cursor), qui a lu les tweets par lots successifs (fichiers de batch d'environ 40 à 80 tweets). Pour chaque tweet, le modèle a attribué soit un code CARDS, soit la valeur « None » (pas de contestation), et a rédigé une courte note de lecture justifiant sa décision (champ note_lecture conservé dans le corpus). Au total, 80 730 tweets
+ont été traités ainsi
+(les publications originales des 6 principales communautés).
+
+La grille CARDS d'origine a été conçue pour des textes longs (articles, blogs). Pour l'adapter à des tweets courts portant sur un épisode météo précis, une règle de décision spécifique a été fixée puis affinée avec l'analyste :
+
+un tweet est flagué s'il porte une thèse climato-sceptique explicite au sens de la grille CARDS
+
+, dans une approche conservatrice, afin de minimiser les faux positifs
+
+.
+
+Cette classification est aussi le lieu d’expliciter la difficulté d’
+
+établir,
+
+dans certains cas, une frontière claire entre ce qui relève du climatosceptique ou non.
+
+Voici à titre d’exemple certains choix établi :
+
+l
+
+e refus
+
+explicite
+
+du terme de « canicule » est assimilé à un code 1.7 (« extreme isn’t increasing »), la dénonciation d’un alarmisme médiatique à un code 5.2.2 (« Climate movement is unreliable &gt; Climate/Science is conspiracy »), les comparaisons historique
+
+s
+
+relativisante
+
+s
+
+à un code 2.1.
+
+4 («Human are not causing global warmin &gt;&gt;it’s natural cycle &gt;&gt;Past climate change »)
+
+.
+
+Ce processus a été contrôlé par plusieurs boucles de validation humaine: des cas limites ont été soumis à l'analyste et ses verdicts (environ 200 corrections journalisées) ont servi de jurisprudence pour recorriger le corpus.
+
+Limites de cette approche : la lecture d'un LLM n'est pas parfaitement reproductible d'une session à l'autre. Le chiffre de 4 466 tweets flagués (5,5 % des tweets classés) doit donc être lu comme un plancher fiable plutôt qu'une mesure exhaustive du scepticisme.
+
+2. Qui produit, qui est visé ?
+
+2.1 Où se concentre la production ?
+
+ 
+
+Figure
+2
+- Graphique réseau du corpus. Centralité : nombre de publications classées CARDS. Communautés Louvain
+
+Sur les 4 466 tweets CARDS du corpus (hors retweet), plus de la moitié provient d'une seule communauté
+(C31- vert), dominée par des comptes associés à des activités inauthentiques, fortement polarisée à l’extrême-droite. La seconde communauté qui publie le plus de CARDS est celle des experts du climat (C13-noir) qui contient en son sein des comptes climatosceptiques se retrouvant, par l’intensité de leurs interactions, dans la même communauté que les experts.
+
+Communauté (hub)
+
+Tweets CARDS
+
+Part du total
+
+Volume hors RT
+
+Taux interne
+
+C31 @danielriolo
+
+2 478
+
+55,5 %
+
+10 623
+
+23,3 %
+
+C13 @sergezaka
+
+1 133
+
+25,4 %
+
+17 405
+
+6,5 %
+
+C100 @archiptere
+
+215
+
+4,8 %
+
+16 526
+
+1,3 %
+
+C148 @clemence_guette
+
+170
+
+3,8 %
+
+4 167
+
+4,1 %
+
+C62 @mickacorreia
+
+108
+
+2,4 %
+
+3 617
+
+3,0 %
+
+Autres communautés
+
+362
+
+8,1 %
+
+—
+
+—
+
+Figure
+3-
+Production CARDS par communauté : part du total (gauche) et taux interne (droite).
+
+ 
+
+Figure
+4
+- Répartition des CARDS par communautés: RT inclus
+
+1/5eme des publications originales de la communauté C31 est flagguée comme CARDS, ce qui conforte le poids important de celle-ci dans la désinformation au sein du réseau.
+En incluant les retweets, celle-ci est largement dominante dans cette production
+(+80%).
+
+2.2 Les producteurs les plus actifs dans C31
+(@danielriolo)
+
+Compte
+
+CARDS / volume
+
+Taux
+
+Lecture prudente
+
+@de_jpv91383
+
+51 / 86
+
+59 %
+
+Plus gros volume CARDS de C31
+
+@ulysse2452
+
+37 / 67
+
+55 %
+
+Second volume
+
+@SoleilLibreFR
+
+31 / 31
+
+100 %
+
+Ligne très homogène (chemtrails, dôme de chaleur)
+
+@5gLinky
+
+24 / 24
+
+100 %
+
+Ligne homogène (géo-ingénierie)
+
+@GibertiePatrice
+
+18 / 19
+
+95 %
+
+Blogger climatosceptique
+
+Les vingt premiers producteurs de C31 ne représentent que 16,6 % du volume CARDS de cette communauté ; les cent premiers, 36,2 %. Quatre comptes affichent 100 % de tweets CARDS, mais sur 15 à 31 tweets seulement : cela traduit une ligne éditoriale très stable sur l'épisode, pas une preuve d'appartenance à un dispositif structuré.
+
+2.3 Quels comptes reçoivent le plus de CARDS ?
+
+1 200 comptes ont reçu au moins un CARDS ; 3 671 au total. Le classement global complète la vue
+C13 seule.
+En orange, les
+comptes ciblés ayant eux aussi
+des publications climatosceptiques.
+
+Rang
+
+Compte
+
+Comm.
+
+CARDS reçus
+
+Interactions
+
+Taux
+
+Produit
+CARDS
+
+1
+
+@cnews
+
+C31
+
+169
+
+474
+
+35.7 %
+
+3/61
+
+2
+
+@bfmtv
+
+C13
+
+132
+
+1045
+
+12.6 %
+
+0/235
+
+3
+
+@franceinfo
+
+C13
+
+108
+
+748
+
+14.4 %
+
+0/131
+
+4
+
+@renflock080274
+
+C31
+
+67
+
+260
+
+25.8 %
+
+22/36
+
+5
+
+@gibertiepatrice
+
+C31
+
+54
+
+80
+
+67.5 %
+
+18/19
+
+6
+
+@sergezaka
+
+C13
+
+53
+
+350
+
+15.1 %
+
+0/46
+
+7
+
+@danielriolo
+
+1
+
+Les propos tenus par Daniel Riolo, repris par différents comptes, relève davantage d’une minimisation implicite de l’épisode canicule que d’un propos proprement climatosceptique, d’où 
+le fait qu’il n’est pas en orange ici.
+
+C31
+
+52
+
+461
+
+11.3 %
+
+0/0
+
+8
+
+@le_parisien
+
+C13
+
+47
+
+385
+
+12.2 %
+
+0/77
+
+9
+
+@europe1
+
+C31
+
+38
+
+185
+
+20.5 %
+
+1/65
+
+10
+
+@meteoexpress
+
+C13
+
+38
+
+143
+
+26.6 %
+
+0/89
+
+11
+
+@meteovilles
+
+C13
+
+37
+
+185
+
+20.0 %
+
+0/67
+
+12
+
+@gdams70
+
+C31
+
+35
+
+184
+
+19.0 %
+
+0/0
+
+13
+
+@beaudonnet
+
+C31
+
+35
+
+63
+
+55.6 %
+
+0/1
+
+14
+
+@assoclimatoreal
+
+C31
+
+33
+
+130
+
+25.4 %
+
+9/12
+
+15
+
+@chemsmeteo
+
+C13
+
+29
+
+198
+
+14.6 %
+
+0/29
+
+16
+
+@victorsinclair3
+
+C31
+
+28
+
+117
+
+23.9 %
+
+7/10
+
+17
+
+@camille_moscow
+
+C31
+
+28
+
+88
+
+31.8 %
+
+3/5
+
+18
+
+@cerfiafr
+
+C178
+
+26
+
+377
+
+6.9 %
+
+0/6
+
+19
+
+@20minutes
+
+C13
+
+24
+
+135
+
+17.8 %
+
+0/33
+
+20
+
+@geotales_
+
+C13
+
+24
+
+98
+
+24.5 %
+
+0/5
+
+Parmi les cibles principals, on retrouve différents medias
+d’informations (BFMTV, FranceInfo), même parmi ceux ayant eux aussi relayés des publications classées CARDS, comme CNEWS
+
+2
+
+5.2.2: Tweet : Geoffroy Lejeune sur « l'emballement autour des vagues de chaleur » : « L'État n'occupe quasiment plus aucune de ses fonctions régalienne, et on va lui demander de gérer la température » (#Punchline)
+
+1.7: Tweet : « Canicule : Venants d'Avignon, j'ai du mal à comprendre l'emballement autour de ces températures sous les 40 °C » — Geoffroy Lejeune
+
+4.1.5: Tweet : Eric Naulleau sur le « congé climatique » proposé par une députée écologiste : « Cette vague de chaleur n'est qu'un prétexte, cette élue représente une école de pensée qui est hostile au travail » (#Punchline)
+
+ou Europe1
+
+3
+
+Publication classée CARDS produite par @Europe1:
+« J'ai vécu les canicules de 76 et de 2003, à cette époque on ne disait pas toutes ces bêtises à commencer par celle de Madame Tondelier »
+
+😳
+
+lance Gérard Carreyrou — Dans #PascalPraudEtVous sur #Europe1
+
+. Les experts du climats, à la fois climatologues et comptes de météorologie, sont aussi nettement visés par les propos assimilables à de la désinformation climatique.
+Cette attaque se cristallise autour du terme “escrologie” qui permet d’associer l’idée d’une fraude à celui des mouvements écologistes afin de les discréditer.
+
+Enfin, de nombreux comptes climatosceptiques
+
+reçoivent des interactions de même couleur par leurs paires. à l’image de @gibertiepatrice, dont le blog est diffusé
+
+84 fois
+
+pour servir de support argumentatif.
+
+4
+
+LE BLOG DE PATRICE GIBERTIE | géopolitique, économie,éducation
+
+3. De quoi parlent les tweets CARDS ?
+
+Figure 3 — Répartition des arguments par grande famille CARDS.
+
+Code
+
+Libellé
+
+Part
+
+Ce que cela recouvre
+
+1.7
+
+Les extrêmes n'augmentent pas
+
+29,2 %
+
+Nier l’exceptionnalité ou la designation de “canicule”
+
+5.2.2
+
+Médias alarmistes
+
+21,7 %
+
+Accusation de sensationnalisme
+
+2.1.4
+
+Climat passé
+
+12,2 %
+
+Comparaison 1976, 2003, 1911 pour relativiser
+
+5.3.2
+
+Science = complot
+
+11,3 %
+
+Escrologie, chemtrails, manipulation
+
+Figure 4 — Codes CARDS les plus fréquents.
+
+La désinformation climatique gravite autour de
+3 pivots:
+
+La remise en question des medias et des scientifiques
+
+( CODE CARDS 5)
+
+, accusés de manipuler de manière sensationnaliste l’opition (
+
+** dans la continuité du traitement des thématiques sanitaires**)
+
+La negation plus ou moins franche d’un évènement climatique atypique et/ou associé à réchauffement climatique
+
+(CODE CARDS 1)
+
+Davantage à la marge, le fait que l’homme ne soit pas responsible du réchauffement climatique
+(CODE CARDS 2).
+
+Notons que le caractère anthropique du réchauffement climatique n’est pas nié par les climatosceptiques qui y voit une manipulation de 
+géo-ingénierie (chemtrails etc...)
+
+4. Comment les messages se propagent-ils ?
+
+Indicateur
+
+Valeur
+
+Occurrences CARDS totales (top-6, avec RT)
+
+22,217
+
+Production directe
+
+4,156 (18,7 %)
+
+Retweets
+
+18,061 (81,3 %)
+
+Contenus uniques flagués
+
+4,174
+
+Chaque message sceptique est en moyenne repris plus de cinq fois. C31 concentre 82,6 % des occurrences CARDS du top-6 et 86,5 % de ses propres occurrences passent par retweet : la communauté fonctionne comme une caisse de résonance.
+
+Figure 6 — Nombre de tweets CARDS produits par jour.
+
+La courbe suit le pic de chaleur : maximum les 26 et 27 mai (805 et 748 tweets CARDS produits ces jours-là). La mobilisation sceptique est synchrone de l'événement météo, sans traîne autonome visible sur la période.
+
+5. Circulation entre communautés
+
+Flux (hors RT)
+
+Interactions
+
+CARDS
+
+Taux
+
+C31 vers C13
+
+1 214
+
+494
+
+40,7 %
+
+C13 vers C31
+
+1 064
+
+219
+
+20,6 %
+
+C31 vers C31
+
+5 967
+
+1 257
+
+21,1 %
+
+C13 vers C13
+
+7 840
+
+539
+
+6,9 %
+
+ 
+
+ 
+
+Quand un membre de C31 s'adresse à C13, le message est climato-sceptique dans 41 % des cas, soit deux fois plus que dans le sens inverse. Les spécialistes météo ne représentent que 12 % du volume du flux C31→C13, mais avec le taux le plus élevé (54,7 %).
+
+6. Analyse des hashtags
+
+ 
+
+Parmi les publications CARDS, on retrouve différents hashtags associés à des théories complotistes liées à des manipulations plus ou moins directes du climat
+
+: #chemtrails, #géoingénierie.
+
+Ces théories permettent d’appuyer l’idée d’une manipulation volontaire du climat
+
+à des fins politiques:
+
+«
+
+Les chemtrails (ou la géoingénierie) produisent ou amplifient la canicule ; le « changement climatique » n'est que le prétexte médiatico-scientifique pour faire peur et imposer des mesures
+
+.
+
+»
+
+«
+
+Le dôme de chaleur, vous le voyez ? Si vous chauffez un espace fermé, température et pression augmentent. Réduisez l'espace, c'est pire. Notre ciel est réduit par cette chape de fumée (#chemtrails, #aérosols). Le soleil, lui, reste le même.
+
+»
+
+ 
+
+&gt;&gt; Evoquer les comptes d’astroturfing retrouvés.
+
+7. Limites et prudence de lecture
+
+La règle CARDS explicite sous-estime l'ironie et les sous-entendus.
+
+La classification a tranché sur un code CARDS alors que le tweet peut
+en couvrir
+plusieurs
+
+Le corpus est
+construit par mots-clés chaleur/canicule : le scepticisme hors sujet thermique échappe à l'analyse.
+
+Les retweets mesurent une exposition potentielle, pas des vues réelles.
+
+Nous ne connaissons pas l'identité derrière les pseudonymes : parler de « comptes dédiés » au sens organisationnel serait spéculatif.
+
+8. Conclusion
+
+Pendant le premier pic de chaleur de 2026, la contestation climatique sur X forme un système concentré autour de C31, amplifié massivement par retweet, orienté vers les médias et les prévisionnistes, et porté par des arguments qui contestent surtout le label et la légitimité des porte-parole. Les experts météo validés ne participent pas à cette production ; ils la subissent. Pour les identifier dans une communauté mixte, il faut lire le contenu tweet par tweet, pas se fier au voisinage réseau ni aux mots-clés isolés.
+
+________________________________________________________________________________________________________
+

@@ -12,3 +12,9 @@ URL typique : `https://mshubeco.github.io/heat-flux-continu/`
 https://mshubeco.github.io/heat-flux-continu/synthese/  
 Fichier : `synthese/index.html`
 
+**Flux intercommunautaires P1 / P2 étendu :**  
+https://mshubeco.github.io/heat-flux-continu/synthese/intercomm_p1_p2ext/  
+Ancre CARDS « Limites » :  
+https://mshubeco.github.io/heat-flux-continu/synthese/intercomm_p1_p2ext/#cards-limites  
+Fichier : `synthese/intercomm_p1_p2ext/index.html`
+
