@@ -470,6 +470,7 @@
     let activeTab = "P1";
     let activeMetric = { P1: "inStrength", P2: "inStrength", ALL: "inStrength" };
     let selectedEdge = { P1: null, P2: null, ALL: null };
+    let mainFlowsMode = { ALL: "rt" };
 
     function fmt(n) { return n.toLocaleString("fr-FR"); }
     function esc(s) { const d = document.createElement("div"); d.textContent = s ?? ""; return d.innerHTML; }
@@ -664,7 +665,11 @@
           <div class="side-stack">
             <div class="side-box flows-box">
               <h2>Interactions principales</h2>
-              <p class="hint">${nEdges} flux croisés · ordre décroissant · RT comptés, posts = reply/quote/mention seulement</p>
+              ${pid === "ALL" ? `<div class="metric-tabs" id="main-flows-mode-ALL" style="margin:8px 0 6px">
+                <button type="button" class="metric-tab active" data-flows-mode="rt">Retweets</button>
+                <button type="button" class="metric-tab" data-flows-mode="nonRt">Hors RT (reply / quote / mention)</button>
+              </div>
+              <p class="hint" id="main-flows-hint-ALL"></p>` : `<p class="hint">${nEdges} flux croisés · ordre décroissant · RT comptés, posts = reply/quote/mention seulement</p>`}
               <div id="main-flows-${pid}"></div>
             </div>
           </div>
@@ -1177,6 +1182,7 @@
       if (!allRendered) {
         bindMetricTabs("ALL");
         bindFlowSubtabs("ALL");
+        bindMainFlowsModeTabs();
         renderGlobalDonuts("ALL");
         renderActivityChart("ALL");
         renderLegend("ALL");
@@ -2207,7 +2213,7 @@
 
     function bindFlowSubtabs(pid) {
       const el = document.getElementById("main-flows-" + pid);
-      if (el.dataset.bound) return;
+      if (!el || el.dataset.bound) return;
       el.dataset.bound = "1";
       el.addEventListener("click", e => {
         const btn = e.target.closest(".flow-subtab");
@@ -2216,6 +2222,20 @@
         container.querySelectorAll(".flow-subtab").forEach(b => b.classList.toggle("active", b === btn));
         container.querySelectorAll(".flow-tab-panel").forEach(p => {
           p.classList.toggle("hidden", p.dataset.panel !== btn.dataset.tab);
+        });
+      });
+    }
+
+    function bindMainFlowsModeTabs() {
+      const tabs = document.getElementById("main-flows-mode-ALL");
+      if (!tabs || tabs.dataset.bound) return;
+      tabs.dataset.bound = "1";
+      tabs.querySelectorAll(".metric-tab").forEach(btn => {
+        btn.addEventListener("click", () => {
+          tabs.querySelectorAll(".metric-tab").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          mainFlowsMode.ALL = btn.getAttribute("data-flows-mode") || "rt";
+          renderMainFlows("ALL");
         });
       });
     }
@@ -2243,43 +2263,99 @@
       return out;
     }
 
+    function edgePostsHtml(edge) {
+      const posts = uniqueTopPosts(edge.topPostsNonRt || edge.topPosts || [], 5);
+      if (!posts.length) {
+        return "<p class=\"detail-empty\">Aucun reply, quote ou mention (tweet original) sur ce lien.</p>";
+      }
+      return posts.map(p => postHtml(p, edge.sourceColor)).join("");
+    }
+
+    function edgeRtTargetsHtml(edge) {
+      const rtTargets = (edge.topRtTargets || []).slice()
+        .sort((a, b) => (Number(b.rtCount) || 0) - (Number(a.rtCount) || 0));
+      if (rtTargets.length) return rtTargets.map(rt => rtTargetHtml(rt, edge)).join("");
+      if (edge.rt > 0) {
+        return `<p class="detail-empty">${fmt(edge.rt)} RT comptés sur ce lien, mais aucune publication originale résolue dans le corpus exporté.</p>`;
+      }
+      return "<p class=\"detail-empty\">Aucun retweet sur ce lien.</p>";
+    }
+
+    function sortedMainEdges(ph, mode) {
+      const edges = (ph.edges || []).slice();
+      if (mode === "rt") {
+        return edges
+          .filter(e => (Number(e.rt) || 0) > 0)
+          .sort((a, b) => (Number(b.rt) || 0) - (Number(a.rt) || 0) || (Number(b.total) || 0) - (Number(a.total) || 0));
+      }
+      if (mode === "nonRt") {
+        return edges
+          .filter(e => (Number(e.nonRt) || 0) > 0)
+          .sort((a, b) => (Number(b.nonRt) || 0) - (Number(a.nonRt) || 0) || (Number(b.total) || 0) - (Number(a.total) || 0));
+      }
+      return edges;
+    }
+
+    function updateMainFlowsHint(pid, mode, nEdges) {
+      if (pid !== "ALL") return;
+      const hint = document.getElementById("main-flows-hint-ALL");
+      if (!hint) return;
+      if (mode === "rt") {
+        hint.textContent = `${nEdges} flux avec RT · classés par volume RT décroissant · publications = tweets les plus retweetés sur chaque lien`;
+      } else {
+        hint.textContent = `${nEdges} flux hors RT · classés par reply/quote/mention décroissant · publications = top 5 hors RT sur chaque lien`;
+      }
+    }
+
     function renderMainFlows(pid) {
       const ph = DATA[pid];
       const sel = selectedEdge[pid];
       const el = document.getElementById("main-flows-" + pid);
-      el.innerHTML = ph.edges.map(edge => {
-        const posts = uniqueTopPosts(edge.topPostsNonRt || edge.topPosts || [], 5);
-        const postsHtml = posts.length
-          ? posts.map(p => postHtml(p, edge.sourceColor)).join("")
-          : "<p class=\"detail-empty\">Aucun reply, quote ou mention (tweet original) sur ce lien.</p>";
-        const rtTargets = edge.topRtTargets || [];
-        const rtHtml = rtTargets.length
-          ? rtTargets.map(rt => rtTargetHtml(rt, edge)).join("")
-          : (edge.rt > 0
-            ? `<p class="detail-empty">${fmt(edge.rt)} RT comptés sur ce lien, mais aucune publication originale résolue dans le corpus exporté.</p>`
-            : "<p class=\"detail-empty\">Aucun retweet sur ce lien.</p>");
+      if (!el) return;
+      const mode = pid === "ALL" ? (mainFlowsMode.ALL || "rt") : null;
+      const edges = sortedMainEdges(ph, mode);
+      updateMainFlowsHint(pid, mode, edges.length);
+      el.innerHTML = edges.map(edge => {
         const open = sel === edge.id ? " open" : "";
         const active = sel === edge.id ? " active" : "";
-        return `<details class="flow-item${active}" id="flow-${pid}-${edge.id}"${open}>
-          <summary>
-            <span class="dot" style="background:${edge.sourceColor}"></span>
-            <span class="flow-title">C${edge.sourceCommunity} → C${edge.targetCommunity}</span>
-            <span class="flow-meta">${fmt(edge.total)} total · <span class="rt-n">${fmt(edge.rt)} RT</span> · ${edge.rtPct}% RT · ${fmt(edge.nonRt)} autres</span>
-          </summary>
-          <div class="flow-posts">
+        let meta;
+        let body;
+        if (mode === "rt") {
+          meta = `<span class="flow-meta"><span class="rt-n">${fmt(edge.rt)} RT</span> · ${edge.rtPct}% du flux · ${fmt(edge.nonRt)} hors RT · ${fmt(edge.total)} total</span>`;
+          body = `<div class="flow-posts">
+              <p class="hint">Publications originales les plus retweetées par C${edge.sourceCommunity} vers C${edge.targetCommunity} (ordre décroissant)</p>
+              ${edgeRtTargetsHtml(edge)}
+            </div>`;
+        } else if (mode === "nonRt") {
+          meta = `<span class="flow-meta"><strong>${fmt(edge.nonRt)} hors RT</strong> · <span class="rt-n">${fmt(edge.rt)} RT</span> · ${fmt(edge.total)} total</span>`;
+          body = `<div class="flow-posts">
+              <p class="hint">Top 5 reply / quote / mention sur C${edge.sourceCommunity} → C${edge.targetCommunity} (ordre décroissant)</p>
+              ${edgePostsHtml(edge)}
+            </div>`;
+        } else {
+          meta = `<span class="flow-meta">${fmt(edge.total)} total · <span class="rt-n">${fmt(edge.rt)} RT</span> · ${edge.rtPct}% RT · ${fmt(edge.nonRt)} autres</span>`;
+          body = `<div class="flow-posts">
             <div class="flow-subtabs">
               <button type="button" class="flow-subtab active" data-tab="other">Reply / quote / mention</button>
               <button type="button" class="flow-subtab" data-tab="rt"${edge.rt === 0 ? " disabled" : ""}>RT significatifs (${fmt(edge.rt)})</button>
             </div>
             <div class="flow-tab-panel" data-panel="other">
               <p class="hint">Top 5 reply / quote / mention (interactions corpus décroissantes, hors RT)</p>
-              ${postsHtml}
+              ${edgePostsHtml(edge)}
             </div>
             <div class="flow-tab-panel hidden" data-panel="rt">
               <p class="hint">Publications originales les plus retweetées par C${edge.sourceCommunity} vers C${edge.targetCommunity}</p>
-              ${rtHtml}
+              ${edgeRtTargetsHtml(edge)}
             </div>
-          </div>
+          </div>`;
+        }
+        return `<details class="flow-item${active}" id="flow-${pid}-${edge.id}"${open}>
+          <summary>
+            <span class="dot" style="background:${edge.sourceColor}"></span>
+            <span class="flow-title">C${edge.sourceCommunity} → C${edge.targetCommunity}</span>
+            ${meta}
+          </summary>
+          ${body}
         </details>`;
       }).join("");
     }
