@@ -589,8 +589,8 @@
         <p class="hint" style="margin-top:-8px;margin-bottom:14px">Louvain unique sur toute la fenêtre (sans découpage P1/P2) · seed 42 · top ${nComm} pôles affichés</p>
         <div class="viz-box activity-box" style="margin-bottom:16px">
           <div class="viz-title">Volume quotidien · corpus entier</div>
-          <p class="hint">20 mai – 29 juin · tous types de tweets</p>
-          <div id="volume-all-chart" class="volume-full-chart" role="img" aria-label="Volume quotidien corpus entier"></div>
+          <p class="hint">20 mai – 29 juin · aires empilées par communauté Louvain principale (+ Autres)</p>
+          <div id="volume-all-chart" class="volume-full-chart" role="img" aria-label="Volume quotidien corpus entier par communauté"></div>
         </div>
         <div class="net-figure-box">
           <div class="viz-title">Graphe réseau Louvain · ${esc(allNetLabel)}</div>
@@ -1742,31 +1742,92 @@
       }
     }
 
+    function volumeStackSeries(pid) {
+      const act = ((DATA[pid] || {}).dailyActivity) || {};
+      const series = (act.series || []).slice();
+      if (!series.length || !(act.dates || []).length) return null;
+      // Empilement : Autres en bas, puis communautés par taille croissante
+      series.sort((a, b) => {
+        const aO = (a.communityId === -1 || a.label === "Autres") ? -1 : 0;
+        const bO = (b.communityId === -1 || b.label === "Autres") ? -1 : 0;
+        if (aO !== bO) return aO - bO;
+        return (Number(a.total) || 0) - (Number(b.total) || 0);
+      });
+      return { dates: act.dates, series, note: act.note || "" };
+    }
+
+    function volumeStackTraces(pid) {
+      const pack = volumeStackSeries(pid);
+      if (!pack) return null;
+      return pack.series.map(s => {
+        const isAutres = s.communityId === -1 || s.label === "Autres";
+        const name = isAutres
+          ? "Autres"
+          : `${s.label} @${hubLabel(s.hub, pid, s.communityId)}`;
+        const colorRaw = isAutres ? "#9aa3b5" : (s.color || "#4d8af0");
+        // Noir Gephi illisible en fill sur fond sombre
+        const color = (colorRaw === "#000000" || colorRaw === "#000") ? "#6b7280" : colorRaw;
+        return {
+          type: "scatter",
+          mode: "lines",
+          name,
+          x: pack.dates,
+          y: s.counts,
+          stackgroup: "volume",
+          line: { width: 0.6, color },
+          fillcolor: color,
+          hovertemplate: "<b>%{fullData.name}</b><br>%{x}<br>%{y:,} tweets<extra></extra>",
+        };
+      });
+    }
+
     function renderVolumeAllChart() {
       const el = document.getElementById("volume-all-chart");
       const vol = (DATA.slide2Graphs || {}).volumeDaily || {};
-      if (!el || !vol.dates || !vol.counts || typeof Plotly === "undefined") return;
+      const traces = volumeStackTraces("ALL");
+      if (!el || typeof Plotly === "undefined") return;
+      if (!traces) {
+        if (!vol.dates || !vol.counts) return;
+        Plotly.newPlot(el, [{
+          type: "scatter",
+          mode: "lines",
+          name: "Tweets / jour",
+          x: vol.dates,
+          y: vol.counts,
+          line: { color: "#4d8af0", width: 2.4 },
+          fill: "tozeroy",
+          fillcolor: "rgba(77,138,240,0.12)",
+          hovertemplate: "%{x}<br>%{y:,} tweets<extra></extra>",
+        }], {
+          paper_bgcolor: "#181b24",
+          plot_bgcolor: "#1f2430",
+          font: { color: "#e8eaed", family: "Segoe UI, system-ui, sans-serif", size: 11 },
+          margin: { t: 28, r: 16, b: 56, l: 58 },
+          xaxis: { gridcolor: "#2a3142", tickangle: -45, tickfont: { size: 10 } },
+          yaxis: { title: "Tweets / jour", gridcolor: "#2a3142", tickformat: ",d" },
+          showlegend: false,
+          hovermode: "x unified",
+        }, { responsive: true, displayModeBar: false });
+        return;
+      }
       const split = vol.p1EndExclusive || "2026-06-08";
-      Plotly.newPlot(el, [{
-        type: "scatter",
-        mode: "lines",
-        name: "Tweets / jour",
-        x: vol.dates,
-        y: vol.counts,
-        line: { color: "#4d8af0", width: 2.4 },
-        fill: "tozeroy",
-        fillcolor: "rgba(77,138,240,0.12)",
-        hovertemplate: "%{x}<br>%{y:,} tweets<extra></extra>",
-      }], {
+      Plotly.newPlot(el, traces, {
         paper_bgcolor: "#181b24",
         plot_bgcolor: "#1f2430",
         font: { color: "#e8eaed", family: "Segoe UI, system-ui, sans-serif", size: 11 },
-        margin: { t: 28, r: 16, b: 56, l: 58 },
+        margin: { t: 28, r: 16, b: 88, l: 58 },
         xaxis: { gridcolor: "#2a3142", tickangle: -45, tickfont: { size: 10 } },
         yaxis: { title: "Tweets / jour", gridcolor: "#2a3142", tickformat: ",d" },
         shapes: [{ type: "line", x0: split, x1: split, y0: 0, y1: 1, yref: "paper", line: { color: "#9aa3b5", width: 1.2, dash: "dot" } }],
         annotations: [{ x: split, y: 1, yref: "paper", text: "P1→P2", showarrow: false, xanchor: "left", font: { size: 10, color: "#9aa3b5" }, yshift: 6 }],
-        showlegend: false,
+        legend: {
+          orientation: "h",
+          yanchor: "top",
+          y: -0.42,
+          x: 0,
+          font: { size: 10 },
+          bgcolor: "rgba(0,0,0,0)",
+        },
         hovermode: "x unified",
       }, { responsive: true, displayModeBar: false });
     }
@@ -2804,39 +2865,50 @@
       const vol = S.volumeDaily || {};
       const kpis = S.kpis || {};
       const el = document.getElementById("volume-full-chart");
-      if (el && vol.dates && vol.counts && typeof Plotly !== "undefined") {
+      if (el && typeof Plotly !== "undefined") {
         const split = vol.p1EndExclusive || "2026-06-08";
-        const yP1 = vol.dates.map((d, i) => (d < split ? vol.counts[i] : null));
-        const yP2 = vol.dates.map((d, i) => (d >= split ? vol.counts[i] : null));
-        const traces = [
-          {
-            type: "scatter",
-            mode: "lines",
-            name: "P1 · 20 mai – 7 juin",
-            x: vol.dates,
-            y: yP1,
-            line: { color: "#73c000", width: 2.5 },
-            connectgaps: false,
-            hovertemplate: "<b>P1</b><br>%{x}<br>%{y:,} tweets<extra></extra>",
-          },
-          {
-            type: "scatter",
-            mode: "lines",
-            name: "P2 · 8 – 29 juin",
-            x: vol.dates,
-            y: yP2,
-            line: { color: "#4d8af0", width: 2.5 },
-            connectgaps: false,
-            hovertemplate: "<b>P2</b><br>%{x}<br>%{y:,} tweets<extra></extra>",
-          },
-        ];
+        const stacked = volumeStackTraces("ALL");
+        let traces;
+        if (stacked) {
+          traces = stacked;
+        } else if (vol.dates && vol.counts) {
+          const yP1 = vol.dates.map((d, i) => (d < split ? vol.counts[i] : null));
+          const yP2 = vol.dates.map((d, i) => (d >= split ? vol.counts[i] : null));
+          traces = [
+            {
+              type: "scatter",
+              mode: "lines",
+              name: "P1 · 20 mai – 7 juin",
+              x: vol.dates,
+              y: yP1,
+              line: { color: "#73c000", width: 2.5 },
+              connectgaps: false,
+              hovertemplate: "<b>P1</b><br>%{x}<br>%{y:,} tweets<extra></extra>",
+            },
+            {
+              type: "scatter",
+              mode: "lines",
+              name: "P2 · 8 – 29 juin",
+              x: vol.dates,
+              y: yP2,
+              line: { color: "#4d8af0", width: 2.5 },
+              connectgaps: false,
+              hovertemplate: "<b>P2</b><br>%{x}<br>%{y:,} tweets<extra></extra>",
+            },
+          ];
+        } else {
+          traces = null;
+        }
+        if (traces) {
         const layout = {
           paper_bgcolor: "#181b24",
           plot_bgcolor: "#1f2430",
           font: { color: "#e8eaed", family: "Segoe UI, system-ui, sans-serif", size: 11 },
-          margin: { t: 36, r: 16, b: 64, l: 58 },
+          margin: { t: 36, r: 16, b: stacked ? 88 : 64, l: 58 },
           title: {
-            text: `Volume quotidien · pic ${vol.peakDay || ""} (${fmt(vol.peakValue || 0)})`,
+            text: stacked
+              ? `Volume quotidien empilé · pic ${vol.peakDay || ""} (${fmt(vol.peakValue || 0)})`
+              : `Volume quotidien · pic ${vol.peakDay || ""} (${fmt(vol.peakValue || 0)})`,
             font: { size: 13, color: "#e8eaed" },
           },
           xaxis: {
@@ -2854,8 +2926,8 @@
           },
           legend: {
             orientation: "h",
-            yanchor: "bottom",
-            y: 1.02,
+            yanchor: stacked ? "top" : "bottom",
+            y: stacked ? -0.42 : 1.02,
             x: 0,
             font: { size: 10 },
             bgcolor: "rgba(0,0,0,0)",
@@ -2890,6 +2962,7 @@
           displayModeBar: true,
           modeBarButtonsToRemove: ["lasso2d", "select2d"],
         });
+        }
       }
       const wrap = document.getElementById("kpi-compare-wrap");
       if (wrap && kpis.P1 && kpis.P2) {
