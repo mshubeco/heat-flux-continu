@@ -746,8 +746,12 @@ def select_candidate_ngrams(
     return selected or make_ngrams(toks, 2)
 
 
-def snowflake_created_at(uid: str) -> datetime | None:
-    """Date de création via snowflake Twitter (IDs ≥50 bits uniquement)."""
+def snowflake_created_at(uid: str, *, min_year: int = 2018) -> datetime | None:
+    """Date de création via snowflake Twitter (IDs ≥50 bits uniquement).
+
+    `min_year=2018` : filtre tenseurs ucd* (évite IDs douteux).
+    `min_year=2006` : affichage table acteurs (comptes Twitter historiques OK).
+    """
     try:
         i = int(str(uid).strip())
     except (TypeError, ValueError):
@@ -759,7 +763,7 @@ def snowflake_created_at(uid: str) -> datetime | None:
         dt = datetime.fromtimestamp(ms / 1000.0, tz=timezone.utc)
     except (OverflowError, OSError, ValueError):
         return None
-    if dt < datetime(2018, 1, 1, tzinfo=timezone.utc) or dt > datetime.now(timezone.utc):
+    if dt < datetime(min_year, 1, 1, tzinfo=timezone.utc) or dt > datetime.now(timezone.utc):
         return None
     return dt
 
@@ -2394,7 +2398,7 @@ def enrich_actor_metrics(
     elif p.get("bio"):
         bio = str(p.get("bio") or "")
     lab = sn.get(uid, uid)
-    created = snowflake_created_at(uid)
+    created = snowflake_created_at(uid, min_year=2006)
     return {
         "id": uid,
         "label": "@" + str(lab).lstrip("@"),
@@ -2403,7 +2407,7 @@ def enrich_actor_metrics(
         "n_rt": n_rt,
         "n_orig": n_orig,
         "share_rt": round((n_rt / n_tw), 3) if n_tw else 0.0,
-        # Création compte via snowflake user_id (UTC)
+        # Création compte via snowflake user_id (UTC) — affichage (2006+)
         "account_created_at": created.strftime("%Y-%m-%d %H:%M:%S UTC") if created else None,
         "account_created_day": creation_bin(created),
         "bio": bio[:280],
