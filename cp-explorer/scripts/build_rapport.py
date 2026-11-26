@@ -313,7 +313,7 @@ const TAB_SHORT = {
 };
 const FAMILIES = [
   { id:"meta", label:"Méta", keys:["synthese","configs","overview"] },
-  { id:"objets", label:"Objets", keys:["uut","uurlt","uudom","uht","ubigram","utrigram"] },
+  { id:"objets", label:"Objets (RT inclus)", keys:["uut","uurlt","uudom","uht","ubigram","utrigram"] },
   { id:"horsrt", label:"Hors RT", keys:["uurlt_orig","uudom_orig","uht_orig","ubigram_orig","utrigram_orig","ucort","umed_orig","umedurl_orig"] },
   { id:"profil", label:"Profil", keys:["ucd","ucdrt","ucdng","ubio","ubio_ht","uname"] },
   { id:"couples", label:"Couplés", keys:null },
@@ -462,8 +462,8 @@ function buildConfigsPanel(){
   const el = document.getElementById("configsBody");
   if (!el) return;
   const groups = [
-    { h:null, keys:["uut","uurlt","uudom","uht","ubigram","utrigram"] },
-    { h:"Type de publication — production vs amplification",
+    { h:"Objets (RT inclus)", keys:["uut","uurlt","uudom","uht","ubigram","utrigram"] },
+    { h:"Hors RT — production propre (et co-RT)",
       keys:["uurlt_orig","uudom_orig","uht_orig","ubigram_orig","utrigram_orig","ucort","umed_orig","umedurl_orig"] },
     { h:"Profils — bio & date de création",
       keys:["ucd","ucdrt","ucdng","ubio","ubio_ht","uname"] },
