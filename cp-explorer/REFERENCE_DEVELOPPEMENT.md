@@ -158,6 +158,7 @@ Couplage : seulement avec `--with-coupled`.
 
 ## Historique
 
+- 2026-11-26 — UI Ck : **brief** (KPI + top5 acteurs/objets) · ordre Qui/quoi → Quand → comportements · signature/réseau/table en **`<details>`** (rendu différé à l’ouverture).
 - 2026-11-26 — `rapport.html` : 2e section d’onglets **horaire** (jour intact) ; `build_rapport.py --hour-out run_*_hour_simple` → `HEAT_CP_HOUR`.
 - 2026-11-26 — bin `hour` + runs `run_p1_hour_simple/` (HEAT) / `run_full_hour_simple/` (HMPV).
 - 2026-11-26 — Hors RT : `uurlt_orig` / `uudom_orig` / `uht_orig` (pendants Objets sans RT ; pas de `uut_orig`).

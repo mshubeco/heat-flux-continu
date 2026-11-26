@@ -90,6 +90,52 @@ a:hover { text-decoration:underline; }
   display:flex; flex-wrap:wrap; gap:8px; margin:0 0 12px; align-items:center;
 }
 .comp-diag .chip { margin:0; }
+.comp-brief {
+  background:linear-gradient(180deg,#f7fbfb 0%,#fff 70%);
+  border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin:0 0 12px;
+}
+.comp-brief-kpis { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 10px; align-items:center; }
+.comp-brief-cols {
+  display:grid; grid-template-columns:1fr 1fr; gap:12px;
+}
+@media (max-width:800px){ .comp-brief-cols { grid-template-columns:1fr; } }
+.comp-brief-cols h5 {
+  margin:0 0 6px; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted);
+}
+.comp-brief-cols ol {
+  margin:0; padding:0; list-style:none; font-size:13px; line-height:1.45;
+}
+.comp-brief-cols li {
+  display:flex; gap:8px; align-items:baseline; padding:3px 0;
+  border-bottom:1px solid #eef2f6;
+}
+.comp-brief-cols li:last-child { border-bottom:0; }
+.comp-brief-cols .rk {
+  flex:0 0 1.2em; font-weight:700; color:var(--muted); font-variant-numeric:tabular-nums;
+}
+.comp-brief-cols .w {
+  margin-left:auto; font-variant-numeric:tabular-nums; color:var(--muted); font-size:12px;
+}
+.comp-nav {
+  display:flex; flex-wrap:wrap; gap:6px; margin:0 0 12px;
+}
+.comp-nav a {
+  font:650 11px/1 "Segoe UI",system-ui,sans-serif; color:var(--muted);
+  background:var(--soft); border:1px solid var(--line); border-radius:999px;
+  padding:5px 10px; text-decoration:none;
+}
+.comp-nav a:hover { color:var(--accent); border-color:var(--accent); }
+.comp-sec { margin:0 0 14px; }
+.comp-sec > h4.sec-title {
+  margin:0 0 8px; font:600 13px/1.2 "Segoe UI",system-ui,sans-serif;
+  color:var(--ink); text-transform:none; letter-spacing:0;
+  display:flex; align-items:center; gap:8px;
+}
+.comp-sec > h4.sec-title .n {
+  display:inline-flex; align-items:center; justify-content:center;
+  min-width:1.5em; height:1.5em; padding:0 6px; border-radius:6px;
+  background:var(--accent); color:#fff; font-size:11px; font-weight:700;
+}
 .comp-graphs {
   display:grid; grid-template-columns:1fr; gap:12px;
 }
@@ -97,6 +143,26 @@ a:hover { text-decoration:underline; }
   .comp-graphs { grid-template-columns:1fr 1fr; }
   .comp-graphs .plot-time { grid-column:1 / -1; }
 }
+.comp-graphs.who-first .plot-time { order:3; }
+details.comp-fold {
+  border:1px solid var(--line); border-radius:12px; background:#fff;
+  margin:0 0 12px; padding:0;
+}
+details.comp-fold > summary {
+  cursor:pointer; list-style:none; padding:10px 14px;
+  font:650 13px/1.3 "Segoe UI",system-ui,sans-serif; color:var(--ink);
+  display:flex; align-items:center; gap:8px; user-select:none;
+}
+details.comp-fold > summary::-webkit-details-marker { display:none; }
+details.comp-fold > summary::before {
+  content:"+"; display:inline-flex; width:1.3em; height:1.3em; align-items:center; justify-content:center;
+  border-radius:6px; background:var(--soft); color:var(--muted); font-weight:700; font-size:12px;
+}
+details.comp-fold[open] > summary::before { content:"–"; }
+details.comp-fold > summary .hint {
+  margin-left:auto; font-weight:500; font-size:11px; color:var(--muted);
+}
+details.comp-fold .fold-body { padding:0 14px 14px; }
 a.x-link, [data-x-user], a.web-link {
   color:var(--accent2) !important; font-weight:700; text-decoration:underline;
   text-underline-offset:2px; cursor:pointer; pointer-events:auto !important; position:relative; z-index:2;
@@ -153,8 +219,8 @@ table.actor-metrics .toplist li { white-space:nowrap; }
 }
 .sig-block h4 { margin:0 0 2px; font:600 15px/1.3 Georgia,serif; color:var(--ink); }
 .sig-block .sig-sub { margin:0 0 8px; color:var(--muted); font-size:12px; }
-.plot.sig-plot { height:560px; border:1px solid var(--line); border-radius:10px; background:#fbfcfd; }
-.plot.net-plot { height:520px; border:1px solid var(--line); border-radius:12px; background:#fbfcfd; }
+.plot.sig-plot { height:420px; border:1px solid var(--line); border-radius:10px; background:#fbfcfd; }
+.plot.net-plot { height:400px; border:1px solid var(--line); border-radius:12px; background:#fbfcfd; }
 .net-legend {
   display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center;
   margin:0 0 8px; font-size:12px; color:var(--muted);
@@ -193,9 +259,9 @@ table.actor-metrics .toplist li { white-space:nowrap; }
 }
 .kpi .box .v { font:650 22px/1.1 Georgia,serif; color:var(--accent); }
 .kpi .box .l { font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-top:4px; }
-.plot { width:100%; height:360px; }
-.plot.tall { height:460px; }
-.plot.sm { height:280px; }
+.plot { width:100%; height:320px; }
+.plot.tall { height:380px; }
+.plot.sm { height:260px; }
 .cap { color:var(--muted); font-size:12px; margin:4px 0 0; }
 table { width:100%; border-collapse:collapse; font-size:13px; }
 th { text-align:left; color:var(--muted); font-size:11px; text-transform:uppercase;
@@ -779,40 +845,64 @@ function modSectionHtml(m, grain){
       </div>
       ${(m.components||[]).map(c => `
       <div class="subpanel" data-sub="c${c.id}" hidden>
-        <div class="comp-diag" id="cdiag-${dk}-c${c.id}"></div>
-        <div class="comp-graphs">
-          <div class="plot-time">
-            <h4>Temps — facteur C${c.id}</h4>
-            <div id="ctime-${dk}-c${c.id}" class="plot"></div>
+        <div class="comp-brief" id="cbrief-${dk}-c${c.id}"></div>
+        <nav class="comp-nav" aria-label="Sections C${c.id}">
+          <a href="#cwho-${dk}-c${c.id}">1 · Qui / quoi</a>
+          <a href="#ctime-sec-${dk}-c${c.id}">2 · Quand</a>
+          <a href="#cbeh-sec-${dk}-c${c.id}">3 · Comportements</a>
+          <a href="#csig-fold-${dk}-c${c.id}">Signature</a>
+          <a href="#cnet-fold-${dk}-c${c.id}">Réseau</a>
+          <a href="#cact-fold-${dk}-c${c.id}">Table acteurs</a>
+        </nav>
+        <section class="comp-sec" id="cwho-${dk}-c${c.id}">
+          <h4 class="sec-title"><span class="n">1</span> Qui / quoi — acteurs &amp; ${esc(m.mid_label||"objets")}</h4>
+          <p class="cap">Même ordre de grandeur que le 1er poids CP (w ≥ 10<sup>⌊log₁₀(w₁)⌋</sup>).</p>
+          <div class="comp-graphs who-first">
+            <div>
+              <h4>Acteurs</h4>
+              <div id="cusers-${dk}-c${c.id}" class="plot tall"></div>
+            </div>
+            <div>
+              <h4>${esc(m.mid_label||"Objets")}</h4>
+              <div id="cmid-${dk}-c${c.id}" class="plot tall"></div>
+            </div>
+            <div id="cmid2wrap-${dk}-c${c.id}" hidden>
+              <h4>${esc(m.mid2_label||"MID₂")}</h4>
+              <div id="cmid2-${dk}-c${c.id}" class="plot tall"></div>
+            </div>
           </div>
-          <div>
-            <h4>Acteurs — même ordre de grandeur que le 1er (C${c.id})</h4>
-            <div id="cusers-${dk}-c${c.id}" class="plot tall"></div>
+        </section>
+        <section class="comp-sec" id="ctime-sec-${dk}-c${c.id}">
+          <h4 class="sec-title"><span class="n">2</span> Quand — facteur temporel</h4>
+          <div id="ctime-${dk}-c${c.id}" class="plot"></div>
+        </section>
+        <section class="comp-sec" id="cbeh-sec-${dk}-c${c.id}">
+          <h4 class="sec-title"><span class="n">3</span> Comportements agrégés</h4>
+          <p class="cap">Tops cibles RT / mentions / hashtags / URLs des acteurs filtrés.</p>
+          <div id="cbeh-${dk}-c${c.id}"></div>
+        </section>
+        <details class="comp-fold" id="csig-fold-${dk}-c${c.id}" data-deep="sig">
+          <summary>Signature spatio-temporelle <span class="hint">ouvrir si besoin</span></summary>
+          <div class="fold-body">
+            <p class="sig-sub">w<sub>acteur</sub>×w<sub>temps</sub> et w<sub>objet</sub>×w<sub>temps</sub>, normalisés · pic en pointillés</p>
+            <div id="csig-${dk}-c${c.id}" class="plot sig-plot"></div>
           </div>
-          <div>
-            <h4>${esc(m.mid_label||"Objets")} — top poids C${c.id}</h4>
-            <div id="cmid-${dk}-c${c.id}" class="plot tall"></div>
+        </details>
+        <details class="comp-fold" id="cnet-fold-${dk}-c${c.id}" data-deep="net">
+          <summary>Réseau mono-modalité <span class="hint">ouvrir si besoin</span></summary>
+          <div class="fold-body">
+            <p class="cap">Liens = objets MID partagés · AF 2D · clic nœud → X</p>
+            <div class="net-legend" id="cnetleg-${dk}-c${c.id}"></div>
+            <div id="cnet-${dk}-c${c.id}" class="plot net-plot"></div>
           </div>
-          <div id="cmid2wrap-${dk}-c${c.id}" hidden>
-            <h4>${esc(m.mid2_label||"MID₂")} — top poids C${c.id}</h4>
-            <div id="cmid2-${dk}-c${c.id}" class="plot tall"></div>
+        </details>
+        <details class="comp-fold" id="cact-fold-${dk}-c${c.id}" data-deep="actors">
+          <summary>Table acteurs (métriques) <span class="hint">ouvrir si besoin</span></summary>
+          <div class="fold-body">
+            <p class="cap">Pubs fenêtre · %RT · bio · tops individuels</p>
+            <div class="actor-metrics-wrap" id="cactors-${dk}-c${c.id}"></div>
           </div>
-        </div>
-        <div class="sig-block">
-          <h4>Signature spatio-temporelle — C${c.id}</h4>
-          <p class="sig-sub">Intensité des contributions reconstruites (w<sub>acteur</sub>×w<sub>temps</sub>, w<sub>objet</sub>×w<sub>temps</sub>), normalisée par dimension · pic en pointillés</p>
-          <div id="csig-${dk}-c${c.id}" class="plot sig-plot"></div>
-        </div>
-        <h4>Réseau mono-modalité — acteurs C${c.id}</h4>
-        <p class="cap">Une seule interaction liée au tenseur sur les MID Ck · survol d’un lien = objets partagés · AF 2D + noverlap · taille=degré · zoom/pan · clic nœud → X.</p>
-        <div class="net-legend" id="cnetleg-${dk}-c${c.id}"></div>
-        <div id="cnet-${dk}-c${c.id}" class="plot net-plot"></div>
-        <h4>Comportements agrégés des acteurs C${c.id}</h4>
-        <p class="cap">Tops cibles RT / mentions / hashtags / URLs cumulés sur les acteurs du même ordre de grandeur que le 1er poids CP.</p>
-        <div id="cbeh-${dk}-c${c.id}"></div>
-        <h4>Acteurs C${c.id} — métriques caractéristiques</h4>
-        <p class="cap">Filtre w ≥ 10<sup>⌊log₁₀(w₁)</sup> · publications fenêtre · part RT · bio · tops individuels.</p>
-        <div class="actor-metrics-wrap" id="cactors-${dk}-c${c.id}"></div>
+        </details>
       </div>`).join("")}
       <div class="subpanel" data-sub="diag" hidden>
         <div class="grid2">
@@ -1599,26 +1689,10 @@ function paintMod(grain, key){
     yaxis:{autorange:"reversed", tickfont:{size:9}}
   }, {responsive:true, displayModeBar:false});
 
-  // --- Une page par composante : 3 graphes (temps × acteurs × objets) ---
+  // --- Une page par composante : brief + qui/quoi d’abord, lourds en différé ---
   (m.components||[]).forEach((c, i) => {
     const col = COLORS[i % COLORS.length];
-    const met = c.metrics || {};
-    const behave = (c.users||[]).slice(0,4).map(u => {
-      const rt = (u.top_rt_targets||[]).slice(0,2).map(x=>xLink(x.label)).join(", ") || "—";
-      const ht = (u.top_hashtags||[]).slice(0,2).map(x=>"#"+esc(x.label)).join(", ") || "—";
-      return `<span class="chip">${xLink(u.label)} RT→ ${rt} · ${ht}</span>`;
-    }).join("");
-    const diag = document.getElementById(`cdiag-${dk}-c${c.id}`);
-    if (diag) {
-      diag.innerHTML = `
-        <span class="chip" style="background:${col};color:#fff">C${c.id}</span>
-        <span class="chip">${esc(c.label||"")}</span>
-        <span class="chip">Pic <b>${esc(met.peak||"—")}</b></span>
-        <span class="chip">Gini users <b>${met.gini_users??"—"}</b></span>
-        <span class="chip">Gini mid <b>${met.gini_mid??"—"}</b></span>
-        ${met.lag_days!=null?`<span class="chip">Lag <b>${met.lag_days} ${esc(met.lag_unit||"j")}</b></span>`:""}
-        ${behave}`;
-    }
+    fillCompBrief(dk, c, col, m.mid_label);
     const tTraces = [{
       type:"scatter", mode:"lines+markers", name:"C"+c.id,
       x:(c.time||[]).map(d=>d.day), y:(c.time||[]).map(d=>d.w),
@@ -1645,22 +1719,107 @@ function paintMod(grain, key){
         hbarPlot(`cmid2-${dk}-c${c.id}`, c.mid2, COLORS[(i+1)%COLORS.length]);
       } else wrap2.hidden = true;
     }
-    paintSpatioSignature(`csig-${dk}-c${c.id}`, c, m.mid_label, col);
     const behBox = document.getElementById(`cbeh-${dk}-c${c.id}`);
     if (behBox) behBox.innerHTML = behaviorTopsPanel(c.behavior_tops);
-    const actorsBox = document.getElementById(`cactors-${dk}-c${c.id}`);
-    if (actorsBox) actorsBox.innerHTML = actorMetricsTable(c.users);
+    wireCompFolds(grain, key, c, col, m);
+  });
+}
+
+function briefTopList(rows, n, {hash=false, web=false}={}){
+  const slice = (rows||[]).slice(0, n);
+  if (!slice.length) return `<li><span class="cap">—</span></li>`;
+  return slice.map((x,i) => {
+    let lab;
+    if (hash) lab = "#"+esc(x.label);
+    else if (web || looksLikeWeb(x.id || x.label)) lab = webLink(x.id || x.label);
+    else lab = entityLink(x.label);
+    const w = (x.w!=null) ? Number(x.w).toFixed(3) : (x.n!=null ? String(x.n) : "");
+    return `<li><span class="rk">${i+1}</span><span>${lab}</span>${w?`<span class="w">${w}</span>`:""}</li>`;
+  }).join("");
+}
+
+function fillCompBrief(dk, c, col, midLabel){
+  const el = document.getElementById(`cbrief-${dk}-c${c.id}`);
+  if (!el) return;
+  const met = c.metrics || {};
+  const midLab = midLabel || "Objets";
+  el.innerHTML = `
+    <div class="comp-brief-kpis">
+      <span class="chip" style="background:${col};color:#fff">C${c.id}</span>
+      ${c.label?`<span class="chip">${esc(c.label)}</span>`:""}
+      <span class="chip">Pic <b>${esc(met.peak||"—")}</b></span>
+      <span class="chip">Gini users <b>${met.gini_users??"—"}</b></span>
+      <span class="chip">Gini mid <b>${met.gini_mid??"—"}</b></span>
+      ${met.lag_days!=null?`<span class="chip">Lag <b>${met.lag_days} ${esc(met.lag_unit||"j")}</b></span>`:""}
+      <span class="chip">${(c.users||[]).length} acteurs · ${(c.mid||[]).length} ${esc(midLab).toLowerCase()}</span>
+    </div>
+    <div class="comp-brief-cols">
+      <div>
+        <h5>Top acteurs (coup d’œil)</h5>
+        <ol>${briefTopList(c.users, 5)}</ol>
+      </div>
+      <div>
+        <h5>Top ${esc(midLab)} (coup d’œil)</h5>
+        <ol>${briefTopList(c.mid, 5, {web:true})}</ol>
+      </div>
+    </div>`;
+}
+
+function paintCompDeep(dk, c, col, m, kind){
+  const flag = `deep-${dk}-c${c.id}-${kind}`;
+  if (painted.has(flag)) {
+    requestAnimationFrame(() => {
+      const id = kind==="sig" ? `csig-${dk}-c${c.id}` : (kind==="net" ? `cnet-${dk}-c${c.id}` : null);
+      if (id) { const el=document.getElementById(id); if (el) try{ Plotly.Plots.resize(el);}catch(e){} }
+    });
+    return;
+  }
+  painted.add(flag);
+  if (kind === "sig") {
+    paintSpatioSignature(`csig-${dk}-c${c.id}`, c, m.mid_label, col);
+  } else if (kind === "net") {
     const net = c.network || {};
     const leg = document.getElementById(`cnetleg-${dk}-c${c.id}`);
     if (leg) {
       leg.innerHTML = `
         <span><span class="sw" style="background:${col}"></span>${esc(net.mode_label||"lien tenseur")}</span>
         <span><span class="dot" style="background:${col}"></span>Taille ∝ degré · couleur ∝ poids CP</span>
-        <span class="cap">Épaisseur lien ∝ n° éléments partagés · survol sur le segment · ${net.n_edges||0} liens · ${net.n_isolated||0} isolés</span>
-        <span class="cap">molette = zoom · glisser = pan</span>`;
+        <span class="cap">${net.n_edges||0} liens · ${net.n_isolated||0} isolés</span>`;
     }
     paintNetwork(`cnet-${dk}-c${c.id}`, net, col);
+  } else if (kind === "actors") {
+    const actorsBox = document.getElementById(`cactors-${dk}-c${c.id}`);
+    if (actorsBox) actorsBox.innerHTML = actorMetricsTable(c.users);
+  }
+}
+
+function wireCompFolds(grain, key, c, col, m){
+  const dk = domKey(grain, key);
+  const map = {
+    sig: document.getElementById(`csig-fold-${dk}-c${c.id}`),
+    net: document.getElementById(`cnet-fold-${dk}-c${c.id}`),
+    actors: document.getElementById(`cact-fold-${dk}-c${c.id}`),
+  };
+  Object.entries(map).forEach(([kind, fold]) => {
+    if (!fold || fold.dataset.wired) return;
+    fold.dataset.wired = "1";
+    fold.addEventListener("toggle", () => {
+      if (!fold.open) return;
+      paintCompDeep(dk, c, col, m, kind);
+    });
+    // Si l’ancre ouvre déjà le fold
+    fold.querySelector("summary")?.addEventListener("click", () => {}, {once:true});
   });
+  // Liens nav : ouvrir le fold cible
+  const root = document.getElementById(`panel-mod-${dk}`);
+  root?.querySelectorAll(`a[href^="#csig-fold-${dk}-c${c.id}"], a[href^="#cnet-fold-${dk}-c${c.id}"], a[href^="#cact-fold-${dk}-c${c.id}"]`)
+    .forEach(a => {
+      a.addEventListener("click", (e) => {
+        const id = (a.getAttribute("href")||"").slice(1);
+        const fold = document.getElementById(id);
+        if (fold && fold.tagName === "DETAILS" && !fold.open) fold.open = true;
+      });
+    });
 }
 
 fillMeta();
@@ -1753,11 +1912,31 @@ a.web-link { font-weight:600; word-break:break-all; }
 .subtab.on { background:var(--accent); border-color:var(--accent); color:#fff; }
 .subpanel[hidden] { display:none !important; }
 .comp-diag { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 12px; }
+.comp-brief {
+  background:linear-gradient(180deg,#f7fbfb 0%,#fff 70%);
+  border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin:0 0 12px;
+}
+.comp-brief-kpis { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 10px; }
+.comp-brief-cols { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+@media (max-width:800px){ .comp-brief-cols { grid-template-columns:1fr; } }
+.comp-brief-cols h5 { margin:0 0 6px; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted); }
+.comp-brief-cols ol { margin:0; padding:0; list-style:none; font-size:13px; }
+.comp-brief-cols li { display:flex; gap:8px; align-items:baseline; padding:3px 0; border-bottom:1px solid #eef2f6; }
+.comp-brief-cols .rk { flex:0 0 1.2em; font-weight:700; color:var(--muted); }
+.comp-brief-cols .w { margin-left:auto; font-variant-numeric:tabular-nums; color:var(--muted); font-size:12px; }
 .comp-graphs { display:grid; grid-template-columns:1fr; gap:12px; }
+.comp-graphs.who-first .plot-time { order:3; }
 @media (min-width:900px){
   .comp-graphs { grid-template-columns:1fr 1fr; }
   .comp-graphs .plot-time { grid-column:1 / -1; }
 }
+details.comp-fold { border:1px solid var(--line); border-radius:12px; margin:12px 0; padding:0; background:#fff; }
+details.comp-fold > summary {
+  cursor:pointer; list-style:none; padding:10px 14px; font:650 13px/1.3 "Segoe UI",system-ui,sans-serif;
+}
+details.comp-fold > summary::-webkit-details-marker { display:none; }
+details.comp-fold .fold-body { padding:0 14px 14px; }
+details.comp-fold .hint { margin-left:8px; font-weight:500; font-size:11px; color:var(--muted); }
 .actor-metrics-wrap {
   overflow:auto; max-height:560px; border:1px solid var(--line); border-radius:10px; margin-top:10px;
 }
@@ -1794,8 +1973,8 @@ table.actor-metrics .toplist li { white-space:nowrap; }
 }
 .sig-block h4 { margin:0 0 2px; font:600 15px/1.3 Georgia,serif; color:var(--ink); }
 .sig-block .sig-sub { margin:0 0 8px; color:var(--muted); font-size:12px; }
-.plot.sig-plot { height:560px; border:1px solid var(--line); border-radius:10px; background:#fbfcfd; }
-.plot.net-plot { height:520px; border:1px solid var(--line); border-radius:12px; background:#fbfcfd; }
+.plot.sig-plot { height:420px; border:1px solid var(--line); border-radius:10px; background:#fbfcfd; }
+.plot.net-plot { height:400px; border:1px solid var(--line); border-radius:12px; background:#fbfcfd; }
 .net-legend { display:flex; flex-wrap:wrap; gap:10px 16px; margin:0 0 8px; font-size:12px; color:var(--muted); }
 .net-legend .sw { display:inline-block; width:18px; height:3px; border-radius:2px; margin-right:6px; vertical-align:middle; }
 </style>
@@ -2028,33 +2207,42 @@ else {
   compsRoot.innerHTML = m.components.map((c,i)=>{
     const col = COLORS[i%COLORS.length];
     const met = c.metrics||{};
+    const midLab = m.mid_label||"Objets";
+    const topA = (c.users||[]).slice(0,5).map((x,j)=>`<li><span class="rk">${j+1}</span>${xLink(x.label)}<span class="w">${Number(x.w||0).toFixed(3)}</span></li>`).join("")||"<li>—</li>";
+    const topM = (c.mid||[]).slice(0,5).map((x,j)=>`<li><span class="rk">${j+1}</span>${entityLink(x.label)}<span class="w">${Number(x.w||0).toFixed(3)}</span></li>`).join("")||"<li>—</li>";
     return `<div class="subpanel" data-c="${c.id}" ${i? "hidden":""}>
-      <div class="comp-diag">
-        <span class="chip" style="background:${col};color:#fff">C${c.id}</span>
-        <span class="chip">${c.label||""}</span>
-        <span class="chip">Pic <b>${met.peak||"—"}</b></span>
-        <span class="chip">Gini users <b>${met.gini_users??"—"}</b></span>
-        <span class="chip">Gini mid <b>${met.gini_mid??"—"}</b></span>
+      <div class="comp-brief">
+        <div class="comp-brief-kpis">
+          <span class="chip" style="background:${col};color:#fff">C${c.id}</span>
+          ${c.label?`<span class="chip">${esc(c.label)}</span>`:""}
+          <span class="chip">Pic <b>${esc(met.peak||"—")}</b></span>
+          <span class="chip">Gini users <b>${met.gini_users??"—"}</b></span>
+          <span class="chip">Gini mid <b>${met.gini_mid??"—"}</b></span>
+        </div>
+        <div class="comp-brief-cols">
+          <div><h5>Top acteurs</h5><ol>${topA}</ol></div>
+          <div><h5>Top ${esc(midLab)}</h5><ol>${topM}</ol></div>
+        </div>
       </div>
-      <div class="comp-graphs">
+      <div class="comp-graphs who-first">
+        <div><h4>Acteurs</h4><div id="cusers-c${c.id}" class="plot tall"></div></div>
+        <div><h4>${esc(midLab)}</h4><div id="cmid-c${c.id}" class="plot tall"></div></div>
+        ${c.mid2&&c.mid2.length?`<div><h4>${esc(m.mid2_label||"MID₂")}</h4><div id="cmid2-c${c.id}" class="plot tall"></div></div>`:""}
         <div class="plot-time"><h4>Temps</h4><div id="ctime-c${c.id}" class="plot"></div></div>
-        <div><h4>Acteurs (même ordre de grandeur)</h4><div id="cusers-c${c.id}" class="plot tall"></div></div>
-        <div><h4>${m.mid_label||"Objets"}</h4><div id="cmid-c${c.id}" class="plot tall"></div></div>
-        ${c.mid2&&c.mid2.length?`<div><h4>${m.mid2_label||"MID₂"}</h4><div id="cmid2-c${c.id}" class="plot tall"></div></div>`:""}
       </div>
-      <div class="sig-block">
-        <h4>Signature spatio-temporelle — C${c.id}</h4>
-        <p class="sig-sub">Contributions reconstruites normalisées par dimension · pic en pointillés</p>
-        <div id="csig-c${c.id}" class="plot sig-plot"></div>
-      </div>
-      <h4>Réseau mono-modalité (MID Ck)</h4>
-      <div class="net-legend" id="cnetleg-c${c.id}"></div>
-      <div id="cnet-c${c.id}" class="plot net-plot"></div>
-      <h4>Comportements agrégés</h4>
-      <p class="cap">Tops cibles / mentions / hashtags / URLs des acteurs w≥10⌊log₁₀(w₁)⌋.</p>
       <div id="cbeh-c${c.id}"></div>
-      <h4>Acteurs — métriques</h4>
-      <div class="actor-metrics-wrap" id="cactors-c${c.id}"></div>
+      <details class="comp-fold" open>
+        <summary>Signature · réseau · table <span class="hint">détails</span></summary>
+        <div class="fold-body">
+          <div class="sig-block">
+            <h4>Signature spatio-temporelle</h4>
+            <div id="csig-c${c.id}" class="plot sig-plot"></div>
+          </div>
+          <div class="net-legend" id="cnetleg-c${c.id}"></div>
+          <div id="cnet-c${c.id}" class="plot net-plot"></div>
+          <div class="actor-metrics-wrap" id="cactors-c${c.id}"></div>
+        </div>
+      </details>
     </div>`;
   }).join("");
 
