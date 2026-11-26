@@ -303,9 +303,11 @@ def _id_str(val) -> str:
 
 
 def time_bin_label(ts: pd.Timestamp, time_bin: str) -> str:
-    """Bin temporel UTC : day | minute."""
+    """Bin temporel UTC : day | hour | minute."""
     if time_bin == "day":
         return ts.strftime("%Y-%m-%d")
+    if time_bin == "hour":
+        return ts.strftime("%Y-%m-%d %H")
     if time_bin == "minute":
         return ts.strftime("%Y-%m-%d %H:%M")
     raise ValueError(f"time_bin inconnu: {time_bin}")
@@ -320,7 +322,7 @@ def day_label(ts: pd.Timestamp) -> str:
 
 
 def time_bin_fr(time_bin: str) -> str:
-    return "jour" if time_bin == "day" else "minute"
+    return {"day": "jour", "hour": "heure", "minute": "minute"}.get(time_bin, time_bin)
 
 
 def modality_meta_for(time_bin: str) -> dict:
@@ -1752,15 +1754,19 @@ def classify_mid_item(item: str, key: str) -> str:
 
 
 def time_lag_value(time_a, time_b, time_bin: str):
-    """Écart entre pics des deux couches (jours si bin=day, minutes si bin=minute)."""
+    """Écart entre pics des deux couches (jours / heures / minutes)."""
     if not time_a or not time_b:
         return None
     pa = max(time_a, key=lambda d: d["w"])["day"]
     pb = max(time_b, key=lambda d: d["w"])["day"]
     try:
-        delta = pd.Timestamp(pb) - pd.Timestamp(pa)
+        ta = pd.Timestamp(pa if ":" in str(pa) or len(str(pa)) <= 10 else f"{pa}:00")
+        tb = pd.Timestamp(pb if ":" in str(pb) or len(str(pb)) <= 10 else f"{pb}:00")
+        delta = tb - ta
         if time_bin == "day":
             return float(delta.days)
+        if time_bin == "hour":
+            return float(delta.total_seconds() / 3600.0)
         return float(delta.total_seconds() / 60.0)
     except Exception:
         return None
@@ -1769,7 +1775,7 @@ def time_lag_value(time_a, time_b, time_bin: str):
 def auto_label_component(*, key, mid, time, time2, gini_mid, classes: Counter, time_bin: str = "day"):
     peak = max(time, key=lambda d: d["w"])["day"] if time else "?"
     lag = time_lag_value(time, time2, time_bin) if time2 else None
-    unit = "j" if time_bin == "day" else "min"
+    unit = {"day": "j", "hour": "h", "minute": "min"}.get(time_bin, "t")
     top_cls = classes.most_common(1)[0][0] if classes else "autre"
     if key.startswith("coupled") and lag is not None:
         layer = "n-gramme" if "ubigram" in key else "URL"
@@ -2717,7 +2723,7 @@ def build_modality_payload(
                     "gini_users": round(gini([u["w"] for u in users]), 3),
                     "gini_mid": round(gm, 3),
                     "lag_days": time_lag_value(tseries, tseries2, time_bin),
-                    "lag_unit": "j" if time_bin == "day" else "min",
+                    "lag_unit": {"day": "j", "hour": "h", "minute": "min"}.get(time_bin, "t"),
                     "classes": dict(classes),
                     "n_actors_same_magnitude": behavior_tops["n_actors"],
                     "magnitude_threshold": behavior_tops["magnitude_threshold"],
@@ -3709,7 +3715,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--csv", type=Path, default=DEFAULT_CSV)
     p.add_argument("--out", type=Path, default=ROOT, help="Dossier sortie (défaut: run_<phase>_<bin>_simple)")
     p.add_argument("--phase", choices=list(PHASES), default="FULL")
-    p.add_argument("--time-bin", choices=["day", "minute"], default="day", dest="time_bin")
+    p.add_argument("--time-bin", choices=["day", "hour", "minute"], default="day", dest="time_bin")
     p.add_argument(
         "--enrich-profiles",
         action="store_true",

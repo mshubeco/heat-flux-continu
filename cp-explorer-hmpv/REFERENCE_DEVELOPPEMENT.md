@@ -19,7 +19,11 @@ Fork de `heat_cp_explorer` : mêmes sous-onglets Temps / C1…CR / Homogénéit�
 ```bash
 cd HEAT\03_analyses\pipelines\heat_pipelines\hmpv_cp_explorer
 py -3.13 build_explorer.py --phase FULL --time-bin day --max-users 3000
+py -3.13 build_explorer.py --phase FULL --time-bin hour --max-users 3000
+# Fusion jour + section onglets horaire dans le même rapport.html
+py -3.13 build_rapport.py --out run_full_day_simple --hour-out run_full_hour_simple
 start run_full_day_simple\rapport.html#mod-coupled_cort_ubigram_orig
+# Horaire : #mod-hour-coupled_cort_ubigram_orig
 ```
 
 ## Particularités HMPV (corrections 2026-11-26)
@@ -51,6 +55,7 @@ URL : https://mshubeco.github.io/heat-flux-continu/cp-explorer-hmpv/rapport.html
 
 ## Historique
 
+- 2026-11-26 — `rapport.html` : 2e section d’onglets **horaire** (jour intact) via `--hour-out run_full_hour_simple`.
 - 2026-11-26 — Hors RT : `uurlt_orig` / `uudom_orig` / `uht_orig`.
 - 2026-11-26 — Ck : signature spatio-temporelle (temps + acteurs×t + objets×t).
 - 2026-11-26 — Ck : filtre acteurs même ordre de grandeur que w₁ + tops agrégés
