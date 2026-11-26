@@ -49,6 +49,9 @@ Seul le MID change. Couplées = deux cubes avec **même facteur USER**.
 | `utrigram` | user × trigramme_lemme × temps | trigrammes glissants (contraste) |
 | `ubigram_orig` | user × ngram × temps | **hors RT** — n-grammes candidats production propre |
 | `utrigram_orig` | user × trigramme × temps | **hors RT** — trigrammes glissants |
+| `uurlt_orig` | user × url × temps | **hors RT** — URLs (pendant de `uurlt`) |
+| `uudom_orig` | user × domaine × temps | **hors RT** — domaines (pendant de `uudom`) |
+| `uht_orig` | user × hashtag × temps | **hors RT** — hashtags (pendant de `uht`) |
 | `umed_orig` | user × media_type × temps | **hors RT** — photo/video/gif |
 | `umedurl_orig` | user × media_url × temps | **hors RT** — URL pièce jointe |
 | `ucort` | user × publication cible co-RT × temps | **co-retweet** (MID = tweet original, ≥2 users) |
@@ -148,6 +151,7 @@ Couplage : seulement avec `--with-coupled`.
 
 ## Historique
 
+- 2026-11-26 — Hors RT : `uurlt_orig` / `uudom_orig` / `uht_orig` (pendants Objets sans RT ; pas de `uut_orig`).
 - 2026-11-26 — Ck : **signature spatio-temporelle** (barres temps + heatmaps acteurs×t / objets×t, pic en pointillés).
 - 2026-11-26 — Ck : acteurs filtrés au **même ordre de grandeur** que w₁ (`w ≥ 10^⌊log₁₀(w₁)⌋`) + bandeau tops agrégés cibles/mentions/hashtags/URLs.
 - 2026-11-26 — jumeau HMPV FULL : `hmpv_cp_explorer/` → Pages `/cp-explorer-hmpv/` (couplé `coupled_cort_ubigram_orig`).

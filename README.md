@@ -1,4 +1,4 @@
-﻿# HEAT · flux continu
+# HEAT · flux continu
 
 Visualisation dynamique du réseau d'interactions HEAT (canicule 2026).
 
@@ -23,6 +23,3 @@ https://mshubeco.github.io/heat-flux-continu/cp-explorer/
 Index : https://mshubeco.github.io/heat-flux-continu/cp-explorer/rapports_index.html  
 Rapport : https://mshubeco.github.io/heat-flux-continu/cp-explorer/rapport.html
 
-**Explorateur CP HMPV FULL :**  
-https://mshubeco.github.io/heat-flux-continu/cp-explorer-hmpv/
-Couplé phare : https://mshubeco.github.io/heat-flux-continu/cp-explorer-hmpv/rapport.html#mod-coupled_cort_ubigram_orig
