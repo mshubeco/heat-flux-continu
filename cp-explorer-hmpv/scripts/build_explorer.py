@@ -1576,6 +1576,68 @@ def top_entities(ids, F, r, k=15):
     return [{"id": ids[i], "w": float(abs(col[i]))} for i in order if abs(col[i]) > 1e-12]
 
 
+def magnitude_threshold(w_top: float) -> float:
+    """Seuil « même ordre de grandeur » : 10^floor(log10(w_top))."""
+    import math
+
+    if w_top <= 0:
+        return 0.0
+    return float(10.0 ** math.floor(math.log10(w_top)))
+
+
+def top_entities_same_magnitude(ids, F, r, *, max_scan: int = 800) -> list[dict]:
+    """Top acteurs Ck dont le poids est du même ordre de grandeur que le 1er."""
+    col = np.abs(F[:, r])
+    order = np.argsort(-col)
+    if order.size == 0:
+        return []
+    w_top = float(col[order[0]])
+    if w_top <= 1e-12:
+        return []
+    thr = magnitude_threshold(w_top)
+    out: list[dict] = []
+    for i in order[:max_scan]:
+        w = float(col[i])
+        if w < thr or w <= 1e-12:
+            break
+        out.append({"id": ids[i], "w": w})
+    return out
+
+
+def aggregate_component_behavior_tops(
+    users: list[dict],
+    profiles: dict[str, dict],
+    sn: dict[str, str],
+    *,
+    k: int = 10,
+) -> dict:
+    """Tops cibles / mentions / hashtags / URLs agrégés sur les acteurs filtrés de Ck."""
+    rt: Counter = Counter()
+    ment: Counter = Counter()
+    ht: Counter = Counter()
+    urls: Counter = Counter()
+    for u in users:
+        p = profiles.get(u["id"]) or {}
+        rt.update(p.get("rt_targets") or {})
+        ment.update(p.get("mentions") or {})
+        ht.update(p.get("hashtags") or {})
+        urls.update(p.get("urls") or {})
+        if not p.get("urls"):
+            urls.update(p.get("domains") or {})
+    w_top = float(users[0]["w"]) if users else 0.0
+    thr = magnitude_threshold(w_top) if w_top else 0.0
+    return {
+        "n_actors": len(users),
+        "w_top": round(w_top, 6),
+        "w_min": round(float(users[-1]["w"]), 6) if users else 0.0,
+        "magnitude_threshold": round(thr, 6),
+        "top_rt_targets": _top_counter(rt, sn, k, as_account=True),
+        "top_mentions": _top_counter(ment, sn, k, as_account=True),
+        "top_hashtags": _top_counter(ht, sn, k),
+        "top_urls": _top_counter(urls, sn, k, preserve_label=True),
+    }
+
+
 def time_series(time_ids, C, r, max_points: int = 900):
     """Série temporelle pour l’UI. Tenseur = toutes les minutes ; affichage = top poids."""
     col = np.abs(C[:, r])
@@ -2452,10 +2514,17 @@ def build_modality_payload(
                 D[:, r] *= -1
             if E is not None:
                 E[:, r] *= -1
+        # Acteurs : même ordre de grandeur que le 1er poids CP (pas un top-k arbitraire)
         users = [
             enrich_actor_metrics(u["id"], w=u["w"], sn=sn, profiles=profs, bios=bios)
-            for u in top_entities(user_ids, A, r, top_users)
+            for u in top_entities_same_magnitude(user_ids, A, r)
         ]
+        if not users:
+            users = [
+                enrich_actor_metrics(u["id"], w=u["w"], sn=sn, profiles=profs, bios=bios)
+                for u in top_entities(user_ids, A, r, min(top_users, 15))
+            ]
+        behavior_tops = aggregate_component_behavior_tops(users, profs, sn, k=10)
         mid = top_entities(mid_ids, B, r, 15)
         for m in mid:
             mid_id = m["id"]
@@ -2572,8 +2641,11 @@ def build_modality_payload(
                     "lag_days": time_lag_value(tseries, tseries2, time_bin),
                     "lag_unit": "j" if time_bin == "day" else "min",
                     "classes": dict(classes),
+                    "n_actors_same_magnitude": behavior_tops["n_actors"],
+                    "magnitude_threshold": behavior_tops["magnitude_threshold"],
                 },
                 "users": users,
+                "behavior_tops": behavior_tops,
                 "network": network,
                 "mid": mid,
                 "time": tseries,

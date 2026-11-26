@@ -51,5 +51,7 @@ URL : https://mshubeco.github.io/heat-flux-continu/cp-explorer-hmpv/rapport.html
 
 ## Historique
 
+- 2026-11-26 — Ck : filtre acteurs même ordre de grandeur que w₁ + tops agrégés
+  cibles RT / mentions / hashtags / URLs (comme HEAT).
 - 2026-11-26 — création fork HMPV FULL + Pages `/cp-explorer-hmpv/` ;
   fix ISO8601 / snowflake / pool hybride pour activer le couplé phare.
