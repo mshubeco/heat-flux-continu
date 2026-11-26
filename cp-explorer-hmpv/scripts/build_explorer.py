@@ -99,6 +99,24 @@ MODALITY_META = {
         "mid_label": "Trigrammes (hors RT)",
         "coupled": False,
     },
+    "uurlt_orig": {
+        "label": "URL hors RT · émetteur × url × temps",
+        "blurb": "URLs partagées en publication propre seulement (hors retweet).",
+        "mid_label": "URLs (hors RT)",
+        "coupled": False,
+    },
+    "uudom_orig": {
+        "label": "Domaine hors RT · émetteur × domaine × temps",
+        "blurb": "Domaines d’URL en publication propre seulement (hors retweet).",
+        "mid_label": "Domaines (hors RT)",
+        "coupled": False,
+    },
+    "uht_orig": {
+        "label": "Hashtag hors RT · émetteur × tag × temps",
+        "blurb": "Hashtags en publication propre seulement (hors retweet).",
+        "mid_label": "Hashtags (hors RT)",
+        "coupled": False,
+    },
     "ucort": {
         "label": "Co-RT · émetteur × publication cible co-RT × temps",
         "blurb": "Qui retweete la même publication (MID = tweet original). Signal de co-retweet.",
@@ -349,6 +367,21 @@ def modality_meta_for(time_bin: str) -> dict:
             f"Trigrammes lemmatisés sur tweets propres seulement (hors retweet). Bin {t}.",
             "Trigrammes (hors RT)",
         ),
+        "uurlt_orig": (
+            f"URL hors RT · émetteur × url × {t}",
+            f"URLs en publication propre seulement (hors RT). Bin {t}.",
+            "URLs (hors RT)",
+        ),
+        "uudom_orig": (
+            f"Domaine hors RT · émetteur × domaine × {t}",
+            f"Domaines d’URL en publication propre (hors RT). Bin {t}.",
+            "Domaines (hors RT)",
+        ),
+        "uht_orig": (
+            f"Hashtag hors RT · émetteur × tag × {t}",
+            f"Hashtags en publication propre seulement (hors RT). Bin {t}.",
+            "Hashtags (hors RT)",
+        ),
         "ucort": (
             f"Co-RT · émetteur × publication cible co-RT × {t}",
             f"Qui retweete la même publication (co-retweet). Bin {t}.",
@@ -449,6 +482,9 @@ def modality_meta_for(time_bin: str) -> dict:
         "utrigram": f"émetteur × trigramme × {t}",
         "ubigram_orig": f"émetteur × n-gramme (hors RT) × {t}",
         "utrigram_orig": f"émetteur × trigramme (hors RT) × {t}",
+        "uurlt_orig": f"émetteur × URL (hors RT) × {t}",
+        "uudom_orig": f"émetteur × domaine (hors RT) × {t}",
+        "uht_orig": f"émetteur × hashtag (hors RT) × {t}",
         "ucort": f"émetteur × publication cible co-RT × {t}",
         "ucd": f"émetteur × jour création × {t}",
         "ucdrt": "émetteur × jour création × cible RT",
@@ -1107,6 +1143,9 @@ def build_all_tensors(
     uurlt: dict[tuple[str, str, str], float] = defaultdict(float)
     uudom: dict[tuple[str, str, str], float] = defaultdict(float)
     uht: dict[tuple[str, str, str], float] = defaultdict(float)
+    uurlt_orig: dict[tuple[str, str, str], float] = defaultdict(float)
+    uudom_orig: dict[tuple[str, str, str], float] = defaultdict(float)
+    uht_orig: dict[tuple[str, str, str], float] = defaultdict(float)
     ubigram: dict[tuple[str, str, str], float] = defaultdict(float)
     utrigram: dict[tuple[str, str, str], float] = defaultdict(float)
     ubigram_orig: dict[tuple[str, str, str], float] = defaultdict(float)
@@ -1180,20 +1219,32 @@ def build_all_tensors(
                 for tok in lemmatize_tokens(str(uname_raw), "fr")[:8]:
                     uname[(u, tok, tbin)] += 1.0
 
-        for uid, raw_url, tbin in zip(in_pool["user_id"], in_pool["url"], tbins):
+        for uid, raw_url, tbin, typ in zip(
+            in_pool["user_id"], in_pool["url"], tbins, tt
+        ):
             u = _id_str(uid)
             norm = normalize_url(str(raw_url) if pd.notna(raw_url) else "")
             if not u or not norm:
                 continue
             uurlt[(u, norm, tbin)] += 1.0
+            is_orig = typ != "retweet"
+            if is_orig:
+                uurlt_orig[(u, norm, tbin)] += 1.0
             dom = url_domain(norm)
             if dom:
                 uudom[(u, dom, tbin)] += 1.0
+                if is_orig:
+                    uudom_orig[(u, dom, tbin)] += 1.0
 
-        for uid, raw_ht, tbin in zip(in_pool["user_id"], in_pool["hashtag"], tbins):
+        for uid, raw_ht, tbin, typ in zip(
+            in_pool["user_id"], in_pool["hashtag"], tbins, tt
+        ):
             u = _id_str(uid)
+            is_orig = typ != "retweet"
             for tag in parse_hashtags(raw_ht):
                 uht[(u, tag, tbin)] += 1.0
+                if is_orig:
+                    uht_orig[(u, tag, tbin)] += 1.0
 
         # médias hors RT (production propre avec pièce jointe)
         for uid, typ, mtype, murl, tbin in zip(
@@ -1315,6 +1366,9 @@ def build_all_tensors(
         "uurlt": to_df(uurlt, ("user_id", "url", tcol), max_urls),
         "uudom": to_df(uudom, ("user_id", "domain", tcol), max_domains),
         "uht": to_df(uht, ("user_id", "hashtag", tcol), max_hashtags),
+        "uurlt_orig": to_df(uurlt_orig, ("user_id", "url", tcol), max_urls),
+        "uudom_orig": to_df(uudom_orig, ("user_id", "domain", tcol), max_domains),
+        "uht_orig": to_df(uht_orig, ("user_id", "hashtag", tcol), max_hashtags),
         "ucd": to_df(ucd, ("user_id", "creation_bin", tcol), 0),
         "ucdrt": _filter_creation_object_dict(
             ucdrt,
@@ -1682,9 +1736,9 @@ def classify_mid_item(item: str, key: str) -> str:
         return s if s in {"photo", "video", "animated_gif", "media"} else "media_type"
     if key == "umedurl_orig":
         return "media_url"
-    if key == "uht":
+    if key in {"uht", "uht_orig"}:
         return "noise_tag" if s in NOISE_TAGS else "hashtag"
-    if key == "uudom":
+    if key in {"uudom", "uudom_orig"}:
         if s in {"x.com", "twitter.com", "t.co"}:
             return "plateforme_x"
         return "domaine"
@@ -1732,7 +1786,7 @@ def auto_label_component(*, key, mid, time, time2, gini_mid, classes: Counter, t
         return f"Amplification de status X (pic {peak})"
     if top_cls in {"bigramme", "trigramme", "4gramme"}:
         return f"Motif lexical ({top_cls} · pic {peak})"
-    if key == "uht" and top_cls == "noise_tag":
+    if key in {"uht", "uht_orig"} and top_cls == "noise_tag":
         return f"Cadre lexical collecté (tags bruit · pic {peak})"
     return f"Régime diffus ({top_cls} · Gini={gini_mid:.2f} · pic {peak})"
 
@@ -1960,6 +2014,13 @@ def network_mode_for(key: str) -> dict:
             "edge_fr": "motifs bio partagés",
             "directed": False,
         }
+    if "uurlt_orig" in k:
+        return {
+            "kind": "co_mid",
+            "label": "Co-URLs hors RT (MID Ck)",
+            "edge_fr": "URLs hors RT partagées",
+            "directed": False,
+        }
     if "uurlt" in k or k == "coupled_uut_uurlt":
         return {
             "kind": "co_mid",
@@ -1967,11 +2028,25 @@ def network_mode_for(key: str) -> dict:
             "edge_fr": "URLs partagées",
             "directed": False,
         }
+    if "uudom_orig" in k:
+        return {
+            "kind": "co_mid",
+            "label": "Co-domaines hors RT (MID Ck)",
+            "edge_fr": "domaines hors RT partagés",
+            "directed": False,
+        }
     if "uudom" in k:
         return {
             "kind": "co_mid",
             "label": "Co-domaines (MID Ck)",
             "edge_fr": "domaines partagés",
+            "directed": False,
+        }
+    if k == "uht_orig" or k.endswith("uht_orig"):
+        return {
+            "kind": "co_mid",
+            "label": "Co-hashtags hors RT (MID Ck)",
+            "edge_fr": "hashtags hors RT partagés",
             "directed": False,
         }
     if k == "uht" or k.endswith("_uht"):
@@ -2417,6 +2492,9 @@ def aggregate_modality(
         "uurlt": "URLs",
         "uudom": "domaines",
         "uht": "hashtags",
+        "uurlt_orig": "URLs hors RT",
+        "uudom_orig": "domaines hors RT",
+        "uht_orig": "hashtags hors RT",
         "ubigram": "n-grammes",
         "utrigram": "trigrammes",
         "ubigram_orig": "n-grammes hors RT",
@@ -3262,6 +3340,9 @@ def run(args: argparse.Namespace) -> None:
         ("utrigram", ("user_id", "trigram", "tbin")),
         ("ubigram_orig", ("user_id", "ngram", "tbin")),
         ("utrigram_orig", ("user_id", "trigram", "tbin")),
+        ("uurlt_orig", ("user_id", "url", "tbin")),
+        ("uudom_orig", ("user_id", "domain", "tbin")),
+        ("uht_orig", ("user_id", "hashtag", "tbin")),
         ("ucort", ("user_id", "status_id", "tbin")),
         ("ucd", ("user_id", "creation_bin", "tbin")),
         ("ucdrt", ("user_id", "creation_bin", "retweeted_user_id")),

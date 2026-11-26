@@ -51,6 +51,7 @@ URL : https://mshubeco.github.io/heat-flux-continu/cp-explorer-hmpv/rapport.html
 
 ## Historique
 
+- 2026-11-26 — Hors RT : `uurlt_orig` / `uudom_orig` / `uht_orig`.
 - 2026-11-26 — Ck : signature spatio-temporelle (temps + acteurs×t + objets×t).
 - 2026-11-26 — Ck : filtre acteurs même ordre de grandeur que w₁ + tops agrégés
   cibles RT / mentions / hashtags / URLs (comme HEAT).
