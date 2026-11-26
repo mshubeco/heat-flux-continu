@@ -55,6 +55,7 @@ URL : https://mshubeco.github.io/heat-flux-continu/cp-explorer-hmpv/rapport.html
 
 ## Historique
 
+- 2026-11-26 — UI Ck : brief + Qui/quoi d’abord ; signature/réseau/table repliés (rendu différé).
 - 2026-11-26 — `rapport.html` : 2e section d’onglets **horaire** (jour intact) via `--hour-out run_full_hour_simple`.
 - 2026-11-26 — Hors RT : `uurlt_orig` / `uudom_orig` / `uht_orig`.
 - 2026-11-26 — Ck : signature spatio-temporelle (temps + acteurs×t + objets×t).
