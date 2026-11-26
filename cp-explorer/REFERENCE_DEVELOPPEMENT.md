@@ -20,8 +20,9 @@ Pas de scorecard artificielle.
 ```bash
 cd HEAT\03_analyses\pipelines\heat_pipelines\heat_cp_explorer
 
-# Décompositions SIMPLES seulement (défaut) — jour et minute séparés
+# Décompositions SIMPLES (défaut) — jour / heure / minute séparés
 py -3.13 build_explorer.py --phase P1 --time-bin day
+py -3.13 build_explorer.py --phase P1 --time-bin hour
 py -3.13 build_explorer.py --phase P1 --time-bin minute
 
 # Couplées en plus (optionnel)
@@ -29,9 +30,9 @@ py -3.13 build_explorer.py --phase P1 --time-bin day --with-coupled
 
 # Sorties
 #   run_p1_day_simple/index.html + rapport.html
-#   run_p1_minute_simple/index.html + rapport.html
+#   run_p1_hour_simple/ …
+#   run_p1_minute_simple/ …
 start run_p1_day_simple\rapport.html
-start run_p1_minute_simple\rapport.html
 ```
 
 ## Modalités (tenseurs)
@@ -104,9 +105,11 @@ Les tops par composante C1…CR restent disponibles (comportements attachés aux
 ## Sorties
 
 - `index.html` + `data.js` + `payload.json` — explorateur (onglet Acteurs par défaut)
-- **`rapport.html`** — familles (Méta / Objets / Hors RT / Profil / Couplés) → tenseur → sous-onglets
-  **Temps** (complet) | **C1…CR** | **Homogénéité / diag**
-  (PCA des composantes + similarité cosinus + PCA users / heatmap)
+- **`rapport.html`** — **deux sections d’onglets** :
+  1. **Temporalité journalière** — familles Méta / Objets / Hors RT / Profil / Couplés (inchangé)
+  2. **Temporalité horaire** — mêmes familles tenseurs (sauf Méta), hash `#mod-hour-<clé>`
+  Sous-onglets : **Temps** | **C1…CR** | **Homogénéité / diag**
+- **`data.js`** — `window.HEAT_CP` (jour) + optionnel `window.HEAT_CP_HOUR` (fusion `--hour-out`)
 - **`rapport_<modalité>.html`** — fiche dédiée (acteurs + objets agrégés en tête)
 - **`rapports_index.html`** — hub des rapports
 - `tensor_*.csv` · `*/user_explicit.csv` · `pipeline_config.json`
@@ -114,7 +117,11 @@ Les tops par composante C1…CR restent disponibles (comportements attachés aux
 Régénérer les rapports sans relancer le CP :
 
 ```bash
+# Jour seul
 py -3.13 build_rapport.py --out run_p1_day_simple
+
+# Jour + 2e section horaire (fusion payload hour dans data.js)
+py -3.13 build_rapport.py --out run_p1_day_simple --hour-out run_p1_hour_simple
 start run_p1_day_simple\rapport.html
 
 # Publier sur GitHub Pages (mshubeco/heat-flux-continu/cp-explorer/)
@@ -151,6 +158,8 @@ Couplage : seulement avec `--with-coupled`.
 
 ## Historique
 
+- 2026-11-26 — `rapport.html` : 2e section d’onglets **horaire** (jour intact) ; `build_rapport.py --hour-out run_*_hour_simple` → `HEAT_CP_HOUR`.
+- 2026-11-26 — bin `hour` + runs `run_p1_hour_simple/` (HEAT) / `run_full_hour_simple/` (HMPV).
 - 2026-11-26 — Hors RT : `uurlt_orig` / `uudom_orig` / `uht_orig` (pendants Objets sans RT ; pas de `uut_orig`).
 - 2026-11-26 — Ck : **signature spatio-temporelle** (barres temps + heatmaps acteurs×t / objets×t, pic en pointillés).
 - 2026-11-26 — Ck : acteurs filtrés au **même ordre de grandeur** que w₁ (`w ≥ 10^⌊log₁₀(w₁)⌋`) + bandeau tops agrégés cibles/mentions/hashtags/URLs.

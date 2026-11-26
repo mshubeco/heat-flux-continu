@@ -46,6 +46,16 @@ a:hover { text-decoration:underline; }
 }
 .fam-row { border-top:1px solid rgba(255,255,255,.12); padding:8px 0 4px; }
 .tabbar { padding:0 0 8px; min-height:36px; }
+.grain-label {
+  font-size:11px; letter-spacing:.06em; text-transform:uppercase;
+  color:rgba(232,246,245,.72); padding:6px 0 0; font-weight:650;
+}
+.grain-label.grain-hour { color:#fde68a; border-top:1px solid rgba(255,255,255,.12); margin-top:2px; }
+.topbar.hour-active .grain-hour { color:#fef3c7; }
+.topbar.hour-active #famRowHour .fam.on,
+.topbar.hour-active #tabbarHour .tab.on {
+  box-shadow:0 0 0 1px rgba(253,230,138,.55);
+}
 .fam {
   appearance:none; border:1px solid rgba(255,255,255,.22); cursor:pointer;
   background:rgba(255,255,255,.06); color:#e8f6f5; font:650 12px/1 "Segoe UI",system-ui,sans-serif;
@@ -254,8 +264,12 @@ tr:hover td { background:#f7fafb; }
     <h1>HEAT · Rapport CP multi-tenseurs</h1>
     <a class="ext" href="index.html">Explorateur</a>
   </div>
-  <div class="fam-row" id="famRow" aria-label="Familles de tenseurs"></div>
-  <div class="tabbar" id="tabbar" role="tablist" aria-label="Tenseurs / sections"></div>
+  <div class="grain-label">Temporalité journalière</div>
+  <div class="fam-row" id="famRow" aria-label="Familles de tenseurs (jour)"></div>
+  <div class="tabbar" id="tabbar" role="tablist" aria-label="Tenseurs jour"></div>
+  <div class="grain-label grain-hour">Temporalité horaire</div>
+  <div class="fam-row" id="famRowHour" aria-label="Familles de tenseurs (heure)"></div>
+  <div class="tabbar" id="tabbarHour" role="tablist" aria-label="Tenseurs heure"></div>
 </div>
 <div class="wrap">
   <section class="hero tab-panel" id="panel-synthese" data-tab="synthese" role="tabpanel">
@@ -288,12 +302,18 @@ tr:hover td { background:#f7fafb; }
 <script src="data.js"></script>
 <script>
 const DATA = window.HEAT_CP;
+const DATA_HOUR = window.HEAT_CP_HOUR || null;
+const HAS_HOUR = !!(DATA_HOUR && Array.isArray(DATA_HOUR.modalities) && DATA_HOUR.modalities.length);
 const COLORS = ["#0f6e6a","#1f4e79","#9a3412","#5b4b8a","#2f6b3a","#a15c00","#0e7490","#7f1d1d"];
 const fmt = n => Number(n).toLocaleString("fr-FR");
-const ranked = [...DATA.modalities];
+const rankedDay = [...(DATA.modalities||[])];
+const rankedHour = HAS_HOUR ? [...DATA_HOUR.modalities] : [];
+let ranked = rankedDay;
 const painted = new Set();
 const subView = {}; // key -> temps|cN|diag
+let activeGrain = "day"; // day | hour
 let activeFam = "meta";
+let activeFamHour = "objets";
 
 const TAB_SHORT = {
   uut: "Cibles RT", uurlt: "URLs", uudom: "Domaines", uht: "Hashtags",
@@ -468,7 +488,7 @@ function buildConfigsPanel(){
     { h:"Profils — bio & date de création",
       keys:["ucd","ucdrt","ucdng","ubio","ubio_ht","uname"] },
     { h:"Configs couplées — deux tenseurs, USER commun (∥)",
-      keys: ranked.filter(m=>m.key.startsWith("coupled")).map(m=>m.key) },
+      keys: rankedDay.filter(m=>m.key.startsWith("coupled")).map(m=>m.key) },
   ];
   let html = `
     <h3>En quoi consiste chaque configuration de tenseur ?</h3>
@@ -504,28 +524,45 @@ function buildConfigsPanel(){
           <div class="cube time">${esc(tUp)}₂</div>
         </div>`;
     }
-    const keys = (g.keys||[]).filter(k => ranked.some(m => m.key===k) || CFG_BLURBS[k]);
+    const keys = (g.keys||[]).filter(k => rankedDay.some(m => m.key===k) || CFG_BLURBS[k]);
     if (!keys.length) continue;
     html += `<div class="cfg-grid">${keys.map(k => cfgCard(k, shortLabel(k))).join("")}</div>`;
   }
   el.innerHTML = html;
 }
+function tabKey(tabId){
+  if (!tabId.startsWith("mod-")) return null;
+  if (tabId.startsWith("mod-hour-")) return tabId.slice(9);
+  return tabId.slice(4);
+}
+function domKey(grain, key){
+  return grain === "hour" ? "hour-" + key : key;
+}
+function poolOf(grain){
+  return grain === "hour" ? rankedHour : rankedDay;
+}
 function famOf(tabId){
   if (!tabId.startsWith("mod-")) return "meta";
-  const key = tabId.slice(4);
+  const key = tabKey(tabId);
   for (const f of FAMILIES) {
-    if (f.id === "couples") continue;
+    if (f.id === "couples" || f.id === "meta") continue;
     if (f.keys && f.keys.includes(key)) return f.id;
   }
-  if (key.startsWith("coupled")) return "couples";
+  if (key && key.startsWith("coupled")) return "couples";
   return "objets";
 }
-function keysInFam(fid){
+function keysInFam(fid, grain="day"){
+  const pool = grain === "hour" ? rankedHour : rankedDay;
   if (fid === "meta") return [];
-  if (fid === "couples") return ranked.filter(m => m.key.startsWith("coupled")).map(m => m.key);
+  if (fid === "couples") return pool.filter(m => m.key.startsWith("coupled")).map(m => m.key);
   const f = FAMILIES.find(x => x.id === fid);
   const want = new Set(f?.keys || []);
-  return ranked.filter(m => want.has(m.key)).map(m => m.key);
+  return pool.filter(m => want.has(m.key)).map(m => m.key);
+}
+function setGrain(grain){
+  activeGrain = grain;
+  ranked = grain === "hour" ? rankedHour : rankedDay;
+  document.querySelector(".topbar")?.classList.toggle("hour-active", grain === "hour");
 }
 
 function fillMeta(){
@@ -543,24 +580,46 @@ function fillMeta(){
 function buildTabbar(){
   const famEl = document.getElementById("famRow");
   famEl.innerHTML = FAMILIES.map(f =>
-    `<button type="button" class="fam ${f.id===activeFam?"on":""}" data-fam="${f.id}">${esc(f.label)}</button>`
+    `<button type="button" class="fam ${f.id===activeFam?"on":""}" data-fam="${f.id}" data-grain="day">${esc(f.label)}</button>`
   ).join("");
   famEl.querySelectorAll(".fam").forEach(b => b.onclick = () => {
+    setGrain("day");
     activeFam = b.dataset.fam;
     renderSubTabs();
     if (activeFam === "meta") showTab("synthese");
     else {
-      const ks = keysInFam(activeFam);
+      const ks = keysInFam(activeFam, "day");
       if (ks.length) showTab("mod-"+ks[0]);
       else showTab("synthese");
     }
   });
+  const famHour = document.getElementById("famRowHour");
+  const barHour = document.getElementById("tabbarHour");
+  const labHour = document.querySelector(".grain-hour");
+  if (!HAS_HOUR) {
+    if (famHour) famHour.hidden = true;
+    if (barHour) barHour.hidden = true;
+    if (labHour) labHour.hidden = true;
+  } else {
+    const hourFams = FAMILIES.filter(f => f.id !== "meta");
+    famHour.innerHTML = hourFams.map(f =>
+      `<button type="button" class="fam ${f.id===activeFamHour?"on":""}" data-fam="${f.id}" data-grain="hour">${esc(f.label)}</button>`
+    ).join("");
+    famHour.querySelectorAll(".fam").forEach(b => b.onclick = () => {
+      setGrain("hour");
+      activeFamHour = b.dataset.fam;
+      renderSubTabsHour();
+      const ks = keysInFam(activeFamHour, "hour");
+      if (ks.length) showTab("mod-hour-"+ks[0]);
+    });
+  }
   renderSubTabs();
+  if (HAS_HOUR) renderSubTabsHour();
 }
 
 function renderSubTabs(){
   const bar = document.getElementById("tabbar");
-  document.querySelectorAll(".fam").forEach(b => b.classList.toggle("on", b.dataset.fam===activeFam));
+  document.querySelectorAll("#famRow .fam").forEach(b => b.classList.toggle("on", b.dataset.fam===activeFam));
   if (activeFam === "meta") {
     bar.innerHTML = [
       ["synthese","Synthèse","fenêtre"],
@@ -570,20 +629,39 @@ function renderSubTabs(){
       `<button type="button" class="tab meta" data-tab="${id}"><span class="k">${k}</span><span class="s">${s}</span></button>`
     ).join("");
   } else {
-    bar.innerHTML = keysInFam(activeFam).map(key => {
-      const m = ranked.find(x => x.key===key);
+    bar.innerHTML = keysInFam(activeFam, "day").map(key => {
+      const m = rankedDay.find(x => x.key===key);
       return `<button type="button" class="tab" data-tab="mod-${key}" title="${esc(tensorModes(m||key))}">
         <span class="k">${esc(shortLabel(key))}</span>
         <span class="s">${esc(tensorModes(m||key))}</span></button>`;
     }).join("") || `<span class="tab"><span class="k">Aucun tenseur</span></span>`;
   }
-  bar.querySelectorAll(".tab").forEach(btn => btn.onclick = () => showTab(btn.dataset.tab));
+  bar.querySelectorAll(".tab[data-tab]").forEach(b => b.onclick = () => showTab(b.dataset.tab));
+}
+function renderSubTabsHour(){
+  const bar = document.getElementById("tabbarHour");
+  if (!bar || !HAS_HOUR) return;
+  document.querySelectorAll("#famRowHour .fam").forEach(b => b.classList.toggle("on", b.dataset.fam===activeFamHour));
+  bar.innerHTML = keysInFam(activeFamHour, "hour").map(key => {
+    const m = rankedHour.find(x => x.key===key);
+    return `<button type="button" class="tab" data-tab="mod-hour-${key}" title="${esc(tensorModes(m||key))} · heure">
+      <span class="k">${esc(shortLabel(key))}</span>
+      <span class="s">${esc(tensorModes(m||key))} · h</span></button>`;
+  }).join("") || `<span class="tab"><span class="k">Aucun tenseur horaire</span></span>`;
+  bar.querySelectorAll(".tab[data-tab]").forEach(b => b.onclick = () => showTab(b.dataset.tab));
 }
 
 function showTab(id){
-  activeFam = famOf(id);
-  renderSubTabs();
-  document.querySelectorAll("#tabbar .tab").forEach(b => {
+  const grain = id.startsWith("mod-hour-") ? "hour" : "day";
+  if (id.startsWith("mod-")) setGrain(grain);
+  if (grain === "hour") {
+    activeFamHour = famOf(id);
+    renderSubTabsHour();
+  } else {
+    activeFam = famOf(id);
+    renderSubTabs();
+  }
+  document.querySelectorAll("#tabbar .tab, #tabbarHour .tab").forEach(b => {
     const on = b.dataset.tab === id;
     b.classList.toggle("on", on);
     b.setAttribute("aria-selected", on ? "true" : "false");
@@ -594,38 +672,40 @@ function showTab(id){
     requestAnimationFrame(() => { try { Plotly.Plots.resize(document.getElementById("chartDims")); } catch(e) {} });
   }
   if (id.startsWith("mod-")) {
-    const key = id.slice(4);
-    paintMod(key);
-    showSub(key, subView[key] || "temps");
-    requestAnimationFrame(() => resizeModPlots(key));
+    const key = tabKey(id);
+    paintMod(grain, key);
+    showSub(grain, key, subView[domKey(grain, key)] || "temps");
+    requestAnimationFrame(() => resizeModPlots(grain, key));
   }
   try { history.replaceState(null, "", "#" + id); } catch(e) {}
   window.scrollTo(0, 0);
 }
 
-function showSub(key, which){
-  subView[key] = which;
-  const root = document.getElementById("panel-mod-"+key);
+function showSub(grain, key, which){
+  const dk = domKey(grain, key);
+  subView[dk] = which;
+  const root = document.getElementById("panel-mod-"+dk);
   if (!root) return;
   root.querySelectorAll(".subtab").forEach(b => b.classList.toggle("on", b.dataset.sub===which));
   root.querySelectorAll(".subpanel").forEach(p => { p.hidden = p.dataset.sub !== which; });
-  requestAnimationFrame(() => resizeModPlots(key));
+  requestAnimationFrame(() => resizeModPlots(grain, key));
 }
 
 function paintComparatif(){
   if (painted.has("overview")) return;
   painted.add("overview");
-  const labels = ranked.map(m => m.key);
+  const pool = rankedDay;
+  const labels = pool.map(m => m.key);
   Plotly.newPlot("chartDims", [
     {
       type:"bar", name:"Comptes (users)",
-      x: labels, y: ranked.map(m => m.n_users),
+      x: labels, y: pool.map(m => m.n_users),
       marker:{color:"#0f6e6a"},
       hovertemplate:"%{x}<br>%{y:,} comptes<extra></extra>"
     },
     {
       type:"bar", name:"Objets (mid)",
-      x: labels, y: ranked.map(m => m.n_mid),
+      x: labels, y: pool.map(m => m.n_mid),
       marker:{color:"#1f4e79"},
       hovertemplate:"%{x}<br>%{y:,} objets mid<extra></extra>"
     }
@@ -637,7 +717,7 @@ function paintComparatif(){
     legend:{orientation:"h", y:1.15}
   }, {responsive:true, displayModeBar:false});
 
-  document.querySelector("#overviewTable tbody").innerHTML = ranked.map((m)=>{
+  document.querySelector("#overviewTable tbody").innerHTML = pool.map((m)=>{
     const actors = (m.aggregate?.top_actors||[]).slice(0,5).map(a=>xLink(a.label)).join(", ") || "—";
     const mids = (m.aggregate?.top_mids||[]).slice(0,5).map(a =>
       entityLink(a.id || a.label)
@@ -659,16 +739,20 @@ function paintComparatif(){
   });
 }
 
-function buildModSections(){
-  const root = document.getElementById("modalites");
-  const tlab = DATA.meta.time_bin_fr || "temps";
-  root.innerHTML = ranked.map((m) => `
-    <section class="panel section-mod tab-panel" id="panel-mod-${m.key}" data-tab="mod-${m.key}" role="tabpanel" hidden>
+function modSectionHtml(m, grain){
+  const dk = domKey(grain, m.key);
+  const tab = grain === "hour" ? "mod-hour-" + m.key : "mod-" + m.key;
+  const meta = grain === "hour" ? (DATA_HOUR.meta || {}) : (DATA.meta || {});
+  const tlab = meta.time_bin_fr || meta.time_bin || (grain === "hour" ? "heure" : "jour");
+  const grainTag = grain === "hour" ? `<span class="code">horaire</span>` : "";
+  return `
+    <section class="panel section-mod tab-panel" id="panel-mod-${dk}" data-tab="${tab}" data-grain="${grain}" data-key="${esc(m.key)}" role="tabpanel" hidden>
       <div class="mod-banner">
         <div class="modes-formula" title="Schéma du tenseur">${formatModesHtml(tensorModes(m))}</div>
         <div class="row">
           <span class="title">${esc(shortLabel(m.key))}</span>
           <span class="code">${esc(m.key)}</span>
+          ${grainTag}
           <span class="hint">${esc(m.blurb||m.label||"")}</span>
         </div>
       </div>
@@ -678,7 +762,7 @@ function buildModSections(){
         <div class="box"><div class="v">${fmt(m.n_days)}</div><div class="l">${esc(tlab)}s</div></div>
         <div class="box"><div class="v">R=${m.rank}</div><div class="l">Rang CP</div></div>
       </div>
-      <div class="subtabs" id="subtabs-${m.key}">
+      <div class="subtabs" id="subtabs-${dk}">
         <button type="button" class="subtab on" data-sub="temps">${
           m.key==="ucdrt" ? "Cibles RT (mode 3)" :
           m.key==="ucdng" ? "N-grammes (mode 3)" :
@@ -690,85 +774,92 @@ function buildModSections(){
         <button type="button" class="subtab" data-sub="diag">Homogénéité / diag</button>
       </div>
       <div class="subpanel" data-sub="temps">
-        <div id="time-${m.key}" class="plot"></div>
+        <div id="time-${dk}" class="plot"></div>
         <p class="cap">Poids temporel de <b>chaque</b> composante (non tronqué).</p>
       </div>
       ${(m.components||[]).map(c => `
       <div class="subpanel" data-sub="c${c.id}" hidden>
-        <div class="comp-diag" id="cdiag-${m.key}-c${c.id}"></div>
+        <div class="comp-diag" id="cdiag-${dk}-c${c.id}"></div>
         <div class="comp-graphs">
           <div class="plot-time">
             <h4>Temps — facteur C${c.id}</h4>
-            <div id="ctime-${m.key}-c${c.id}" class="plot"></div>
+            <div id="ctime-${dk}-c${c.id}" class="plot"></div>
           </div>
           <div>
             <h4>Acteurs — même ordre de grandeur que le 1er (C${c.id})</h4>
-            <div id="cusers-${m.key}-c${c.id}" class="plot tall"></div>
+            <div id="cusers-${dk}-c${c.id}" class="plot tall"></div>
           </div>
           <div>
             <h4>${esc(m.mid_label||"Objets")} — top poids C${c.id}</h4>
-            <div id="cmid-${m.key}-c${c.id}" class="plot tall"></div>
+            <div id="cmid-${dk}-c${c.id}" class="plot tall"></div>
           </div>
-          <div id="cmid2wrap-${m.key}-c${c.id}" hidden>
+          <div id="cmid2wrap-${dk}-c${c.id}" hidden>
             <h4>${esc(m.mid2_label||"MID₂")} — top poids C${c.id}</h4>
-            <div id="cmid2-${m.key}-c${c.id}" class="plot tall"></div>
+            <div id="cmid2-${dk}-c${c.id}" class="plot tall"></div>
           </div>
         </div>
         <div class="sig-block">
           <h4>Signature spatio-temporelle — C${c.id}</h4>
           <p class="sig-sub">Intensité des contributions reconstruites (w<sub>acteur</sub>×w<sub>temps</sub>, w<sub>objet</sub>×w<sub>temps</sub>), normalisée par dimension · pic en pointillés</p>
-          <div id="csig-${m.key}-c${c.id}" class="plot sig-plot"></div>
+          <div id="csig-${dk}-c${c.id}" class="plot sig-plot"></div>
         </div>
         <h4>Réseau mono-modalité — acteurs C${c.id}</h4>
         <p class="cap">Une seule interaction liée au tenseur sur les MID Ck · survol d’un lien = objets partagés · AF 2D + noverlap · taille=degré · zoom/pan · clic nœud → X.</p>
-        <div class="net-legend" id="cnetleg-${m.key}-c${c.id}"></div>
-        <div id="cnet-${m.key}-c${c.id}" class="plot net-plot"></div>
+        <div class="net-legend" id="cnetleg-${dk}-c${c.id}"></div>
+        <div id="cnet-${dk}-c${c.id}" class="plot net-plot"></div>
         <h4>Comportements agrégés des acteurs C${c.id}</h4>
         <p class="cap">Tops cibles RT / mentions / hashtags / URLs cumulés sur les acteurs du même ordre de grandeur que le 1er poids CP.</p>
-        <div id="cbeh-${m.key}-c${c.id}"></div>
+        <div id="cbeh-${dk}-c${c.id}"></div>
         <h4>Acteurs C${c.id} — métriques caractéristiques</h4>
         <p class="cap">Filtre w ≥ 10<sup>⌊log₁₀(w₁)</sup> · publications fenêtre · part RT · bio · tops individuels.</p>
-        <div class="actor-metrics-wrap" id="cactors-${m.key}-c${c.id}"></div>
+        <div class="actor-metrics-wrap" id="cactors-${dk}-c${c.id}"></div>
       </div>`).join("")}
       <div class="subpanel" data-sub="diag" hidden>
         <div class="grid2">
           <div>
             <h4>PCA des composantes (profils users)</h4>
-            <div id="cpca-${m.key}" class="plot"></div>
+            <div id="cpca-${dk}" class="plot"></div>
             <p class="cap">Chaque point = une composante, projetée depuis ses poids user (heatmap). Proches = régimes homogènes.</p>
           </div>
           <div>
             <h4>Similarité cosinus C×C (users)</h4>
-            <div id="csim-${m.key}" class="plot"></div>
+            <div id="csim-${dk}" class="plot"></div>
           </div>
         </div>
         <div class="grid2">
           <div>
             <h4>PCA users (facteurs CP)</h4>
-            <div id="pca-${m.key}" class="plot tall"></div>
+            <div id="pca-${dk}" class="plot tall"></div>
           </div>
           <div>
             <h4>Heatmap user × rang</h4>
-            <div id="heat-${m.key}" class="plot tall"></div>
+            <div id="heat-${dk}" class="plot tall"></div>
           </div>
         </div>
-        <div id="gini-${m.key}" class="plot sm"></div>
+        <div id="gini-${dk}" class="plot sm"></div>
       </div>
-    </section>
-  `).join("");
+    </section>`;
+}
+
+function buildModSections(){
+  const root = document.getElementById("modalites");
+  root.innerHTML =
+    rankedDay.map(m => modSectionHtml(m, "day")).join("") +
+    (HAS_HOUR ? rankedHour.map(m => modSectionHtml(m, "hour")).join("") : "");
   root.querySelectorAll(".subtab").forEach(btn => {
     btn.onclick = () => {
-      const key = btn.closest(".section-mod").dataset.tab.slice(4);
-      showSub(key, btn.dataset.sub);
+      const sec = btn.closest(".section-mod");
+      showSub(sec.dataset.grain || "day", sec.dataset.key, btn.dataset.sub);
     };
   });
 }
 
-function resizeModPlots(key){
-  const m = ranked.find(x => x.key === key);
-  const ids = ["time","gini","pca","heat","cpca","csim"].map(p => p + "-" + key);
+function resizeModPlots(grain, key){
+  const dk = domKey(grain, key);
+  const m = poolOf(grain).find(x => x.key === key);
+  const ids = ["time","gini","pca","heat","cpca","csim"].map(p => p + "-" + dk);
   (m?.components||[]).forEach(c => {
-    ids.push(`ctime-${key}-c${c.id}`, `cusers-${key}-c${c.id}`, `cmid-${key}-c${c.id}`, `cmid2-${key}-c${c.id}`, `cnet-${key}-c${c.id}`);
+    ids.push(`ctime-${dk}-c${c.id}`, `cusers-${dk}-c${c.id}`, `cmid-${dk}-c${c.id}`, `cmid2-${dk}-c${c.id}`, `cnet-${dk}-c${c.id}`);
   });
   ids.forEach(id => {
     const el = document.getElementById(id);
@@ -1394,11 +1485,12 @@ function cosineSim(a,b){
   return s;
 }
 
-function paintMod(key){
-  if (painted.has("mod-"+key)) return;
-  const m = ranked.find(x => x.key === key);
+function paintMod(grain, key){
+  const dk = domKey(grain, key);
+  if (painted.has("mod-"+dk)) return;
+  const m = poolOf(grain).find(x => x.key === key);
   if (!m) return;
-  painted.add("mod-"+key);
+  painted.add("mod-"+dk);
 
   // --- Temps (complet) ---
   const traces = (m.components||[]).map((c,i)=>({
@@ -1416,7 +1508,7 @@ function paintMod(key){
       });
     });
   }
-  Plotly.newPlot("time-"+m.key, traces, {
+  Plotly.newPlot("time-"+dk, traces, {
     margin:{t:10,r:10,b:50,l:40}, paper_bgcolor:"#fff", plot_bgcolor:"#fff",
     xaxis:{tickangle:-35}, yaxis:{title:"poids"},
     legend:{orientation:"h", y:1.12}
@@ -1426,7 +1518,7 @@ function paintMod(key){
   const mats = componentUserMatrix(m);
   if (mats && mats.length >= 2) {
     const coords = pca2d(mats);
-    Plotly.newPlot("cpca-"+m.key, [{
+    Plotly.newPlot("cpca-"+dk, [{
       type:"scatter", mode:"markers+text",
       x:coords.map(p=>p.x), y:coords.map(p=>p.y),
       text:mats.map((_,i)=>"C"+(i+1)), textposition:"top center",
@@ -1448,7 +1540,7 @@ function paintMod(key){
       }]
     }, {responsive:true, displayModeBar:false});
     const zsim = mats.map((a,i)=> mats.map((b,j)=> i===j?1: +cosineSim(a,b).toFixed(3)));
-    Plotly.newPlot("csim-"+m.key, [{
+    Plotly.newPlot("csim-"+dk, [{
       type:"heatmap", z:zsim,
       x:mats.map((_,i)=>"C"+(i+1)), y:mats.map((_,i)=>"C"+(i+1)),
       colorscale:[[0,"#f7fafb"],[0.5,"#7eb8b4"],[1,"#0f6e6a"]], zmin:0, zmax:1,
@@ -1458,11 +1550,13 @@ function paintMod(key){
       yaxis:{autorange:"reversed"}
     }, {responsive:true, displayModeBar:false});
   } else {
-    document.getElementById("cpca-"+m.key).innerHTML = "<p class='cap'>PCA composantes indisponible (heatmap trop courte).</p>";
-    document.getElementById("csim-"+m.key).innerHTML = "";
+    const elCpca = document.getElementById("cpca-"+dk);
+    const elCsim = document.getElementById("csim-"+dk);
+    if (elCpca) elCpca.innerHTML = "<p class='cap'>PCA composantes indisponible (heatmap trop courte).</p>";
+    if (elCsim) elCsim.innerHTML = "";
   }
 
-  Plotly.newPlot("gini-"+m.key, [
+  Plotly.newPlot("gini-"+dk, [
     { type:"bar", name:"Gini users", x:(m.components||[]).map(c=>"C"+c.id),
       y:(m.components||[]).map(c=>c.metrics?.gini_users??0), marker:{color:COLORS[0]} },
     { type:"bar", name:"Gini mid", x:(m.components||[]).map(c=>"C"+c.id),
@@ -1487,7 +1581,7 @@ function paintMod(key){
     });
   }
   const ev = m.pca?.explained || [];
-  Plotly.newPlot("pca-"+m.key, pcaTraces, {
+  Plotly.newPlot("pca-"+dk, pcaTraces, {
     margin:{t:20,r:10,b:40,l:40}, paper_bgcolor:"#fff",
     xaxis:{title:`PC1 (${((ev[0]||0)*100).toFixed(1)}%)`},
     yaxis:{title:`PC2 (${((ev[1]||0)*100).toFixed(1)}%)`},
@@ -1495,7 +1589,7 @@ function paintMod(key){
   }, {responsive:true, displayModeBar:false});
 
   const h = m.heatmap || {z:[], user_labels:[]};
-  Plotly.newPlot("heat-"+m.key, [{
+  Plotly.newPlot("heat-"+dk, [{
     type:"heatmap", z:h.z, y:h.user_labels,
     x:Array.from({length:m.rank},(_,i)=>"C"+(i+1)),
     colorscale:[[0,"#f7fafb"],[0.5,"#7eb8b4"],[1,"#0f6e6a"]],
@@ -1514,7 +1608,7 @@ function paintMod(key){
       const ht = (u.top_hashtags||[]).slice(0,2).map(x=>"#"+esc(x.label)).join(", ") || "—";
       return `<span class="chip">${xLink(u.label)} RT→ ${rt} · ${ht}</span>`;
     }).join("");
-    const diag = document.getElementById(`cdiag-${m.key}-c${c.id}`);
+    const diag = document.getElementById(`cdiag-${dk}-c${c.id}`);
     if (diag) {
       diag.innerHTML = `
         <span class="chip" style="background:${col};color:#fff">C${c.id}</span>
@@ -1537,27 +1631,27 @@ function paintMod(key){
         line:{color:col, width:1.8, dash:"dot"}, marker:{size:5}
       });
     }
-    Plotly.newPlot(`ctime-${m.key}-c${c.id}`, tTraces, {
+    Plotly.newPlot(`ctime-${dk}-c${c.id}`, tTraces, {
       margin:{t:10,r:10,b:50,l:44}, paper_bgcolor:"#fff", plot_bgcolor:"#fff",
       xaxis:{tickangle:-35}, yaxis:{title:"poids"},
       showlegend:tTraces.length>1, legend:{orientation:"h", y:1.12}
     }, {responsive:true, displayModeBar:false});
-    hbarPlot(`cusers-${m.key}-c${c.id}`, c.users, col);
-    hbarPlot(`cmid-${m.key}-c${c.id}`, c.mid, col);
-    const wrap2 = document.getElementById(`cmid2wrap-${m.key}-c${c.id}`);
+    hbarPlot(`cusers-${dk}-c${c.id}`, c.users, col);
+    hbarPlot(`cmid-${dk}-c${c.id}`, c.mid, col);
+    const wrap2 = document.getElementById(`cmid2wrap-${dk}-c${c.id}`);
     if (wrap2) {
       if (c.mid2 && c.mid2.length) {
         wrap2.hidden = false;
-        hbarPlot(`cmid2-${m.key}-c${c.id}`, c.mid2, COLORS[(i+1)%COLORS.length]);
+        hbarPlot(`cmid2-${dk}-c${c.id}`, c.mid2, COLORS[(i+1)%COLORS.length]);
       } else wrap2.hidden = true;
     }
-    paintSpatioSignature(`csig-${m.key}-c${c.id}`, c, m.mid_label, col);
-    const behBox = document.getElementById(`cbeh-${m.key}-c${c.id}`);
+    paintSpatioSignature(`csig-${dk}-c${c.id}`, c, m.mid_label, col);
+    const behBox = document.getElementById(`cbeh-${dk}-c${c.id}`);
     if (behBox) behBox.innerHTML = behaviorTopsPanel(c.behavior_tops);
-    const actorsBox = document.getElementById(`cactors-${m.key}-c${c.id}`);
+    const actorsBox = document.getElementById(`cactors-${dk}-c${c.id}`);
     if (actorsBox) actorsBox.innerHTML = actorMetricsTable(c.users);
     const net = c.network || {};
-    const leg = document.getElementById(`cnetleg-${m.key}-c${c.id}`);
+    const leg = document.getElementById(`cnetleg-${dk}-c${c.id}`);
     if (leg) {
       leg.innerHTML = `
         <span><span class="sw" style="background:${col}"></span>${esc(net.mode_label||"lien tenseur")}</span>
@@ -1565,7 +1659,7 @@ function paintMod(key){
         <span class="cap">Épaisseur lien ∝ n° éléments partagés · survol sur le segment · ${net.n_edges||0} liens · ${net.n_isolated||0} isolés</span>
         <span class="cap">molette = zoom · glisser = pan</span>`;
     }
-    paintNetwork(`cnet-${m.key}-c${c.id}`, net, col);
+    paintNetwork(`cnet-${dk}-c${c.id}`, net, col);
   });
 }
 
@@ -1575,7 +1669,8 @@ buildModSections();
 buildTabbar();
 const boot = (location.hash || "#synthese").replace(/^#/, "") || "synthese";
 const bootOk = [...document.querySelectorAll("[data-tab]")].some(el => el.dataset.tab === boot)
-  || ranked.some(m => ("mod-"+m.key) === boot);
+  || rankedDay.some(m => ("mod-"+m.key) === boot)
+  || (HAS_HOUR && rankedHour.some(m => ("mod-hour-"+m.key) === boot));
 showTab(bootOk ? boot : "synthese");
 </script>
 </body>
@@ -2276,15 +2371,27 @@ else {
 """
 
 
-def write_reports(out_dir: Path) -> list[Path]:
+def write_reports(out_dir: Path, hour_dir: Path | None = None) -> list[Path]:
     payload_path = out_dir / "payload.json"
     if not payload_path.is_file():
         raise SystemExit(f"payload.json introuvable dans {out_dir}")
     data = json.loads(payload_path.read_text(encoding="utf-8"))
-    # data.js déjà présent normalement ; on s’assure
+    hour_data = None
+    if hour_dir is not None:
+        hp = hour_dir.resolve() / "payload.json"
+        if not hp.is_file():
+            raise SystemExit(f"payload.json horaire introuvable dans {hour_dir}")
+        hour_data = json.loads(hp.read_text(encoding="utf-8"))
+
     js = out_dir / "data.js"
-    if not js.is_file():
-        js.write_text("window.HEAT_CP = " + json.dumps(data, ensure_ascii=False) + ";\n", encoding="utf-8")
+    parts = ["window.HEAT_CP = " + json.dumps(data, ensure_ascii=False) + ";"]
+    if hour_data is not None:
+        parts.append("window.HEAT_CP_HOUR = " + json.dumps(hour_data, ensure_ascii=False) + ";")
+    elif not js.is_file():
+        pass  # parts already has HEAT_CP
+    # Toujours réécrire si hour fusionné ; sinon créer si absent
+    if hour_data is not None or not js.is_file():
+        js.write_text("\n".join(parts) + "\n", encoding="utf-8")
 
     written: list[Path] = []
     rapport = out_dir / "rapport.html"
@@ -2366,10 +2473,16 @@ a{{color:#1f4e79}}
 
 def main() -> None:
     p = argparse.ArgumentParser()
-    p.add_argument("--out", type=Path, default=ROOT)
+    p.add_argument("--out", type=Path, default=ROOT, help="Dossier run journalier (payload + rapport)")
+    p.add_argument(
+        "--hour-out",
+        type=Path,
+        default=None,
+        help="Dossier run horaire (payload) fusionné dans data.js → HEAT_CP_HOUR",
+    )
     args = p.parse_args()
-    paths = write_reports(args.out.resolve())
-    print(f"OK — {len(paths)} fichiers")
+    paths = write_reports(args.out.resolve(), hour_dir=args.hour_out.resolve() if args.hour_out else None)
+    print(f"OK — {len(paths)} fichiers" + (f" (+ hour {args.hour_out.name})" if args.hour_out else ""))
     for path in paths:
         print(f"  {path.name}")
 
