@@ -170,6 +170,7 @@ Couplage : seulement avec `--with-coupled`.
 
 ## Historique
 
+- 2026-11-26 — Couplés A–G aussi en **temporalité horaire** (`run_p1_hour_simple` + fusion `--hour-out`).
 - 2026-11-26 — Rapport Couplés : tenseurs **A–G** (screen hiérarchie) sur base USER×temps — `--add-hierarchy-coupled` + sync Pages.
 - 2026-11-26 — `analyse_CP.xlsx` : section **Couplé** A–G (hiérarchie screen) — chaque bras = USER × MID × jour, couplage USER.
 - 2026-11-26 — `dispersion_creation_cibles` : page **`publications.html`** (entité tweet) + lien depuis `index.html` (comptes).
