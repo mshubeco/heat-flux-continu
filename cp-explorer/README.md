@@ -8,7 +8,14 @@ Décomposition CP (canicule P1, bin **jour**) : rapports Plotly + explorateur in
 - [Rapport complet](https://mshubeco.github.io/heat-flux-continu/cp-explorer/rapport.html)
 - [Explorateur](https://mshubeco.github.io/heat-flux-continu/cp-explorer/index.html)
 
-Fenêtre : **P1 20/05–07/06/2026** · tenseurs USER × MID × jour · réseaux Ck mono-modalité (co-MID, survol des liens = objets partagés).
+Fenêtre : **P1 20/05–07/06/2026** · tenseurs USER × MID × jour (sauf `ucdrt` / `ucdng` : création × objet, sans bin d’activité) · réseaux Ck mono-modalité.
+
+## Mise à jour depuis le workspace
+
+```powershell
+cd Desktop\HEAT\03_analyses\pipelines\heat_pipelines\heat_cp_explorer
+.\sync_to_github_pages.ps1 -Push
+```
 
 ## Contenu publié
 

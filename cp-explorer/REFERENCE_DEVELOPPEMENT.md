@@ -55,6 +55,8 @@ Seul le MID change. Couplées = deux cubes avec **même facteur USER**.
 | `coupled_cort_ubigram_orig` | ubigram_orig ∥ ucort | n-grammes hors RT ∥ co-RT (**défaut**) |
 | `coupled_cort_utrigram_orig` | utrigram_orig ∥ ucort | idem trigrammes (**défaut**) |
 | `ucd` | user × creation_bin × temps | jour de création (snowflake YYYY-MM-DD) × activité |
+| `ucdrt` | user × creation_bin × cible RT | cohortes de création × cibles RT (**sans** bin d’activité) |
+| `ucdng` | user × creation_bin × n-gramme | cohortes de création × n-grammes lemmatisés (**sans** bin d’activité) |
 | `ubio` / `ubio_ht` | user × bio_ngram\|tag × temps | n-grammes bio candidats (n=2..4, PMI+longest-match) / hashtags |
 | `uname` | user × token display_name × temps | proxy profil (toujours dans le CSV) |
 | `coupled_ucd_uut` | ucd ∥ uut | création ∥ RT-cible (**défaut**) |
@@ -66,7 +68,8 @@ Seul le MID change. Couplées = deux cubes avec **même facteur USER**.
 | `coupled_uut_ubigram` | ubigram ∥ uut | RT-cible + n-grammes (`--with-coupled`) |
 
 Bios : CSV intersection + cohort239 + `cache/user_bios.json` ; option `--scrape-bios`.
-Création : pas de colonne `user_created_at` → snowflake (≥50 bits) → MID = jour `YYYY-MM-DD` (pas de bins annuels). Les comptes non datables (`unknown`) sont exclus de `ucd` / couplés ucd.
+Création : pas de colonne `user_created_at` → snowflake (≥50 bits) → MID = jour `YYYY-MM-DD` (pas de bins annuels). Les comptes non datables (`unknown`) sont exclus de `ucd` / `ucdrt` / `ucdng` / couplés ucd.
+Réseau Ck pour `ucdrt`/`ucdng` : co-occurrence sur le **mode 3** (cibles RT / n-grammes), pas sur les jours de création.
 
 Voir aussi la section **§0 Configurations** dans `rapport.html`.
 
@@ -99,7 +102,7 @@ Les tops par composante C1…CR restent disponibles (comportements attachés aux
 
 - `index.html` + `data.js` + `payload.json` — explorateur (onglet Acteurs par défaut)
 - **`rapport.html`** — familles (Méta / Objets / Hors RT / Profil / Couplés) → tenseur → sous-onglets
-  **Tendance** (acteurs/MID à ordre stable C1↔rangs suivants) | **Temps** (complet) | **Homogénéité**
+  **Temps** (complet) | **C1…CR** | **Homogénéité / diag**
   (PCA des composantes + similarité cosinus + PCA users / heatmap)
 - **`rapport_<modalité>.html`** — fiche dédiée (acteurs + objets agrégés en tête)
 - **`rapports_index.html`** — hub des rapports
@@ -110,6 +113,9 @@ Régénérer les rapports sans relancer le CP :
 ```bash
 py -3.13 build_rapport.py --out run_p1_day_simple
 start run_p1_day_simple\rapport.html
+
+# Publier sur GitHub Pages (mshubeco/heat-flux-continu/cp-explorer/)
+.\sync_to_github_pages.ps1 -Push
 ```
 
 ### Légendes graphiques (ce qu’on lit / ce que ça dit)
@@ -145,6 +151,9 @@ Couplage : seulement avec `--with-coupled`.
 - 2026-11-26 — onglets Ck : graphe réseau d’échanges (RT / mentions) entre acteurs, survol détaillé.
 - 2026-11-26 — `ubio` : n-grammes candidats (n=2..4, PMI≥0.8, df≥2, longest-match) à la place des bigrammes fixes.
 - 2026-11-26 — onglets Ck : tableau acteurs (pubs, %RT, bio, top5 cibles/mentions/hashtags/domaines) ; `--enrich-profiles`.
+- 2026-11-26 — sync GitHub Pages : `sync_to_github_pages.ps1 -Push` → `mshubeco/heat-flux-continu` `/cp-explorer/`.
+- 2026-11-26 — tenseurs `ucdrt` (émetteur × jour création × cible RT) et `ucdng` (× n-grammes), sans bin d’activité.
+- 2026-11-26 — retrait onglet **Tendance** (ordre stable) par tenseur ; défaut = Temps.
 - 2026-11-26 — publication GitHub Pages : `mshubeco/heat-flux-continu` → `/cp-explorer/` (rapports + data.js + scripts).
 - 2026-11-26 — réseau Ck : survol lien = tooltip custom (hit-test segment, MID partagés) — Plotly `lines` seul ne capturait pas le hover.
 - 2026-11-26 — réseau Ck : épaisseur lien ∝ n_shared (nb d’éléments MID) ; sans pastilles sur les arêtes ; couleur nœud ∝ poids CP.

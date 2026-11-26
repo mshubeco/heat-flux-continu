@@ -143,6 +143,18 @@ MODALITY_META = {
         "mid_label": "Jours de création",
         "coupled": False,
     },
+    "ucdrt": {
+        "label": "Création × RT · émetteur × jour création × cible RT",
+        "blurb": "Tenseur 3 modes sans bin d’activité : cohortes de création croisées aux cibles RT.",
+        "mid_label": "Jours de création",
+        "coupled": False,
+    },
+    "ucdng": {
+        "label": "Création × n-grammes · émetteur × jour création × n-gramme",
+        "blurb": "Tenseur 3 modes sans bin d’activité : cohortes de création croisées aux n-grammes lemmatisés.",
+        "mid_label": "Jours de création",
+        "coupled": False,
+    },
     "ubio": {
         "label": "Bio · user × n-gramme bio × temps",
         "blurb": "N-grammes candidats de bio (n=2..4, PMI + longest-match), pondérés par l’activité.",
@@ -349,6 +361,16 @@ def modality_meta_for(time_bin: str) -> dict:
             f"Snowflake → jour de création (YYYY-MM-DD) × activité (bin {t}).",
             "Jours de création",
         ),
+        "ucdrt": (
+            "Création × RT · émetteur × jour création × cible RT",
+            "Cohortes de création (snowflake YYYY-MM-DD) croisées aux cibles RT — pas de bin d’activité.",
+            "Jours de création",
+        ),
+        "ucdng": (
+            "Création × n-grammes · émetteur × jour création × n-gramme",
+            "Cohortes de création croisées aux n-grammes candidats lemmatisés — pas de bin d’activité.",
+            "Jours de création",
+        ),
         "ubio": (
             f"Bio · user × n-gramme bio × {t}",
             f"N-grammes bio candidats (n=2..4, PMI≥0.8, longest-match) × activité (bin {t}).",
@@ -411,6 +433,8 @@ def modality_meta_for(time_bin: str) -> dict:
         "utrigram_orig": f"émetteur × trigramme (hors RT) × {t}",
         "ucort": f"émetteur × status co-RT × {t}",
         "ucd": f"émetteur × jour création × {t}",
+        "ucdrt": "émetteur × jour création × cible RT",
+        "ucdng": "émetteur × jour création × n-gramme",
         "ubio": f"émetteur × n-gramme bio × {t}",
         "ubio_ht": f"émetteur × hashtag bio × {t}",
         "uname": f"émetteur × token display name × {t}",
@@ -903,6 +927,31 @@ def load_pool(
     return pd.DataFrame(rows)
 
 
+def _filter_creation_object_dict(
+    raw: dict[tuple[str, str, str], float],
+    *,
+    min_count: float,
+    max_objects: int,
+    min_users: int,
+    object_name: str,
+) -> pd.DataFrame:
+    """Tenseur (user, creation_bin, objet) — filtre sur l’objet (mode 3)."""
+    users_per: dict[str, set[str]] = defaultdict(set)
+    totals: Counter[str] = Counter()
+    for (u, _cbin, obj), v in raw.items():
+        users_per[obj].add(u)
+        totals[obj] += v
+    allowed = {g for g, us in users_per.items() if len(us) >= min_users}
+    ranked = [g for g, _ in totals.most_common() if g in allowed][:max_objects]
+    keep = set(ranked)
+    rows = [
+        (u, cbin, obj, v)
+        for (u, cbin, obj), v in raw.items()
+        if obj in keep and v >= min_count
+    ]
+    return pd.DataFrame(rows, columns=["user_id", "creation_bin", object_name, "val"])
+
+
 def _filter_ngram_dict(
     raw: dict[tuple[str, str, str], float],
     *,
@@ -996,6 +1045,8 @@ def build_all_tensors(
     utrigram_orig: dict[tuple[str, str, str], float] = defaultdict(float)
     ucort: dict[tuple[str, str, str], float] = defaultdict(float)
     ucd: dict[tuple[str, str, str], float] = defaultdict(float)
+    ucdrt: dict[tuple[str, str, str], float] = defaultdict(float)
+    ucdng: dict[tuple[str, str, str], float] = defaultdict(float)
     ubio: dict[tuple[str, str, str], float] = defaultdict(float)
     ubio_ht: dict[tuple[str, str, str], float] = defaultdict(float)
     uname: dict[tuple[str, str, str], float] = defaultdict(float)
@@ -1115,6 +1166,9 @@ def build_all_tensors(
             target = tweet_author.get(rid, "")
             if u and target and target != u:
                 uut[(u, target, tbin)] += 1.0
+                cbin = creation_bins.get(u, "unknown")
+                if cbin != "unknown":
+                    ucdrt[(u, cbin, target)] += 1.0
             # co-RT : MID = status retweeté (plusieurs users → même tweet)
             if u and rid:
                 ucort[(u, rid, tbin)] += 1.0
@@ -1133,9 +1187,12 @@ def build_all_tensors(
         n_by_len_orig: Counter[int] = Counter()
         for u, tbin, toks, is_orig in ngram_docs:
             sel = select_candidate_ngrams(toks, tweet_stats, n_max=4, min_pmi=0.8, min_df=2)
+            cbin = creation_bins.get(u, "unknown")
             for g in sel:
                 ubigram[(u, g, tbin)] += 1.0
                 n_by_len[g.count("_") + 1] += 1
+                if cbin != "unknown":
+                    ucdng[(u, cbin, g)] += 1.0
                 if is_orig:
                     ubigram_orig[(u, g, tbin)] += 1.0
                     n_by_len_orig[g.count("_") + 1] += 1
@@ -1159,6 +1216,13 @@ def build_all_tensors(
         "uudom": to_df(uudom, ("user_id", "domain", tcol), max_domains),
         "uht": to_df(uht, ("user_id", "hashtag", tcol), max_hashtags),
         "ucd": to_df(ucd, ("user_id", "creation_bin", tcol), 0),
+        "ucdrt": _filter_creation_object_dict(
+            ucdrt,
+            min_count=min_count,
+            max_objects=max_targets,
+            min_users=2,
+            object_name="retweeted_user_id",
+        ),
         "uname": _filter_ngram_dict(
             uname, min_count=min_count, max_ngrams=800, min_users=min_users_ngram, mid_name="name_token"
         ),
@@ -1203,6 +1267,13 @@ def build_all_tensors(
             min_users=min_users_ngram,
             mid_name="trigram",
         )
+        tensors["ucdng"] = _filter_creation_object_dict(
+            ucdng,
+            min_count=min_count,
+            max_objects=max_bigrams,
+            min_users=min_users_ngram,
+            object_name="ngram",
+        )
         for k, mid in (
             ("ubigram", "ngram"),
             ("utrigram", "trigram"),
@@ -1213,6 +1284,8 @@ def build_all_tensors(
             ("ubio_ht", "bio_hashtag"),
             ("uname", "name_token"),
             ("ucd", "creation_bin"),
+            ("ucdrt", "creation_bin"),
+            ("ucdng", "creation_bin"),
             ("umed_orig", "media_type"),
             ("umedurl_orig", "media_url"),
         ):
@@ -1227,6 +1300,7 @@ def build_all_tensors(
         for k, mid in (
             ("ucort", "status_id"),
             ("ucd", "creation_bin"),
+            ("ucdrt", "creation_bin"),
             ("uname", "name_token"),
             ("ubio", "bio_ngram"),
             ("umed_orig", "media_type"),
@@ -1434,7 +1508,7 @@ def classify_mid_item(item: str, key: str) -> str:
         return "bigramme"
     if key in {"utrigram", "utrigram_orig", "coupled_cort_utrigram_orig"}:
         return "trigramme"
-    if key == "ucd" or key.startswith("coupled_ucd"):
+    if key in {"ucd", "ucdrt", "ucdng"} or key.startswith("coupled_ucd"):
         return "creation_bin"
     if key == "ubio_ht":
         return "hashtag"
@@ -1748,7 +1822,21 @@ def network_mode_for(key: str) -> dict:
             "edge_fr": "status co-RT partagés",
             "directed": False,
         }
-    if "ucd" in k:
+    if k == "ucdrt":
+        return {
+            "kind": "co_mid",
+            "label": "Co-cibles RT (mode 3 Ck)",
+            "edge_fr": "cibles RT partagées",
+            "directed": False,
+        }
+    if k == "ucdng":
+        return {
+            "kind": "co_mid",
+            "label": "Co-n-grammes (mode 3 Ck)",
+            "edge_fr": "n-grammes partagés",
+            "directed": False,
+        }
+    if k == "ucd" or k.startswith("coupled_ucd"):
         return {
             "kind": "co_mid",
             "label": "Même jour de création (MID Ck)",
@@ -2169,6 +2257,8 @@ def aggregate_modality(
         "utrigram_orig": "trigrammes hors RT",
         "ucort": "status co-RT",
         "ucd": "jours de création",
+        "ucdrt": "jours de création",
+        "ucdng": "jours de création",
         "ubio": "n-grammes bio",
         "ubio_ht": "hashtags bio",
         "uname": "tokens display name",
@@ -2290,6 +2380,13 @@ def build_modality_payload(
             else:
                 m["label"] = mid_id
         tseries = time_series(day_ids, C, r)
+        if key == "ucdrt":
+            for row in tseries:
+                hid = sn.get(row["day"], row["day"])
+                row["day"] = "@" + str(hid).lstrip("@")
+        elif key == "ucdng":
+            for row in tseries:
+                row["day"] = str(row["day"]).replace("_", " ")
         mid2 = tseries2 = None
         if mid2_ids is not None and D is not None:
             mid2 = top_entities(mid2_ids, D, r, 15)
@@ -2342,12 +2439,22 @@ def build_modality_payload(
         )
         labels.append(lab)
         peak = max(tseries, key=lambda d: d["w"])["day"] if tseries else None
+        net_mid = mid
+        if key in {"ucdrt", "ucdng"}:
+            # Réseau sur les objets du mode 3 (cibles RT / n-grammes), pas les jours de création
+            net_mid = top_entities(day_ids, C, r, 15)
+            for m in net_mid:
+                mid_id = m["id"]
+                if key == "ucdrt":
+                    m["label"] = "@" + str(sn.get(mid_id, mid_id)).lstrip("@")
+                else:
+                    m["label"] = str(mid_id).replace("_", " ")
         network = build_component_network(
             users,
             profs,
             sn,
             key=key,
-            mid_items=mid,
+            mid_items=net_mid,
             user_mids=user_mids,
         )
         components.append(
@@ -2950,11 +3057,18 @@ def run(args: argparse.Namespace) -> None:
         if df.empty:
             log(f"  tensor {name}: VIDE")
             continue
-        mid = [c for c in df.columns if c not in {"user_id", "tbin", "val"}][0]
+        mode_cols = [c for c in df.columns if c not in {"user_id", "val"}]
+        mid = mode_cols[0] if mode_cols else "?"
         df.to_csv(out / f"tensor_{name}.csv", index=False)
+        if "tbin" in df.columns:
+            third = f"{t_fr}s={df['tbin'].nunique():,}"
+        elif len(mode_cols) >= 2:
+            third = f"{mode_cols[1]}={df[mode_cols[1]].nunique():,}"
+        else:
+            third = "—"
         log(
             f"  tensor {name}: {len(df):,} nnz · users={df['user_id'].nunique():,} · "
-            f"mid={df[mid].nunique():,} · {t_fr}s={df['tbin'].nunique():,}"
+            f"mid={df[mid].nunique():,} · {third}"
         )
 
     rank = max(5, int(args.rank))
@@ -2974,6 +3088,8 @@ def run(args: argparse.Namespace) -> None:
         ("utrigram_orig", ("user_id", "trigram", "tbin")),
         ("ucort", ("user_id", "status_id", "tbin")),
         ("ucd", ("user_id", "creation_bin", "tbin")),
+        ("ucdrt", ("user_id", "creation_bin", "retweeted_user_id")),
+        ("ucdng", ("user_id", "creation_bin", "ngram")),
         ("ubio", ("user_id", "bio_ngram", "tbin")),
         ("ubio_ht", ("user_id", "bio_hashtag", "tbin")),
         ("uname", ("user_id", "name_token", "tbin")),
@@ -2999,7 +3115,11 @@ def run(args: argparse.Namespace) -> None:
         pd.DataFrame(
             [{"entity": a_ids[i], "rank": r, "value": float(A[i, r])} for i in range(len(a_ids)) for r in range(rank)]
         ).to_csv(fac_dir / "user_explicit.csv", index=False)
-        umids = user_mid_index(df, cols[0], cols[1])
+        # Réseau : co-objets du mode 3 (cibles RT / n-grammes), pas les jours de création
+        if key in {"ucdrt", "ucdng"}:
+            umids = user_mid_index(df, cols[0], cols[2])
+        else:
+            umids = user_mid_index(df, cols[0], cols[1])
         modalities.append(
             build_modality_payload(
                 key=key,

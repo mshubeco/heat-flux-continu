@@ -87,19 +87,6 @@ a:hover { text-decoration:underline; }
   .comp-graphs { grid-template-columns:1fr 1fr; }
   .comp-graphs .plot-time { grid-column:1 / -1; }
 }
-.trend-box {
-  background:linear-gradient(180deg,#f4faf9,#fff); border:1px solid var(--line);
-  border-radius:12px; padding:12px 14px; margin-bottom:12px;
-}
-.trend-box .lead { margin:0 0 6px; font:600 15px/1.35 Georgia,serif; color:var(--ink); }
-.actor-row {
-  display:grid; grid-template-columns:minmax(120px,160px) 64px 1fr; gap:8px 12px;
-  padding:8px 0; border-bottom:1px solid #eef2f6; align-items:start; font-size:13px;
-}
-.actor-row:last-child { border-bottom:0; }
-.actor-row .handle { font-weight:700; color:var(--accent2); }
-.actor-row .mass { font-variant-numeric:tabular-nums; color:var(--muted); font-size:12px; }
-.actor-row .behave { color:var(--muted); font-size:12px; line-height:1.4; }
 a.x-link, [data-x-user], a.web-link {
   color:var(--accent2) !important; font-weight:700; text-decoration:underline;
   text-underline-offset:2px; cursor:pointer; pointer-events:auto !important; position:relative; z-index:2;
@@ -149,8 +136,6 @@ table.actor-metrics .toplist li { white-space:nowrap; }
 .net-legend .dot {
   display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:middle;
 }
-.stable-note { font-size:12px; color:var(--muted); margin:0 0 8px; }
-.stable-note b { color:var(--accent); }
 .hero {
   background:var(--card); border:1px solid var(--line); border-radius:14px;
   padding:18px 20px; margin-bottom:16px;
@@ -288,7 +273,7 @@ const COLORS = ["#0f6e6a","#1f4e79","#9a3412","#5b4b8a","#2f6b3a","#a15c00","#0e
 const fmt = n => Number(n).toLocaleString("fr-FR");
 const ranked = [...DATA.modalities];
 const painted = new Set();
-const subView = {}; // key -> tendance|temps|diag
+const subView = {}; // key -> temps|cN|diag
 let activeFam = "meta";
 
 const TAB_SHORT = {
@@ -296,6 +281,7 @@ const TAB_SHORT = {
   ubigram: "N-grammes", utrigram: "Trigrammes",
   ubigram_orig: "N-grammes hors RT", utrigram_orig: "Trigrammes hors RT",
   ucort: "Co-retweet", ucd: "Création compte",
+  ucdrt: "Création × RT", ucdng: "Création × n-grammes",
   ubio: "Bio n-grammes", ubio_ht: "Bio hashtags", uname: "Display name",
   umed_orig: "Média hors RT", umedurl_orig: "URL média hors RT",
   coupled_cort_ubigram_orig: "co-RT ∥ n-gr. hors RT",
@@ -309,7 +295,7 @@ const FAMILIES = [
   { id:"meta", label:"Méta", keys:["synthese","configs","overview"] },
   { id:"objets", label:"Objets", keys:["uut","uurlt","uudom","uht","ubigram","utrigram"] },
   { id:"horsrt", label:"Hors RT", keys:["ubigram_orig","utrigram_orig","ucort","umed_orig","umedurl_orig"] },
-  { id:"profil", label:"Profil", keys:["ucd","ubio","ubio_ht","uname"] },
+  { id:"profil", label:"Profil", keys:["ucd","ucdrt","ucdng","ubio","ubio_ht","uname"] },
   { id:"couples", label:"Couplés", keys:null },
 ];
 
@@ -383,6 +369,8 @@ function tensorModes(m){
     utrigram_orig: `émetteur × trigramme (hors RT) × ${t}`,
     ucort: `émetteur × status co-RT × ${t}`,
     ucd: `émetteur × jour création × ${t}`,
+    ucdrt: `émetteur × jour création × cible RT`,
+    ucdng: `émetteur × jour création × n-gramme`,
     ubio: `émetteur × n-gramme bio × ${t}`,
     ubio_ht: `émetteur × hashtag bio × ${t}`,
     uname: `émetteur × token display name × ${t}`,
@@ -418,6 +406,8 @@ const CFG_BLURBS = {
   umed_orig: "Types média (photo/video/gif) sur tweets propres.",
   umedurl_orig: "URLs de médias attachés, hors retweet.",
   ucd: "Jour de création du compte (snowflake, YYYY-MM-DD) × activité.",
+  ucdrt: "Émetteur × jour de création × cible RT (sans bin d’activité).",
+  ucdng: "Émetteur × jour de création × n-gramme lemmatisé (sans bin d’activité).",
   ubio: "N-grammes bio candidats (n=2..4, PMI + longest-match) × activité.",
   ubio_ht: "Hashtags de bio × activité.",
   uname: "Tokens du display name × activité.",
@@ -450,7 +440,7 @@ function buildConfigsPanel(){
     { h:"Type de publication — production vs amplification",
       keys:["ubigram_orig","utrigram_orig","ucort","umed_orig","umedurl_orig"] },
     { h:"Profils — bio & date de création",
-      keys:["ucd","ubio","ubio_ht","uname"] },
+      keys:["ucd","ucdrt","ucdng","ubio","ubio_ht","uname"] },
     { h:"Configs couplées — deux tenseurs, USER commun (∥)",
       keys: ranked.filter(m=>m.key.startsWith("coupled")).map(m=>m.key) },
   ];
@@ -520,8 +510,8 @@ function fillMeta(){
     ["Temps", tlab], ["Rang", "R="+m.rank], ["Lemmes", m.lemma], ["Algo", m.algo],
   ].map(([k,v]) => `<span class="pill"><b>${esc(k)}</b> ${esc(v)}</span>`).join("");
   document.getElementById("heroBlurb").innerHTML =
-    `Lecture rapide : famille → tenseur → <b>Tendance</b> (acteurs/objets d’ordre stable entre C1 et les rangs suivants). ` +
-    `Le <b>temps</b> reste complet. L’onglet Diagnostic jauge l’homogénéité des composantes. Bin = <b>${esc(tlab)}</b>.`;
+    `Lecture rapide : famille → tenseur → <b>Temps</b> (tous rangs) puis composantes <b>C1…CR</b>. ` +
+    `L’onglet Homogénéité / diag jauge la similarité des composantes. Bin = <b>${esc(tlab)}</b>.`;
 }
 
 function buildTabbar(){
@@ -580,7 +570,7 @@ function showTab(id){
   if (id.startsWith("mod-")) {
     const key = id.slice(4);
     paintMod(key);
-    showSub(key, subView[key] || "tendance");
+    showSub(key, subView[key] || "temps");
     requestAnimationFrame(() => resizeModPlots(key));
   }
   try { history.replaceState(null, "", "#" + id); } catch(e) {}
@@ -643,82 +633,6 @@ function paintComparatif(){
   });
 }
 
-function topTable(rows, maxW, wKey="w"){
-  return `<table><thead><tr><th>Entité</th><th></th><th class="wnum">poids</th></tr></thead><tbody>${
-    (rows||[]).map(r=>{
-      const raw = r.label||r.id;
-      const lab = entityLink(looksLikeWeb(r.id) ? (r.id || raw) : raw);
-      const wv = r[wKey] != null ? r[wKey] : r.w;
-      const pct = maxW>0 ? (100*wv/maxW) : 0;
-      return `<tr><td>${lab}</td><td><div class="barwrap"><div class="bar" style="width:${pct}%"></div></div></td>
-        <td class="wnum">${Number(wv).toFixed(3)}</td></tr>`;
-    }).join("")
-  }</tbody></table>`;
-}
-
-/** Ordre stable : préfixe de C1 identique aux rangs suivants ; sinon ordre relatif vs C1 sur l'agrégat. */
-function stableIds(compLists, aggRows){
-  const lists = (compLists||[]).filter(L => L && L.length);
-  if (!lists.length) return (aggRows||[]).map(r => r.id);
-  const ref = lists[0];
-  let n = ref.length;
-  for (const L of lists.slice(1)) {
-    let i = 0;
-    while (i < n && i < L.length && L[i] === ref[i]) i++;
-    n = i;
-  }
-  if (n >= 2) return ref.slice(0, n);
-  const pos = new Map(ref.map((id,i)=>[id,i]));
-  const out = [];
-  let last = -1;
-  for (const row of (aggRows||[])) {
-    const id = row.id;
-    if (!pos.has(id)) break;
-    const p = pos.get(id);
-    if (p < last) break;
-    let ok = true;
-    const cand = out.concat([id]);
-    for (const L of lists.slice(1)) {
-      const idxs = cand.map(x => L.indexOf(x)).filter(i => i >= 0);
-      for (let k=1; k<idxs.length; k++) if (idxs[k] < idxs[k-1]) { ok = false; break; }
-      if (!ok) break;
-    }
-    if (!ok) break;
-    out.push(id);
-    last = p;
-  }
-  return out;
-}
-
-function filterByIds(rows, ids){
-  const set = new Set(ids);
-  return (rows||[]).filter(r => set.has(r.id));
-}
-
-function actorRows(actors){
-  return (actors||[]).map(a => {
-    const rt = (a.top_rt_targets||[]).slice(0,3).map(x=>xLink(x.label)).join(", ") || "—";
-    const ht = (a.top_hashtags||[]).slice(0,3).map(x=>"#"+esc(x.label)).join(", ") || "—";
-    return `<div class="actor-row">
-      <div class="handle">${xLink(a.label)}</div>
-      <div class="mass">Σw ${a.w_sum}</div>
-      <div class="behave">C${a.dom_comp} · RT→ ${rt} · ${ht}
-        <br>tweets ${fmt(a.n_tweets)} (RT ${fmt(a.n_rt)} · propres ${fmt(a.n_orig)})</div>
-    </div>`;
-  }).join("") || "<p class='cap'>Aucun préfixe d’ordre stable.</p>";
-}
-
-function trendLead(m, actors, mids){
-  const a = (actors||[]).slice(0,3).map(x=>xLink(x.label)).join(", ") || "—";
-  const o = (mids||[]).slice(0,3).map(x =>
-    entityLink(x.id || x.label)
-  ).join(", ") || "—";
-  const peaks = (m.components||[]).map(c => c.metrics?.peak).filter(Boolean);
-  const peak = peaks[0] || "—";
-  return `Tendance stable : acteurs <b>${a}</b> sur objets <b>${o}</b>` +
-    ` (${esc(m.aggregate?.mid_kind||"MID")}). Pic C1 ≈ <b>${esc(peak)}</b>.`;
-}
-
 function buildModSections(){
   const root = document.getElementById("modalites");
   const tlab = DATA.meta.time_bin_fr || "temps";
@@ -739,24 +653,17 @@ function buildModSections(){
         <div class="box"><div class="v">R=${m.rank}</div><div class="l">Rang CP</div></div>
       </div>
       <div class="subtabs" id="subtabs-${m.key}">
-        <button type="button" class="subtab on" data-sub="tendance">Tendance</button>
-        <button type="button" class="subtab" data-sub="temps">Temps (tous rangs)</button>
+        <button type="button" class="subtab on" data-sub="temps">${
+          m.key==="ucdrt" ? "Cibles RT (mode 3)" :
+          m.key==="ucdng" ? "N-grammes (mode 3)" :
+          "Temps (tous rangs)"
+        }</button>
         ${(m.components||[]).map(c =>
           `<button type="button" class="subtab comp-tab" data-sub="c${c.id}" style="--c:${COLORS[(c.id-1)%COLORS.length]}">C${c.id}</button>`
         ).join("")}
         <button type="button" class="subtab" data-sub="diag">Homogénéité / diag</button>
       </div>
-      <div class="subpanel" data-sub="tendance">
-        <div class="trend-box"><p class="lead" id="trend-${m.key}"></p>
-          <p class="stable-note">Listes tronquées au <b>préfixe d’ordre stable</b> entre C1 et les rangs suivants (users &amp; objets). Le temps n’est pas filtré.</p>
-        </div>
-        <h4>Acteurs (ordre stable)</h4>
-        <div id="actors-${m.key}"></div>
-        <h4>Objets — ${esc((m.aggregate||{}).mid_kind||m.mid_label||"MID")}</h4>
-        <div id="mids-${m.key}"></div>
-        <div id="mids2-${m.key}"></div>
-      </div>
-      <div class="subpanel" data-sub="temps" hidden>
+      <div class="subpanel" data-sub="temps">
         <div id="time-${m.key}" class="plot"></div>
         <p class="cap">Poids temporel de <b>chaque</b> composante (non tronqué).</p>
       </div>
@@ -1311,30 +1218,6 @@ function paintMod(key){
   const m = ranked.find(x => x.key === key);
   if (!m) return;
   painted.add("mod-"+key);
-  const agg = m.aggregate || {};
-
-  // --- Tendance : ordre stable users / mids ---
-  const userLists = (m.components||[]).map(c => (c.users||[]).map(u=>u.id));
-  const midLists = (m.components||[]).map(c => (c.mid||[]).map(u=>u.id));
-  const stableU = stableIds(userLists, agg.top_actors||[]);
-  const stableM = stableIds(midLists, agg.top_mids||[]);
-  const actors = filterByIds(agg.top_actors||[], stableU);
-  const mids = filterByIds(agg.top_mids||[], stableM);
-  const m2Lists = (m.components||[]).map(c => (c.mid2||[]).map(u=>u.id)).filter(L=>L.length);
-  const stableM2 = m2Lists.length ? stableIds(m2Lists, agg.top_mids2||[]) : [];
-  const mids2 = filterByIds(agg.top_mids2||[], stableM2);
-
-  document.getElementById("trend-"+key).innerHTML = trendLead(m, actors, mids) +
-    ` <span class="cap">· stable users=${stableU.length}/${(agg.top_actors||[]).length}` +
-    ` · objets=${stableM.length}/${(agg.top_mids||[]).length}</span>`;
-  document.getElementById("actors-"+key).innerHTML = actorRows(actors);
-  const mmax = Math.max(...mids.map(x=>x.w_sum||0), 1e-9);
-  document.getElementById("mids-"+key).innerHTML = topTable(mids, mmax, "w_sum");
-  const m2box = document.getElementById("mids2-"+key);
-  if (mids2.length) {
-    m2box.innerHTML = `<h4>MID₂ — ${esc(agg.mid2_kind||"couche 2")}</h4>` +
-      topTable(mids2, Math.max(...mids2.map(x=>x.w_sum||0),1e-9), "w_sum");
-  } else m2box.innerHTML = "";
 
   // --- Temps (complet) ---
   const traces = (m.components||[]).map((c,i)=>({
@@ -1676,6 +1559,7 @@ else {
     ubigram_orig:`émetteur × n-gramme (hors RT) × ${tlab}`,
     utrigram_orig:`émetteur × trigramme (hors RT) × ${tlab}`,
     ucort:`émetteur × status co-RT × ${tlab}`, ucd:`émetteur × jour création × ${tlab}`,
+    ucdrt:`émetteur × jour création × cible RT`, ucdng:`émetteur × jour création × n-gramme`,
     ubio:`émetteur × n-gramme bio × ${tlab}`, ubio_ht:`émetteur × hashtag bio × ${tlab}`,
     uname:`émetteur × token display name × ${tlab}`,
     umed_orig:`émetteur × type média (hors RT) × ${tlab}`,
@@ -2133,6 +2017,8 @@ def write_reports(out_dir: Path) -> list[Path]:
         "utrigram_orig": f"émetteur × trigramme (hors RT) × {tlab}",
         "ucort": f"émetteur × status co-RT × {tlab}",
         "ucd": f"émetteur × jour création × {tlab}",
+        "ucdrt": "émetteur × jour création × cible RT",
+        "ucdng": "émetteur × jour création × n-gramme",
         "ubio": f"émetteur × n-gramme bio × {tlab}",
         "ubio_ht": f"émetteur × hashtag bio × {tlab}",
         "uname": f"émetteur × token display name × {tlab}",
