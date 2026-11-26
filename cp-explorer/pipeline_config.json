@@ -31,13 +31,18 @@
     "uname",
     "umed_orig",
     "umedurl_orig",
+    "coupled_ubigram_uurlt",
     "coupled_cort_ubigram_orig",
+    "coupled_ucort_uurlt_orig",
+    "coupled_umed_ubigram_orig",
+    "coupled_ucd_ubio",
+    "coupled_uurlt_ucort",
+    "coupled_uht_umed_orig",
     "coupled_cort_utrigram_orig",
     "coupled_ucd_uut",
     "coupled_ucd_ucort",
     "coupled_ubio_ucort",
-    "coupled_umed_ucort",
-    "coupled_umed_ubigram_orig"
+    "coupled_umed_ucort"
   ],
   "err_nnz": {
     "uut": 0.9365,
@@ -89,12 +94,17 @@
     "uname": "@Charlescitoyen7",
     "umed_orig": "@MystereMeteo",
     "umedurl_orig": "@le_Parisien",
+    "coupled_ubigram_uurlt": "@BEscoubes",
     "coupled_cort_ubigram_orig": "@archiptere",
+    "coupled_ucort_uurlt_orig": "@FranckLeGall13",
+    "coupled_umed_ubigram_orig": "@BFMTV",
+    "coupled_ucd_ubio": "@Charlescitoyen7",
+    "coupled_uurlt_ucort": "@de_chardin",
+    "coupled_uht_umed_orig": "@franceinfo",
     "coupled_cort_utrigram_orig": "@actufr92",
     "coupled_ucd_uut": "@JoeMondesi63736",
     "coupled_ucd_ucort": "@BeatricePELB",
     "coupled_ubio_ucort": "@florencebaquet",
-    "coupled_umed_ucort": "@BFMTV",
-    "coupled_umed_ubigram_orig": "@BFMTV"
+    "coupled_umed_ucort": "@BFMTV"
   }
 }

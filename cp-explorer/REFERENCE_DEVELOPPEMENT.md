@@ -63,13 +63,25 @@ Seul le MID change. Couplées = deux cubes avec **même facteur USER**.
 | `ucdng` | user × creation_bin × n-gramme | cohortes de création × n-grammes lemmatisés (**sans** bin d’activité) |
 | `ubio` / `ubio_ht` | user × bio_ngram\|tag × temps | n-grammes bio candidats (n=2..4, PMI+longest-match) / hashtags |
 | `uname` | user × token display_name × temps | proxy profil (toujours dans le CSV) |
+| `coupled_ubigram_uurlt` | ubigram ∥ uurlt | **A** N-gramme × URL |
+| `coupled_cort_ubigram_orig` | ubigram_orig ∥ ucort | **B** N-gramme × co-RT (**défaut**) |
+| `coupled_ucort_uurlt_orig` | ucort ∥ uurlt_orig | **C** bras co-RT × URL hors RT (triptyque) |
+| `coupled_umed_ubigram_orig` | umed_orig ∥ ubigram_orig | **D** Comportement × n-gramme (**défaut**) |
+| `coupled_ucd_ubio` | ucd ∥ ubio | **E** Activité × profil |
+| `coupled_uurlt_ucort` | uurlt ∥ ucort | **F** Ressource × synchronisation |
+| `coupled_uht_umed_orig` | uht ∥ umed_orig | **G** Frame × type de tweet |
 | `coupled_ucd_uut` | ucd ∥ uut | création ∥ RT-cible (**défaut**) |
 | `coupled_ucd_ucort` | ucd ∥ ucort | création ∥ co-RT (**défaut**) |
 | `coupled_ubio_ucort` | ubio ∥ ucort | bio ∥ co-RT (**défaut**) |
 | `coupled_umed_ucort` | umed_orig ∥ ucort | média hors RT ∥ co-RT (**défaut**) |
-| `coupled_umed_ubigram_orig` | umed_orig ∥ ubigram_orig | média ∥ n-grammes hors RT (**défaut**) |
 | `coupled_uut_uurlt` | uurlt ∥ uut | RT-cible + liens (`--with-coupled`) |
 | `coupled_uut_ubigram` | ubigram ∥ uut | RT-cible + n-grammes (`--with-coupled`) |
+
+Injecter A–G manquants dans un run existant (sans recalcul CP simples) :
+
+```bash
+py -3.13 build_explorer.py --out run_p1_day_simple --add-hierarchy-coupled
+```
 
 Bios : CSV intersection + cohort239 + `cache/user_bios.json` ; option `--scrape-bios`.
 Création : pas de colonne `user_created_at` → snowflake (≥50 bits) → MID = jour `YYYY-MM-DD` (pas de bins annuels). Les comptes non datables (`unknown`) sont exclus de `ucd` / `ucdrt` / `ucdng` / couplés ucd.
@@ -158,6 +170,11 @@ Couplage : seulement avec `--with-coupled`.
 
 ## Historique
 
+- 2026-11-26 — Rapport Couplés : tenseurs **A–G** (screen hiérarchie) sur base USER×temps — `--add-hierarchy-coupled` + sync Pages.
+- 2026-11-26 — `analyse_CP.xlsx` : section **Couplé** A–G (hiérarchie screen) — chaque bras = USER × MID × jour, couplage USER.
+- 2026-11-26 — `dispersion_creation_cibles` : page **`publications.html`** (entité tweet) + lien depuis `index.html` (comptes).
+- 2026-11-26 — `dispersion_creation_cibles` : métrique **`same_day_rel`** (lift paires créées le même jour) + panneau n≥25.
+- 2026-11-26 — Analyse séparée : `../dispersion_creation_cibles/` — HTML dispersion des créations d’interacteurs (RT+reply+quote, ge10) par cible.
 - 2026-11-26 — Table acteurs Ck : colonne **Création compte** (date+heure UTC via snowflake `user_id` ; aussi `account_created_at` dans le payload aux prochains runs).
 - 2026-11-26 — UI Ck : **brief** (KPI + top5 acteurs/objets) · ordre Qui/quoi → Quand → comportements · signature/réseau/table en **`<details>`** (rendu différé à l’ouverture).
 - 2026-11-26 — `rapport.html` : 2e section d’onglets **horaire** (jour intact) ; `build_rapport.py --hour-out run_*_hour_simple` → `HEAT_CP_HOUR`.

@@ -142,8 +142,8 @@ MODALITY_META = {
         "coupled": True,
     },
     "coupled_cort_ubigram_orig": {
-        "label": "Couplé co-RT × n-grammes hors RT",
-        "blurb": "USER partagé : production lexicale propre (n-grammes hors RT) ∥ co-retweet des mêmes status.",
+        "label": "B · Couplé co-RT × n-grammes hors RT",
+        "blurb": "N-gramme × co-RT — USER partagé : production lexicale propre ∥ co-retweet des mêmes status.",
         "mid_label": "N-grammes hors RT (tenseur 1)",
         "mid2_label": "Publication cible co-RT (tenseur 2)",
         "coupled": True,
@@ -232,10 +232,46 @@ MODALITY_META = {
         "coupled": True,
     },
     "coupled_umed_ubigram_orig": {
-        "label": "Couplé média hors RT × n-grammes hors RT",
-        "blurb": "USER partagé : médias propres ∥ n-grammes candidats hors RT.",
+        "label": "D · Couplé média hors RT × n-grammes hors RT",
+        "blurb": "Comportement × n-gramme — USER partagé : médias propres ∥ n-grammes candidats hors RT.",
         "mid_label": "Types média (tenseur 1)",
         "mid2_label": "N-grammes hors RT (tenseur 2)",
+        "coupled": True,
+    },
+    # Hiérarchie expérimentations A–G (base USER × TEMPS ; couplage USER)
+    "coupled_ubigram_uurlt": {
+        "label": "A · Couplé n-grammes × URL",
+        "blurb": "USER partagé : n-grammes candidats ∥ URLs (Coord. forte · Manip. forte).",
+        "mid_label": "N-grammes (tenseur 1)",
+        "mid2_label": "URLs (tenseur 2)",
+        "coupled": True,
+    },
+    "coupled_ucort_uurlt_orig": {
+        "label": "C · Couplé co-RT × URL hors RT",
+        "blurb": "Bras du triptyque Co-RT × co-URL × co-texte (avec B et A hors RT). USER partagé.",
+        "mid_label": "Publication cible co-RT (tenseur 1)",
+        "mid2_label": "URLs hors RT (tenseur 2)",
+        "coupled": True,
+    },
+    "coupled_ucd_ubio": {
+        "label": "E · Couplé création × bio",
+        "blurb": "USER partagé : jours de création ∥ n-grammes bio (Activité × profil).",
+        "mid_label": "Jours de création (tenseur 1)",
+        "mid2_label": "N-grammes bio (tenseur 2)",
+        "coupled": True,
+    },
+    "coupled_uurlt_ucort": {
+        "label": "F · Couplé URL × co-RT",
+        "blurb": "USER partagé : URLs ∥ co-retweet (Ressource × synchronisation).",
+        "mid_label": "URLs (tenseur 1)",
+        "mid2_label": "Publication cible co-RT (tenseur 2)",
+        "coupled": True,
+    },
+    "coupled_uht_umed_orig": {
+        "label": "G · Couplé hashtag × type média",
+        "blurb": "USER partagé : hashtags ∥ types média hors RT (Frame × type de tweet).",
+        "mid_label": "Hashtags (tenseur 1)",
+        "mid2_label": "Types média hors RT (tenseur 2)",
         "coupled": True,
     },
 }
@@ -382,8 +418,8 @@ def modality_meta_for(time_bin: str) -> dict:
             "N-grammes (tenseur 1)",
         ),
         "coupled_cort_ubigram_orig": (
-            "Couplé co-RT × n-grammes hors RT",
-            f"Production lexicale propre (n-grammes) ∥ co-retweet (USER partagé). Bin {t}.",
+            "B · Couplé co-RT × n-grammes hors RT",
+            f"N-gramme × co-RT — production lexicale propre ∥ co-retweet (USER partagé). Bin {t}.",
             "N-grammes hors RT (tenseur 1)",
         ),
         "coupled_cort_utrigram_orig": (
@@ -452,9 +488,34 @@ def modality_meta_for(time_bin: str) -> dict:
             "Types média (tenseur 1)",
         ),
         "coupled_umed_ubigram_orig": (
-            "Couplé média hors RT × n-grammes hors RT",
-            f"Types média propres ∥ n-grammes candidats hors RT. Bin {t}.",
+            "D · Couplé média hors RT × n-grammes hors RT",
+            f"Comportement × n-gramme — types média propres ∥ n-grammes hors RT. Bin {t}.",
             "Types média (tenseur 1)",
+        ),
+        "coupled_ubigram_uurlt": (
+            "A · Couplé n-grammes × URL",
+            f"N-grammes candidats ∥ URLs (USER partagé). Bin {t}.",
+            "N-grammes (tenseur 1)",
+        ),
+        "coupled_ucort_uurlt_orig": (
+            "C · Couplé co-RT × URL hors RT",
+            f"Bras URL du triptyque Co-RT × co-URL × co-texte. Bin {t}.",
+            "Publication cible co-RT (tenseur 1)",
+        ),
+        "coupled_ucd_ubio": (
+            "E · Couplé création × bio",
+            f"Jours de création ∥ n-grammes bio (USER partagé). Bin {t}.",
+            "Jours de création (tenseur 1)",
+        ),
+        "coupled_uurlt_ucort": (
+            "F · Couplé URL × co-RT",
+            f"URLs ∥ co-retweet (Ressource × synchronisation). Bin {t}.",
+            "URLs (tenseur 1)",
+        ),
+        "coupled_uht_umed_orig": (
+            "G · Couplé hashtag × type média",
+            f"Hashtags ∥ types média hors RT (Frame × type de tweet). Bin {t}.",
+            "Hashtags (tenseur 1)",
         ),
     }
     modes = {
@@ -487,6 +548,27 @@ def modality_meta_for(time_bin: str) -> dict:
         "coupled_ubio_ucort": f"(émetteur × n-gramme bio × {t})  ∥  (émetteur × publication cible co-RT × {t})",
         "coupled_umed_ucort": f"(émetteur × type média hors RT × {t})  ∥  (émetteur × publication cible co-RT × {t})",
         "coupled_umed_ubigram_orig": f"(émetteur × type média hors RT × {t})  ∥  (émetteur × n-gramme hors RT × {t})",
+        "coupled_ubigram_uurlt": f"(émetteur × n-gramme × {t})  ∥  (émetteur × URL × {t})",
+        "coupled_ucort_uurlt_orig": f"(émetteur × publication cible co-RT × {t})  ∥  (émetteur × URL (hors RT) × {t})",
+        "coupled_ucd_ubio": f"(émetteur × jour création × {t})  ∥  (émetteur × n-gramme bio × {t})",
+        "coupled_uurlt_ucort": f"(émetteur × URL × {t})  ∥  (émetteur × publication cible co-RT × {t})",
+        "coupled_uht_umed_orig": f"(émetteur × hashtag × {t})  ∥  (émetteur × type média (hors RT) × {t})",
+    }
+    mid2 = {
+        "coupled_cort_ubigram_orig": "Publication cible co-RT (tenseur 2)",
+        "coupled_cort_utrigram_orig": "Publication cible co-RT (tenseur 2)",
+        "coupled_ucd_ucort": "Publication cible co-RT (tenseur 2)",
+        "coupled_ubio_ucort": "Publication cible co-RT (tenseur 2)",
+        "coupled_umed_ucort": "Publication cible co-RT (tenseur 2)",
+        "coupled_uurlt_ucort": "Publication cible co-RT (tenseur 2)",
+        "coupled_ucort_uurlt_orig": "URLs hors RT (tenseur 2)",
+        "coupled_umed_ubigram_orig": "N-grammes hors RT (tenseur 2)",
+        "coupled_ubigram_uurlt": "URLs (tenseur 2)",
+        "coupled_ucd_uut": "Cibles RT (tenseur 2)",
+        "coupled_ucd_ubio": "N-grammes bio (tenseur 2)",
+        "coupled_uht_umed_orig": "Types média hors RT (tenseur 2)",
+        "coupled_uut_uurlt": "Cibles RT (tenseur 2)",
+        "coupled_uut_ubigram": "Cibles RT (tenseur 2)",
     }
     out = {}
     for k, (lab, blurb, mid) in base.items():
@@ -497,20 +579,8 @@ def modality_meta_for(time_bin: str) -> dict:
             "modes": modes.get(k, lab),
             "coupled": k.startswith("coupled"),
         }
-        if k in {
-            "coupled_cort_ubigram_orig",
-            "coupled_cort_utrigram_orig",
-            "coupled_ucd_ucort",
-            "coupled_ubio_ucort",
-            "coupled_umed_ucort",
-        }:
-            out[k]["mid2_label"] = "Publication cible co-RT (tenseur 2)"
-        elif k == "coupled_umed_ubigram_orig":
-            out[k]["mid2_label"] = "N-grammes hors RT (tenseur 2)"
-        elif k == "coupled_ucd_uut":
-            out[k]["mid2_label"] = "Cibles RT (tenseur 2)"
-        elif k.startswith("coupled"):
-            out[k]["mid2_label"] = "Cibles RT (tenseur 2)"
+        if k.startswith("coupled"):
+            out[k]["mid2_label"] = mid2.get(k, "MID₂ (tenseur 2)")
     return out
 
 
@@ -832,31 +902,70 @@ def load_bios_for_pool(
         log(f"Bios — scrape fxtwitter {len(to_fetch)}/{len(missing)} manquants…")
         ctx = ssl.create_default_context()
         ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/122.0.0.0 Safari/537.36"
+
+        def _fetch_bio(handle: str) -> tuple[str, str]:
+            """Retourne (bio, status) ; status = ok | empty | not_found | error."""
+            last_status = "error"
+            for attempt in range(3):
+                for tmpl in ("https://api.fxtwitter.com/{h}", "https://api.vxtwitter.com/{h}"):
+                    url = tmpl.format(h=handle)
+                    req = urllib.request.Request(
+                        url, headers={"User-Agent": ua, "Accept": "application/json"}
+                    )
+                    try:
+                        with urllib.request.urlopen(req, timeout=25, context=ctx) as r:
+                            data = json.loads(r.read().decode("utf-8", "replace"))
+                        user = data.get("user") or data.get("tweet", {}).get("author") or {}
+                        bio = (
+                            user.get("description")
+                            or user.get("bio")
+                            or user.get("desc")
+                            or ""
+                        ).strip()
+                        if bio:
+                            return bio, "ok"
+                        # profil trouvé mais bio vide
+                        if user.get("screen_name") or user.get("id"):
+                            last_status = "empty"
+                        else:
+                            last_status = "error"
+                    except urllib.error.HTTPError as e:
+                        if e.code in {404, 410}:
+                            return "", "not_found"
+                        last_status = "error"
+                    except Exception:
+                        last_status = "error"
+                if attempt < 2:
+                    time.sleep(delay_s * (1.5 + attempt))
+            return "", last_status
+
+        n_ok = n_empty = n_nf = n_err = 0
         for i, sn in enumerate(to_fetch, 1):
-            bio = ""
-            for tmpl in ("https://api.fxtwitter.com/{h}", "https://api.vxtwitter.com/{h}"):
-                url = tmpl.format(h=sn)
-                req = urllib.request.Request(url, headers={"User-Agent": ua, "Accept": "application/json"})
-                try:
-                    with urllib.request.urlopen(req, timeout=20, context=ctx) as r:
-                        data = json.loads(r.read().decode("utf-8", "replace"))
-                    user = data.get("user") or data.get("tweet", {}).get("author") or {}
-                    bio = (user.get("description") or user.get("bio") or "").strip()
-                    if bio:
-                        break
-                except Exception:
-                    continue
+            bio, st = _fetch_bio(sn)
+            if st == "ok":
+                n_ok += 1
+                source = "fxtwitter"
+            elif st == "not_found":
+                n_nf += 1
+                source = "fxtwitter_404"
+            elif st == "empty":
+                n_empty += 1
+                source = "fxtwitter_empty"
+            else:
+                n_err += 1
+                source = "fxtwitter_error"
             cache[sn] = {
                 "handle": sn,
                 "bio": bio,
-                "status": "ok" if bio else "empty",
-                "source": "fxtwitter" if bio else "fxtwitter_empty",
+                "status": st,
+                "source": source,
             }
             if i % 40 == 0:
                 _save_bio_cache(cache)
-                log(f"  scrape {i}/{len(to_fetch)}")
+                log(f"  scrape {i}/{len(to_fetch)} · ok={n_ok} empty={n_empty} 404={n_nf} err={n_err}")
             time.sleep(delay_s)
         _save_bio_cache(cache)
+        log(f"  scrape fini · ok={n_ok} empty={n_empty} 404={n_nf} err={n_err}")
     else:
         _save_bio_cache(cache)
 
@@ -1611,13 +1720,14 @@ def classify_mid_item(item: str, key: str) -> str:
     s = (item or "").lower()
     if key == "uut":
         return "compte"
-    if key == "ucort" or key.startswith("coupled_cort"):
+    if key == "ucort" or key.startswith("coupled_cort") or key == "coupled_ucort_uurlt_orig":
         return "status_x"
     if key in {
         "ubigram",
         "ubigram_orig",
         "coupled_uut_ubigram",
         "coupled_cort_ubigram_orig",
+        "coupled_ubigram_uurlt",
         "ubio",
         "coupled_ubio_ucort",
     }:
@@ -1640,7 +1750,7 @@ def classify_mid_item(item: str, key: str) -> str:
         return s if s in {"photo", "video", "animated_gif", "media"} else "media_type"
     if key == "umedurl_orig":
         return "media_url"
-    if key in {"uht", "uht_orig"}:
+    if key in {"uht", "uht_orig", "coupled_uht_umed_orig"}:
         return "noise_tag" if s in NOISE_TAGS else "hashtag"
     if key in {"uudom", "uudom_orig"}:
         if s in {"x.com", "twitter.com", "t.co"}:
@@ -2394,8 +2504,10 @@ def aggregate_modality(
         "coupled_uut_ubigram",
         "coupled_cort_ubigram_orig",
         "coupled_cort_utrigram_orig",
+        "coupled_ubigram_uurlt",
         "ubio",
         "coupled_ubio_ucort",
+        "coupled_ucd_ubio",
         "uname",
     }
     mid_kind_map = {
@@ -2428,6 +2540,11 @@ def aggregate_modality(
         "coupled_ubio_ucort": "n-grammes bio",
         "coupled_umed_ucort": "types média hors RT",
         "coupled_umed_ubigram_orig": "types média hors RT",
+        "coupled_ubigram_uurlt": "n-grammes",
+        "coupled_ucort_uurlt_orig": "publication cible co-RT",
+        "coupled_ucd_ubio": "jours de création",
+        "coupled_uurlt_ucort": "URLs",
+        "coupled_uht_umed_orig": "hashtags",
     }
     agg = {
         "top_actors": actors,
@@ -2534,11 +2651,20 @@ def build_modality_payload(
                 "coupled_uut_ubigram",
                 "coupled_cort_ubigram_orig",
                 "coupled_cort_utrigram_orig",
+                "coupled_ubigram_uurlt",
                 "ubio",
                 "coupled_ubio_ucort",
+                "coupled_ucd_ubio",
                 "uname",
             }:
                 m["label"] = str(mid_id).replace("_", " ")
+            elif key in {"coupled_ucort_uurlt_orig"}:
+                au = sn.get(f"author_of:{mid_id}")
+                m["label"] = (
+                    f"@{str(au).lstrip('@')} · …{str(mid_id)[-8:]}"
+                    if au
+                    else f"status …{str(mid_id)[-10:]}"
+                )
             else:
                 m["label"] = mid_id
         tseries = time_series(day_ids, C, r)
@@ -2560,6 +2686,7 @@ def build_modality_payload(
                     "coupled_ucd_ucort",
                     "coupled_ubio_ucort",
                     "coupled_umed_ucort",
+                    "coupled_uurlt_ucort",
                 }:
                     au = sn.get(f"author_of:{mid_id}")
                     m["label"] = (
@@ -2567,25 +2694,38 @@ def build_modality_payload(
                         if au
                         else f"status …{str(mid_id)[-10:]}"
                     )
-                elif key == "coupled_umed_ubigram_orig":
+                elif key in {
+                    "coupled_umed_ubigram_orig",
+                    "coupled_ucd_ubio",
+                }:
                     m["label"] = str(mid_id).replace("_", " ")
+                elif key == "coupled_uht_umed_orig":
+                    m["label"] = str(mid_id)
                 else:
-                    m["label"] = "@" + str(sn.get(mid_id, mid_id)).lstrip("@")
+                    m["label"] = str(mid_id) if "url" in key or "uurlt" in key else (
+                        "@" + str(sn.get(mid_id, mid_id)).lstrip("@")
+                    )
         if day2_ids is not None and E is not None:
             tseries2 = time_series(day2_ids, E, r)
         class_key = key
         if key == "coupled_uut_uurlt":
             class_key = "uurlt"
-        elif key == "coupled_uut_ubigram":
+        elif key in {"coupled_uut_ubigram", "coupled_ubigram_uurlt"}:
             class_key = "ubigram"
         elif key == "coupled_cort_ubigram_orig":
             class_key = "ubigram_orig"
         elif key == "coupled_cort_utrigram_orig":
             class_key = "utrigram_orig"
+        elif key == "coupled_ucort_uurlt_orig":
+            class_key = "ucort"
         elif key.startswith("coupled_ucd"):
             class_key = "ucd"
         elif key == "coupled_ubio_ucort":
             class_key = "ubio"
+        elif key == "coupled_uurlt_ucort":
+            class_key = "uurlt"
+        elif key == "coupled_uht_umed_orig":
+            class_key = "uht"
         elif key.startswith("coupled_umed"):
             class_key = "umed_orig"
         classes = Counter(classify_mid_item(str(m["id"]), class_key) for m in mid)
@@ -3306,15 +3446,20 @@ def run(args: argparse.Namespace) -> None:
             )
         )
 
-    # Couplés par défaut : hors RT ∥ co-RT ; création / bio ∥ amplification
+    # Couplés A–G (hiérarchie screen) + historiques ; chaque bras = USER × MID × temps
     default_coupled = [
-        ("coupled_cort_ubigram_orig", "ubigram_orig", "ucort", 11),
+        ("coupled_ubigram_uurlt", "ubigram", "uurlt", 18),          # A
+        ("coupled_cort_ubigram_orig", "ubigram_orig", "ucort", 11),  # B
+        ("coupled_ucort_uurlt_orig", "ucort", "uurlt_orig", 19),     # C (bras URL)
+        ("coupled_umed_ubigram_orig", "umed_orig", "ubigram_orig", 17),  # D
+        ("coupled_ucd_ubio", "ucd", "ubio", 20),                     # E
+        ("coupled_uurlt_ucort", "uurlt", "ucort", 21),               # F
+        ("coupled_uht_umed_orig", "uht", "umed_orig", 22),          # G
         ("coupled_cort_utrigram_orig", "utrigram_orig", "ucort", 12),
         ("coupled_ucd_uut", "ucd", "uut", 13),
         ("coupled_ucd_ucort", "ucd", "ucort", 14),
         ("coupled_ubio_ucort", "ubio", "ucort", 15),
         ("coupled_umed_ucort", "umed_orig", "ucort", 16),
-        ("coupled_umed_ubigram_orig", "umed_orig", "ubigram_orig", 17),
     ]
     for coup_key, k1, k2, seed in default_coupled:
         if k1 not in encoded or k2 not in encoded:
@@ -3502,11 +3647,16 @@ def enrich_existing_run(
             "coupled_cort_utrigram_orig": "utrigram_orig",
             "coupled_ucd_uut": "ucd",
             "coupled_ucd_ucort": "ucd",
+            "coupled_ucd_ubio": "ucd",
             "coupled_ubio_ucort": "ubio",
             "coupled_umed_ucort": "umed_orig",
             "coupled_umed_ubigram_orig": "umed_orig",
             "coupled_uut_uurlt": "uurlt",
             "coupled_uut_ubigram": "ubigram",
+            "coupled_ubigram_uurlt": "ubigram",
+            "coupled_ucort_uurlt_orig": "ucort",
+            "coupled_uurlt_ucort": "uurlt",
+            "coupled_uht_umed_orig": "uht",
         }.get(key, key)
         if src in tensor_mid_cache:
             return tensor_mid_cache[src]
@@ -3615,6 +3765,208 @@ def enrich_existing_run(
     log(f"Enrich OK → {out_dir}")
 
 
+# Specs encode pour tenseurs simples (colonnes CSV)
+_TENSOR_COLS = {
+    "uut": ("user_id", "retweeted_user_id", "tbin"),
+    "uurlt": ("user_id", "url", "tbin"),
+    "uudom": ("user_id", "domain", "tbin"),
+    "uht": ("user_id", "hashtag", "tbin"),
+    "ubigram": ("user_id", "ngram", "tbin"),
+    "utrigram": ("user_id", "trigram", "tbin"),
+    "ubigram_orig": ("user_id", "ngram", "tbin"),
+    "utrigram_orig": ("user_id", "trigram", "tbin"),
+    "uurlt_orig": ("user_id", "url", "tbin"),
+    "uudom_orig": ("user_id", "domain", "tbin"),
+    "uht_orig": ("user_id", "hashtag", "tbin"),
+    "ucort": ("user_id", "status_id", "tbin"),
+    "ucd": ("user_id", "creation_bin", "tbin"),
+    "ubio": ("user_id", "bio_ngram", "tbin"),
+    "umed_orig": ("user_id", "media_type", "tbin"),
+}
+
+# Couplés A–G (+ manquants) à injecter dans un run existant
+HIERARCHY_COUPLED = [
+    ("coupled_ubigram_uurlt", "ubigram", "uurlt", 18),
+    ("coupled_cort_ubigram_orig", "ubigram_orig", "ucort", 11),
+    ("coupled_ucort_uurlt_orig", "ucort", "uurlt_orig", 19),
+    ("coupled_umed_ubigram_orig", "umed_orig", "ubigram_orig", 17),
+    ("coupled_ucd_ubio", "ucd", "ubio", 20),
+    ("coupled_uurlt_ucort", "uurlt", "ucort", 21),
+    ("coupled_uht_umed_orig", "uht", "umed_orig", 22),
+]
+
+
+def add_hierarchy_coupled(
+    out_dir: Path,
+    *,
+    csv_path: Path | None = None,
+    phase: str = "P1",
+    rank: int | None = None,
+    n_iter: int | None = None,
+    only_missing: bool = True,
+) -> None:
+    """CoupledALS A–G depuis tensor_*.csv d’un run existant ; merge payload + rapports."""
+    out_dir = Path(out_dir)
+    payload_path = out_dir / "payload.json"
+    pool_path = out_dir / "user_pool.csv"
+    cfg_path = out_dir / "pipeline_config.json"
+    if not payload_path.is_file() or not pool_path.is_file():
+        raise SystemExit(f"Run incomplet dans {out_dir}")
+    cfg = json.loads(cfg_path.read_text(encoding="utf-8")) if cfg_path.is_file() else {}
+    csv_path = Path(csv_path or cfg.get("csv") or DEFAULT_CSV)
+    phase = str(cfg.get("phase") or phase)
+    t0, t1, _ = PHASES[phase]
+    time_bin = str(cfg.get("time_bin") or "day")
+    rank = int(rank if rank is not None else cfg.get("rank") or 5)
+    n_iter = int(n_iter if n_iter is not None else cfg.get("iters") or 35)
+
+    data = json.loads(payload_path.read_text(encoding="utf-8"))
+    existing = {m["key"] for m in (data.get("modalities") or [])}
+    wanted = [
+        (ck, k1, k2, seed)
+        for ck, k1, k2, seed in HIERARCHY_COUPLED
+        if (not only_missing) or ck not in existing
+    ]
+    if not wanted:
+        log("Aucun couplé A–G manquant — rien à faire.")
+        return
+
+    pool = pd.read_csv(pool_path, dtype={"user_id": str})
+    pool_ids = set(pool["user_id"].astype(str))
+    sn = {str(u): str(s) for u, s in zip(pool["user_id"], pool["screen_name"])}
+    bios = load_bios_for_pool(pool, bio_csv=DEFAULT_BIO_CSV, scrape=False)
+    tweet_author: dict[str, str] = {}
+    log("Hierarchy coupled — auteurs RT…")
+    for chunk in pd.read_csv(
+        csv_path, usecols=["tweet_id", "user_id", "user_screen_name"], chunksize=250_000, low_memory=False
+    ):
+        for tid, uid, sname in zip(chunk["tweet_id"], chunk["user_id"], chunk["user_screen_name"]):
+            t, u = _id_str(tid), _id_str(uid)
+            if t and u:
+                tweet_author[t] = u
+            if u and pd.notna(sname):
+                sn.setdefault(u, str(sname).strip().lstrip("@"))
+    profiles = collect_user_behaviors(
+        csv_path, t0=t0, t1=t1, pool_ids=pool_ids, tweet_author=tweet_author
+    )
+    for uid, bio in bios.items():
+        if uid in profiles:
+            profiles[uid]["bio"] = bio
+
+    need_keys = sorted({k for _, k1, k2, _ in wanted for k in (k1, k2)})
+    encoded: dict = {}
+    tensors_df: dict = {}
+    for key in need_keys:
+        path = out_dir / f"tensor_{key}.csv"
+        cols = _TENSOR_COLS.get(key)
+        if not path.is_file() or not cols:
+            log(f"  skip encode {key}: CSV/cols manquants")
+            continue
+        df = pd.read_csv(path, low_memory=False)
+        if key == "ucort":
+            for tid in df["status_id"].astype(str).unique():
+                au = tweet_author.get(str(tid), "")
+                if au:
+                    sn[f"author_of:{tid}"] = sn.get(au, au)
+        tensors_df[key] = df
+        encoded[key] = encode_triples(df, cols)
+        log(f"  encode {key}: nnz={len(df):,}")
+
+    new_mods: list[dict] = []
+    for coup_key, k1, k2, seed in wanted:
+        if k1 not in encoded or k2 not in encoded:
+            log(f"  skip {coup_key}: tenseurs manquants ({k1}/{k2})")
+            continue
+        log(f"CoupledALS {coup_key} ({k1}∥{k2}) R={rank}")
+        try:
+            coup = sparse_coupled_als(encoded[k1], encoded[k2], rank, n_iter, seed=seed)
+            df1 = tensors_df.get(k1)
+            mid_col = [c for c in (df1.columns if df1 is not None else []) if c not in {"user_id", "tbin", "val"}]
+            umids = user_mid_index(df1, "user_id", mid_col[0]) if df1 is not None and mid_col else None
+            mod = build_modality_payload(
+                key=coup_key,
+                user_ids=list(coup["users"]),
+                A=coup["A"],
+                mid_ids=list(coup["mid1"]),
+                B=coup["B"],
+                day_ids=list(coup["day1"]),
+                C=coup["C"],
+                sn=sn,
+                mid2_ids=list(coup["mid2"]),
+                D=coup["D"],
+                day2_ids=list(coup["day2"]),
+                E=coup["E"],
+                err_nnz=None,
+                time_bin=time_bin,
+                profiles=profiles,
+                bios=bios,
+                user_mids=umids,
+            )
+            new_mods.append(mod)
+            top = ((mod.get("aggregate") or {}).get("top_actors") or [{}])[0].get("label", "—")
+            log(f"  OK {coup_key} · users={mod['n_users']} · top={top}")
+        except Exception as e:
+            log(f"  coupled {coup_key} failed: {e}")
+
+    if not new_mods:
+        log("Aucun nouveau couplé produit.")
+        return
+
+    # Remplacer si déjà présent, sinon insérer en tête des couplés (ordre A–G)
+    by_key = {m["key"]: m for m in data["modalities"]}
+    for m in new_mods:
+        by_key[m["key"]] = m
+    # Rafraîchir libellés A–G même pour couplés déjà calculés (B, D…)
+    meta_bin = modality_meta_for(time_bin)
+    for ck, *_ in HIERARCHY_COUPLED:
+        if ck in by_key and ck in meta_bin:
+            mm = meta_bin[ck]
+            by_key[ck]["label"] = mm["label"]
+            by_key[ck]["blurb"] = mm["blurb"]
+            by_key[ck]["modes"] = mm["modes"]
+            by_key[ck]["mid_label"] = mm.get("mid_label")
+            by_key[ck]["mid2_label"] = mm.get("mid2_label")
+    order_pref = [ck for ck, *_ in HIERARCHY_COUPLED]
+    simples = [m for m in data["modalities"] if not str(m["key"]).startswith("coupled")]
+    coupled_rest = [
+        by_key[k]
+        for k in by_key
+        if str(k).startswith("coupled") and k not in order_pref
+    ]
+    coupled_hier = [by_key[k] for k in order_pref if k in by_key]
+    data["modalities"] = simples + coupled_hier + coupled_rest
+    if data.get("meta"):
+        data["meta"]["algo"] = (
+            "CP-ALS sparse · log1p + CoupledALS (hiérarchie A–G USER×temps)"
+        )
+
+    payload_path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+    # Préserver HEAT_CP_HOUR s’il existe
+    hour_blob = ""
+    data_js = out_dir / "data.js"
+    if data_js.is_file():
+        txt = data_js.read_text(encoding="utf-8")
+        if "window.HEAT_CP_HOUR" in txt:
+            hour_blob = "\n" + txt[txt.index("window.HEAT_CP_HOUR") :]
+    data_js.write_text(
+        "window.HEAT_CP = " + json.dumps(data, ensure_ascii=False) + ";" + hour_blob,
+        encoding="utf-8",
+    )
+    cfg["modalities"] = [m["key"] for m in data["modalities"]]
+    cfg["top_actor"] = {
+        m["key"]: ((m.get("aggregate") or {}).get("top_actors") or [{}])[0].get("label")
+        for m in data["modalities"]
+    }
+    cfg_path.write_text(json.dumps(cfg, indent=2), encoding="utf-8")
+    try:
+        from build_rapport import write_reports
+
+        write_reports(out_dir)
+    except Exception as e:
+        log(f"  rapports non régénérés: {e}")
+    log(f"Hierarchy coupled OK → +{len(new_mods)} modalités dans {out_dir}")
+
+
 def parse_args() -> argparse.Namespace:
     p = argparse.ArgumentParser(description="HEAT CP multi-tenseurs → HTML")
     p.add_argument("--csv", type=Path, default=DEFAULT_CSV)
@@ -3625,6 +3977,11 @@ def parse_args() -> argparse.Namespace:
         "--enrich-profiles",
         action="store_true",
         help="Réinjecte bio/mentions/tops dans un run existant (sans CP)",
+    )
+    p.add_argument(
+        "--add-hierarchy-coupled",
+        action="store_true",
+        help="Ajoute les couplés A–G (screen) depuis tensor_*.csv d’un run existant",
     )
     p.add_argument(
         "--with-coupled",
@@ -3663,15 +4020,23 @@ def parse_args() -> argparse.Namespace:
 
 if __name__ == "__main__":
     args = parse_args()
+    out = Path(args.out).resolve()
+    if out == ROOT.resolve():
+        out = ROOT / f"run_{args.phase.lower()}_{args.time_bin}_simple"
     if args.enrich_profiles:
-        out = Path(args.out).resolve()
-        if out == ROOT.resolve():
-            out = ROOT / f"run_{args.phase.lower()}_{args.time_bin}_simple"
         enrich_existing_run(
             out,
             csv_path=args.csv,
             phase=args.phase,
             bios_csv=Path(args.bios_csv) if args.bios_csv else DEFAULT_BIO_CSV,
+        )
+    elif args.add_hierarchy_coupled:
+        add_hierarchy_coupled(
+            out,
+            csv_path=args.csv,
+            phase=args.phase,
+            rank=args.rank,
+            n_iter=args.iters,
         )
     else:
         run(args)
