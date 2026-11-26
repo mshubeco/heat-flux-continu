@@ -104,9 +104,9 @@ MODALITY_META = {
         "coupled": False,
     },
     "ucort": {
-        "label": "Co-RT · émetteur × status retweeté × temps",
-        "blurb": "Qui retweete le même tweet (MID = status original). Signal de co-retweet.",
-        "mid_label": "Status co-RT",
+        "label": "Co-RT · émetteur × publication cible co-RT × temps",
+        "blurb": "Qui retweete la même publication (MID = tweet original). Signal de co-retweet.",
+        "mid_label": "Publication cible co-RT",
         "coupled": False,
     },
     "coupled_uut_uurlt": {
@@ -127,14 +127,14 @@ MODALITY_META = {
         "label": "Couplé co-RT × n-grammes hors RT",
         "blurb": "USER partagé : production lexicale propre (n-grammes hors RT) ∥ co-retweet des mêmes status.",
         "mid_label": "N-grammes hors RT (tenseur 1)",
-        "mid2_label": "Status co-RT (tenseur 2)",
+        "mid2_label": "Publication cible co-RT (tenseur 2)",
         "coupled": True,
     },
     "coupled_cort_utrigram_orig": {
         "label": "Couplé co-RT × trigramme hors RT",
         "blurb": "USER partagé : trigrammes hors RT ∥ co-retweet des mêmes status.",
         "mid_label": "Trigrammes hors RT (tenseur 1)",
-        "mid2_label": "Status co-RT (tenseur 2)",
+        "mid2_label": "Publication cible co-RT (tenseur 2)",
         "coupled": True,
     },
     "ucd": {
@@ -196,21 +196,21 @@ MODALITY_META = {
         "label": "Couplé création × co-RT",
         "blurb": "USER partagé : jours de création ∥ co-retweet des mêmes status.",
         "mid_label": "Jours de création (tenseur 1)",
-        "mid2_label": "Status co-RT (tenseur 2)",
+        "mid2_label": "Publication cible co-RT (tenseur 2)",
         "coupled": True,
     },
     "coupled_ubio_ucort": {
         "label": "Couplé bio × co-RT",
         "blurb": "USER partagé : n-grammes bio candidats ∥ co-retweet.",
         "mid_label": "N-grammes bio (tenseur 1)",
-        "mid2_label": "Status co-RT (tenseur 2)",
+        "mid2_label": "Publication cible co-RT (tenseur 2)",
         "coupled": True,
     },
     "coupled_umed_ucort": {
         "label": "Couplé média hors RT × co-RT",
         "blurb": "USER partagé : usage de médias en production propre ∥ co-retweet.",
         "mid_label": "Types média (tenseur 1)",
-        "mid2_label": "Status co-RT (tenseur 2)",
+        "mid2_label": "Publication cible co-RT (tenseur 2)",
         "coupled": True,
     },
     "coupled_umed_ubigram_orig": {
@@ -332,9 +332,9 @@ def modality_meta_for(time_bin: str) -> dict:
             "Trigrammes (hors RT)",
         ),
         "ucort": (
-            f"Co-RT · émetteur × status retweeté × {t}",
-            f"Qui retweete le même status (co-retweet). Bin {t}.",
-            "Status co-RT",
+            f"Co-RT · émetteur × publication cible co-RT × {t}",
+            f"Qui retweete la même publication (co-retweet). Bin {t}.",
+            "Publication cible co-RT",
         ),
         "coupled_uut_uurlt": (
             "Couplé RT × URL",
@@ -431,7 +431,7 @@ def modality_meta_for(time_bin: str) -> dict:
         "utrigram": f"émetteur × trigramme × {t}",
         "ubigram_orig": f"émetteur × n-gramme (hors RT) × {t}",
         "utrigram_orig": f"émetteur × trigramme (hors RT) × {t}",
-        "ucort": f"émetteur × status co-RT × {t}",
+        "ucort": f"émetteur × publication cible co-RT × {t}",
         "ucd": f"émetteur × jour création × {t}",
         "ucdrt": "émetteur × jour création × cible RT",
         "ucdng": "émetteur × jour création × n-gramme",
@@ -442,12 +442,12 @@ def modality_meta_for(time_bin: str) -> dict:
         "umedurl_orig": f"émetteur × URL média (hors RT) × {t}",
         "coupled_uut_uurlt": f"(émetteur × URL × {t})  ∥  (émetteur × cible RT × {t})",
         "coupled_uut_ubigram": f"(émetteur × n-gramme × {t})  ∥  (émetteur × cible RT × {t})",
-        "coupled_cort_ubigram_orig": f"(émetteur × n-gramme hors RT × {t})  ∥  (émetteur × status co-RT × {t})",
-        "coupled_cort_utrigram_orig": f"(émetteur × trigramme hors RT × {t})  ∥  (émetteur × status co-RT × {t})",
+        "coupled_cort_ubigram_orig": f"(émetteur × n-gramme hors RT × {t})  ∥  (émetteur × publication cible co-RT × {t})",
+        "coupled_cort_utrigram_orig": f"(émetteur × trigramme hors RT × {t})  ∥  (émetteur × publication cible co-RT × {t})",
         "coupled_ucd_uut": f"(émetteur × jour création × {t})  ∥  (émetteur × cible RT × {t})",
-        "coupled_ucd_ucort": f"(émetteur × jour création × {t})  ∥  (émetteur × status co-RT × {t})",
-        "coupled_ubio_ucort": f"(émetteur × n-gramme bio × {t})  ∥  (émetteur × status co-RT × {t})",
-        "coupled_umed_ucort": f"(émetteur × type média hors RT × {t})  ∥  (émetteur × status co-RT × {t})",
+        "coupled_ucd_ucort": f"(émetteur × jour création × {t})  ∥  (émetteur × publication cible co-RT × {t})",
+        "coupled_ubio_ucort": f"(émetteur × n-gramme bio × {t})  ∥  (émetteur × publication cible co-RT × {t})",
+        "coupled_umed_ucort": f"(émetteur × type média hors RT × {t})  ∥  (émetteur × publication cible co-RT × {t})",
         "coupled_umed_ubigram_orig": f"(émetteur × type média hors RT × {t})  ∥  (émetteur × n-gramme hors RT × {t})",
     }
     out = {}
@@ -466,7 +466,7 @@ def modality_meta_for(time_bin: str) -> dict:
             "coupled_ubio_ucort",
             "coupled_umed_ucort",
         }:
-            out[k]["mid2_label"] = "Status co-RT (tenseur 2)"
+            out[k]["mid2_label"] = "Publication cible co-RT (tenseur 2)"
         elif k == "coupled_umed_ubigram_orig":
             out[k]["mid2_label"] = "N-grammes hors RT (tenseur 2)"
         elif k == "coupled_ucd_uut":
@@ -1169,7 +1169,7 @@ def build_all_tensors(
                 cbin = creation_bins.get(u, "unknown")
                 if cbin != "unknown":
                     ucdrt[(u, cbin, target)] += 1.0
-            # co-RT : MID = status retweeté (plusieurs users → même tweet)
+            # co-RT : MID = publication cible co-RT (plusieurs users → même tweet)
             if u and rid:
                 ucort[(u, rid, tbin)] += 1.0
 
@@ -1818,8 +1818,8 @@ def network_mode_for(key: str) -> dict:
     if "ucort" in k:
         return {
             "kind": "co_mid",
-            "label": "Co-RT status (MID Ck)",
-            "edge_fr": "status co-RT partagés",
+            "label": "Co-publications cibles co-RT (MID Ck)",
+            "edge_fr": "publications cibles co-RT partagées",
             "directed": False,
         }
     if k == "ucdrt":
@@ -2255,7 +2255,7 @@ def aggregate_modality(
         "utrigram": "trigrammes",
         "ubigram_orig": "n-grammes hors RT",
         "utrigram_orig": "trigrammes hors RT",
-        "ucort": "status co-RT",
+        "ucort": "publication cible co-RT",
         "ucd": "jours de création",
         "ucdrt": "jours de création",
         "ucdng": "jours de création",
@@ -2295,7 +2295,7 @@ def aggregate_modality(
             "coupled_umed_ucort",
         }:
             agg["top_mids2"] = mid_rows(mid2_ids, align_sign(D), as_status=True)
-            agg["mid2_kind"] = "status co-RT"
+            agg["mid2_kind"] = "publication cible co-RT"
         elif key == "coupled_umed_ubigram_orig":
             agg["top_mids2"] = mid_rows(mid2_ids, align_sign(D), as_ngram=True)
             agg["mid2_kind"] = "n-grammes hors RT"
@@ -2717,7 +2717,7 @@ function tensorModes(m){
     ubigram:`émetteur × n-gramme × ${t}`, utrigram:`émetteur × trigramme × ${t}`,
     ubigram_orig:`émetteur × n-gramme (hors RT) × ${t}`,
     utrigram_orig:`émetteur × trigramme (hors RT) × ${t}`,
-    ucort:`émetteur × status co-RT × ${t}`, ucd:`émetteur × jour création × ${t}`,
+    ucort:`émetteur × publication cible co-RT × ${t}`, ucd:`émetteur × jour création × ${t}`,
     ubio:`émetteur × n-gramme bio × ${t}`, ubio_ht:`émetteur × hashtag bio × ${t}`,
     uname:`émetteur × token display name × ${t}`,
     umed_orig:`émetteur × type média (hors RT) × ${t}`,
@@ -3028,7 +3028,7 @@ def run(args: argparse.Namespace) -> None:
     sn.update(sn_extra)
     for uid, sname in sn_extra.items():
         sn.setdefault(str(uid), str(sname))
-    # labels auteurs des status co-RT
+    # labels auteurs des publication cible co-RT
     if "ucort" in tensors and not tensors["ucort"].empty:
         for tid in tensors["ucort"]["status_id"].astype(str).unique():
             au = tweet_author.get(str(tid), "")
@@ -3472,7 +3472,7 @@ def parse_args() -> argparse.Namespace:
     p.add_argument("--max-domains", type=int, default=800)
     p.add_argument("--max-hashtags", type=int, default=800)
     p.add_argument("--max-targets", type=int, default=2500)
-    p.add_argument("--max-cort", type=int, default=2500, help="Top status co-RT (MID)")
+    p.add_argument("--max-cort", type=int, default=2500, help="Top publication cible co-RT (MID)")
     p.add_argument(
         "--min-users-cort",
         type=int,
