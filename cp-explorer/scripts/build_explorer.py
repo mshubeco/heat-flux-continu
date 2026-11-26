@@ -2291,6 +2291,7 @@ def enrich_actor_metrics(
     elif p.get("bio"):
         bio = str(p.get("bio") or "")
     lab = sn.get(uid, uid)
+    created = snowflake_created_at(uid)
     return {
         "id": uid,
         "label": "@" + str(lab).lstrip("@"),
@@ -2299,6 +2300,9 @@ def enrich_actor_metrics(
         "n_rt": n_rt,
         "n_orig": n_orig,
         "share_rt": round((n_rt / n_tw), 3) if n_tw else 0.0,
+        # Création compte via snowflake user_id (UTC)
+        "account_created_at": created.strftime("%Y-%m-%d %H:%M:%S UTC") if created else None,
+        "account_created_day": creation_bin(created),
         "bio": bio[:280],
         "top_rt_targets": _top_counter(p.get("rt_targets") or Counter(), sn, 5, as_account=True),
         "top_mentions": _top_counter(p.get("mentions") or Counter(), sn, 5, as_account=True),

@@ -195,6 +195,9 @@ table.actor-metrics th {
   font-size:10px; text-transform:uppercase; letter-spacing:.04em; z-index:1;
 }
 table.actor-metrics td.num { font-variant-numeric:tabular-nums; white-space:nowrap; }
+table.actor-metrics td.created-at {
+  font-variant-numeric:tabular-nums; white-space:nowrap; font-size:11px; color:var(--muted);
+}
 table.actor-metrics .bio {
   max-width:220px; color:var(--muted); font-size:11.5px; line-height:1.35;
   display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
@@ -1456,13 +1459,38 @@ function paintSpatioSignature(elId, c, midLabel, color){
   Plotly.newPlot(elId, traces, layout, {responsive:true, displayModeBar:false});
 }
 
+const TWITTER_EPOCH_MS = 1288834974657;
+/** Création compte via snowflake user_id (UTC) — fallback si payload sans account_created_at. */
+function snowflakeCreatedAt(uid){
+  try {
+    const i = BigInt(String(uid||"").trim());
+    if (i <= 0n) return null;
+    // ≈ bit_length ≥ 50
+    if (i < (1n << 49n)) return null;
+    const ms = Number((i >> 22n) + BigInt(TWITTER_EPOCH_MS));
+    if (!Number.isFinite(ms)) return null;
+    const d = new Date(ms);
+    if (Number.isNaN(d.getTime())) return null;
+    const y = d.getUTCFullYear();
+    if (y < 2018 || d.getTime() > Date.now()) return null;
+    const pad = n => String(n).padStart(2,"0");
+    return `${y}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} UTC`;
+  } catch(e) { return null; }
+}
+function accountCreatedLabel(u){
+  if (u && u.account_created_at) return String(u.account_created_at);
+  return snowflakeCreatedAt(u && (u.id || u.user_id)) || "—";
+}
+
 function actorMetricsTable(users){
   const rows = (users||[]).map(u => {
     const ntw = u.n_tweets||0;
     const share = (u.share_rt != null) ? u.share_rt : (ntw ? (u.n_rt||0)/ntw : 0);
     const pct = Math.round(100*share);
+    const created = accountCreatedLabel(u);
     return `<tr>
       <td>${xLink(u.label)}<div class="cap">w=${Number(u.w||0).toFixed(3)}</div></td>
+      <td class="num created-at" title="Snowflake user_id → création UTC">${esc(created)}</td>
       <td class="num">${fmt(ntw)}</td>
       <td class="num">${pct}%</td>
       <td class="num">${fmt(u.n_orig||0)}</td>
@@ -1475,10 +1503,10 @@ function actorMetricsTable(users){
   }).join("");
   return `<table class="actor-metrics">
     <thead><tr>
-      <th>Acteur</th><th>Pubs</th><th>% RT</th><th>Propres</th><th>Bio</th>
+      <th>Acteur</th><th>Création compte</th><th>Pubs</th><th>% RT</th><th>Propres</th><th>Bio</th>
       <th>Top 5 cibles RT</th><th>Top 5 mentions</th><th>Top 5 hashtags</th><th>Top 5 URLs</th>
     </tr></thead>
-    <tbody>${rows || `<tr><td colspan="9" class="cap">Aucun acteur.</td></tr>`}</tbody>
+    <tbody>${rows || `<tr><td colspan="10" class="cap">Aucun acteur.</td></tr>`}</tbody>
   </table>`;
 }
 
@@ -1949,6 +1977,9 @@ table.actor-metrics th {
   font-size:10px; text-transform:uppercase; letter-spacing:.04em; z-index:1;
 }
 table.actor-metrics td.num { font-variant-numeric:tabular-nums; white-space:nowrap; }
+table.actor-metrics td.created-at {
+  font-variant-numeric:tabular-nums; white-space:nowrap; font-size:11px; color:var(--muted);
+}
 table.actor-metrics .bio {
   max-width:220px; color:var(--muted); font-size:11.5px; line-height:1.35;
   display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
@@ -2493,15 +2524,34 @@ else {
       yaxis3:{domain:[0,0.32],autorange:"reversed",tickfont:{size:10},showgrid:false,zeroline:false}
     },{responsive:true,displayModeBar:false});
   }
+  const TWITTER_EPOCH_MS = 1288834974657;
+  function snowflakeCreatedAt(uid){
+    try {
+      const i = BigInt(String(uid||"").trim());
+      if (i <= 0n || i < (1n << 49n)) return null;
+      const ms = Number((i >> 22n) + BigInt(TWITTER_EPOCH_MS));
+      const d = new Date(ms);
+      if (Number.isNaN(d.getTime())) return null;
+      const y = d.getUTCFullYear();
+      if (y < 2018 || d.getTime() > Date.now()) return null;
+      const pad = n => String(n).padStart(2,"0");
+      return `${y}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} UTC`;
+    } catch(e) { return null; }
+  }
+  function accountCreatedLabel(u){
+    if (u && u.account_created_at) return String(u.account_created_at);
+    return snowflakeCreatedAt(u && (u.id || u.user_id)) || "—";
+  }
   function actorMetricsTable(users){
     return `<table class="actor-metrics"><thead><tr>
-      <th>Acteur</th><th>Pubs</th><th>% RT</th><th>Propres</th><th>Bio</th>
+      <th>Acteur</th><th>Création compte</th><th>Pubs</th><th>% RT</th><th>Propres</th><th>Bio</th>
       <th>Top 5 cibles RT</th><th>Top 5 mentions</th><th>Top 5 hashtags</th><th>Top 5 URLs</th>
     </tr></thead><tbody>${(users||[]).map(u=>{
       const ntw=u.n_tweets||0;
       const share=u.share_rt!=null?u.share_rt:(ntw?(u.n_rt||0)/ntw:0);
       return `<tr>
         <td>${xLink(u.label)}<div class="cap">w=${Number(u.w||0).toFixed(3)}</div></td>
+        <td class="num created-at" title="Snowflake user_id → création UTC">${esc(accountCreatedLabel(u))}</td>
         <td class="num">${fmt(ntw)}</td><td class="num">${Math.round(100*share)}%</td>
         <td class="num">${fmt(u.n_orig||0)}</td>
         <td><div class="bio" title="${esc(u.bio||"")}">${esc(u.bio||"—")}</div></td>
