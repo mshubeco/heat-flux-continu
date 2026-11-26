@@ -137,6 +137,13 @@ table.actor-metrics .toplist li { white-space:nowrap; }
 .behavior-tops ul { margin:0; padding:0; list-style:none; font-size:12.5px; line-height:1.4; }
 .behavior-tops li { margin:0 0 3px; }
 .behavior-tops .meta { grid-column:1/-1; font-size:12px; color:var(--muted); margin:0; }
+.sig-block {
+  background:var(--card); border:1px solid var(--line); border-radius:12px;
+  padding:12px 14px; margin:14px 0 8px;
+}
+.sig-block h4 { margin:0 0 2px; font:600 15px/1.3 Georgia,serif; color:var(--ink); }
+.sig-block .sig-sub { margin:0 0 8px; color:var(--muted); font-size:12px; }
+.plot.sig-plot { height:560px; border:1px solid var(--line); border-radius:10px; background:#fbfcfd; }
 .plot.net-plot { height:520px; border:1px solid var(--line); border-radius:12px; background:#fbfcfd; }
 .net-legend {
   display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center;
@@ -700,6 +707,11 @@ function buildModSections(){
             <div id="cmid2-${m.key}-c${c.id}" class="plot tall"></div>
           </div>
         </div>
+        <div class="sig-block">
+          <h4>Signature spatio-temporelle — C${c.id}</h4>
+          <p class="sig-sub">Intensité des contributions reconstruites (w<sub>acteur</sub>×w<sub>temps</sub>, w<sub>objet</sub>×w<sub>temps</sub>), normalisée par dimension · pic en pointillés</p>
+          <div id="csig-${m.key}-c${c.id}" class="plot sig-plot"></div>
+        </div>
         <h4>Réseau mono-modalité — acteurs C${c.id}</h4>
         <p class="cap">Une seule interaction liée au tenseur sur les MID Ck · survol d’un lien = objets partagés · AF 2D + noverlap · taille=degré · zoom/pan · clic nœud → X.</p>
         <div class="net-legend" id="cnetleg-${m.key}-c${c.id}"></div>
@@ -1136,6 +1148,126 @@ function behaviorTopsPanel(bt){
   </div>`;
 }
 
+const FR_MONTHS = ["jan","fév","mars","avr","mai","juin","juil","août","sept","oct","nov","déc"];
+function frTimeLabel(s){
+  const str = String(s||"");
+  const m = str.match(/^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2}))?/);
+  if (!m) return str.length > 18 ? str.slice(0,16) : str;
+  const day = `${parseInt(m[3],10)} ${FR_MONTHS[parseInt(m[2],10)-1]}`;
+  return m[4] ? `${day} ${m[4]}:${m[5]}` : day;
+}
+
+function paintSpatioSignature(elId, c, midLabel, color){
+  const el = document.getElementById(elId);
+  if (!el) return;
+  let times = (c.time || []).slice();
+  if (!times.length) {
+    el.innerHTML = "<p class='cap' style='padding:16px'>Pas de série temporelle.</p>";
+    return;
+  }
+  // trop de bins (minute) → top poids, puis re-tri chronologique
+  if (times.length > 90) {
+    times = times.slice().sort((a,b)=>(b.w||0)-(a.w||0)).slice(0,90)
+      .sort((a,b)=>String(a.day).localeCompare(String(b.day)));
+  }
+  const actors = (c.users || []).slice().sort((a,b)=>(b.w||0)-(a.w||0)).slice(0,14);
+  const mids = (c.mid || []).slice().sort((a,b)=>(b.w||0)-(a.w||0)).slice(0,10);
+  if (!actors.length || !mids.length) {
+    el.innerHTML = "<p class='cap' style='padding:16px'>Acteurs ou objets insuffisants pour la signature.</p>";
+    return;
+  }
+  const xRaw = times.map(d => d.day);
+  const xLab = xRaw.map(frTimeLabel);
+  const tw = times.map(d => Number(d.w)||0);
+  const twMax = Math.max(...tw, 1e-12);
+  const twN = tw.map(v => v / twMax);
+  const aw = actors.map(u => Number(u.w)||0);
+  const mw = mids.map(o => Number(o.w)||0);
+  const zA = actors.map(u => tw.map(t => (Number(u.w)||0) * (Number(t)||0)));
+  const zM = mids.map(o => tw.map(t => (Number(o.w)||0) * (Number(t)||0)));
+  const maxA = Math.max(...zA.flat(), 1e-12);
+  const maxM = Math.max(...zM.flat(), 1e-12);
+  const zAn = zA.map(row => row.map(v => v / maxA));
+  const zMn = zM.map(row => row.map(v => v / maxM));
+  const peakIdx = tw.reduce((best,v,i)=> v > tw[best] ? i : best, 0);
+  const peakLab = xLab[peakIdx];
+  const actorLabs = actors.map(u => u.label || u.id);
+  const midLabs = mids.map(o => {
+    const lab = o.label || o.id || "";
+    return String(lab).length > 28 ? String(lab).slice(0,26)+"…" : lab;
+  });
+  const midTitle = String(midLabel || "Objets").toUpperCase();
+  const greenScale = [
+    [0, "#f3f5f2"], [0.25, "#c5d4c0"], [0.5, "#7fa37a"],
+    [0.75, "#3f6b45"], [1, "#1a3d28"]
+  ];
+  const peakShape = {
+    type:"rect", xref:"x", yref:"paper",
+    x0: peakIdx - 0.45, x1: peakIdx + 0.45,
+    y0: 0, y1: 1,
+    line:{color:"#5a6570", width:1, dash:"dot"},
+    fillcolor:"rgba(90,101,112,0.07)"
+  };
+  const traces = [
+    {
+      type:"bar", x:xLab, y:twN, name:"Temps",
+      marker:{color: color || "#2f6b4f", line:{width:0}},
+      hovertemplate:"%{x}<br>intensité %{y:.2f}<extra>Temps</extra>",
+      xaxis:"x", yaxis:"y"
+    },
+    {
+      type:"heatmap", x:xLab, y:actorLabs, z:zAn,
+      colorscale: greenScale, zmin:0, zmax:1, showscale:false,
+      hovertemplate:"%{y}<br>%{x}<br>%{z:.2f}<extra>Acteur</extra>",
+      xaxis:"x", yaxis:"y2"
+    },
+    {
+      type:"heatmap", x:xLab, y:midLabs, z:zMn,
+      colorscale: greenScale, zmin:0, zmax:1,
+      colorbar:{title:{text:"Faible → Fort", side:"right"}, len:0.28, y:0.14, thickness:12,
+        tickvals:[0,1], ticktext:["Faible","Fort"]},
+      hovertemplate:"%{y}<br>%{x}<br>%{z:.2f}<extra>Objet</extra>",
+      xaxis:"x", yaxis:"y3"
+    }
+  ];
+  const nA = actorLabs.length, nM = midLabs.length;
+  const layout = {
+    margin:{t:28, r:70, b:48, l:110},
+    paper_bgcolor:"#fbfcfd", plot_bgcolor:"#fbfcfd",
+    showlegend:false,
+    shapes:[peakShape],
+    annotations:[
+      {text:"TEMPS", xref:"paper", yref:"paper", x:0.01, y:0.98, showarrow:false,
+        font:{size:10, color:"#5a6570"}, xanchor:"left"},
+      {text:"ACTEURS", xref:"paper", yref:"paper", x:0.01, y:0.68, showarrow:false,
+        font:{size:10, color:"#5a6570"}, xanchor:"left"},
+      {text:esc(midTitle), xref:"paper", yref:"paper", x:0.01, y:0.30, showarrow:false,
+        font:{size:10, color:"#5a6570"}, xanchor:"left"},
+      {text:"pic "+peakLab, xref:"x", yref:"paper", x:peakIdx, y:1.02, showarrow:false,
+        font:{size:10, color:"#5a6570"}}
+    ],
+    xaxis:{
+      anchor:"y3", tickangle:-35, tickfont:{size:10},
+      showgrid:false, zeroline:false, type:"category"
+    },
+    yaxis:{
+      domain:[0.74, 1.0], title:{text:"", font:{size:10}},
+      range:[0, 1.05], showticklabels:false, showgrid:false, zeroline:false
+    },
+    yaxis2:{
+      domain:[0.38, 0.70], autorange:"reversed",
+      tickfont:{size:10}, showgrid:false, zeroline:false
+    },
+    yaxis3:{
+      domain:[0.0, 0.32], autorange:"reversed",
+      tickfont:{size:10}, showgrid:false, zeroline:false
+    }
+  };
+  // hauteur dynamique selon nb lignes
+  el.style.height = Math.max(520, 160 + nA*18 + nM*18) + "px";
+  Plotly.newPlot(elId, traces, layout, {responsive:true, displayModeBar:false});
+}
+
 function actorMetricsTable(users){
   const rows = (users||[]).map(u => {
     const ntw = u.n_tweets||0;
@@ -1412,6 +1544,7 @@ function paintMod(key){
         hbarPlot(`cmid2-${m.key}-c${c.id}`, c.mid2, COLORS[(i+1)%COLORS.length]);
       } else wrap2.hidden = true;
     }
+    paintSpatioSignature(`csig-${m.key}-c${c.id}`, c, m.mid_label, col);
     const behBox = document.getElementById(`cbeh-${m.key}-c${c.id}`);
     if (behBox) behBox.innerHTML = behaviorTopsPanel(c.behavior_tops);
     const actorsBox = document.getElementById(`cactors-${m.key}-c${c.id}`);
@@ -1553,6 +1686,13 @@ table.actor-metrics .toplist li { white-space:nowrap; }
 .behavior-tops ul { margin:0; padding:0; list-style:none; font-size:12.5px; line-height:1.4; }
 .behavior-tops li { margin:0 0 3px; }
 .behavior-tops .meta { grid-column:1/-1; font-size:12px; color:var(--muted); margin:0; }
+.sig-block {
+  background:var(--card); border:1px solid var(--line); border-radius:12px;
+  padding:12px 14px; margin:14px 0 8px;
+}
+.sig-block h4 { margin:0 0 2px; font:600 15px/1.3 Georgia,serif; color:var(--ink); }
+.sig-block .sig-sub { margin:0 0 8px; color:var(--muted); font-size:12px; }
+.plot.sig-plot { height:560px; border:1px solid var(--line); border-radius:10px; background:#fbfcfd; }
 .plot.net-plot { height:520px; border:1px solid var(--line); border-radius:12px; background:#fbfcfd; }
 .net-legend { display:flex; flex-wrap:wrap; gap:10px 16px; margin:0 0 8px; font-size:12px; color:var(--muted); }
 .net-legend .sw { display:inline-block; width:18px; height:3px; border-radius:2px; margin-right:6px; vertical-align:middle; }
@@ -1797,6 +1937,11 @@ else {
         <div><h4>${m.mid_label||"Objets"}</h4><div id="cmid-c${c.id}" class="plot tall"></div></div>
         ${c.mid2&&c.mid2.length?`<div><h4>${m.mid2_label||"MID₂"}</h4><div id="cmid2-c${c.id}" class="plot tall"></div></div>`:""}
       </div>
+      <div class="sig-block">
+        <h4>Signature spatio-temporelle — C${c.id}</h4>
+        <p class="sig-sub">Contributions reconstruites normalisées par dimension · pic en pointillés</p>
+        <div id="csig-c${c.id}" class="plot sig-plot"></div>
+      </div>
       <h4>Réseau mono-modalité (MID Ck)</h4>
       <div class="net-legend" id="cnetleg-c${c.id}"></div>
       <div id="cnet-c${c.id}" class="plot net-plot"></div>
@@ -2002,6 +2147,59 @@ else {
       <div class="col"><h5>Top URLs</h5><ul>${fmtTopList(bt.top_urls,{web:true})}</ul></div>
     </div>`;
   }
+  const FR_MONTHS = ["jan","fév","mars","avr","mai","juin","juil","août","sept","oct","nov","déc"];
+  function frTimeLabel(s){
+    const str=String(s||"");
+    const m=str.match(/^(\d{4})-(\d{2})-(\d{2})(?:[ T](\d{2}):(\d{2}))?/);
+    if(!m) return str.length>18?str.slice(0,16):str;
+    const day=`${parseInt(m[3],10)} ${FR_MONTHS[parseInt(m[2],10)-1]}`;
+    return m[4]?`${day} ${m[4]}:${m[5]}`:day;
+  }
+  function paintSpatioSignature(elId, c, midLabel, color){
+    const el=document.getElementById(elId); if(!el) return;
+    let times=(c.time||[]).slice();
+    if(!times.length){ el.innerHTML="<p class='cap' style='padding:16px'>Pas de série temporelle.</p>"; return; }
+    if(times.length>90) times=times.slice().sort((a,b)=>(b.w||0)-(a.w||0)).slice(0,90).sort((a,b)=>String(a.day).localeCompare(String(b.day)));
+    const actors=(c.users||[]).slice().sort((a,b)=>(b.w||0)-(a.w||0)).slice(0,14);
+    const mids=(c.mid||[]).slice().sort((a,b)=>(b.w||0)-(a.w||0)).slice(0,10);
+    if(!actors.length||!mids.length){ el.innerHTML="<p class='cap' style='padding:16px'>Acteurs ou objets insuffisants.</p>"; return; }
+    const xLab=times.map(d=>frTimeLabel(d.day));
+    const tw=times.map(d=>Number(d.w)||0);
+    const twMax=Math.max(...tw,1e-12);
+    const twN=tw.map(v=>v/twMax);
+    const zA=actors.map(u=>tw.map(t=>(Number(u.w)||0)*t));
+    const zM=mids.map(o=>tw.map(t=>(Number(o.w)||0)*t));
+    const maxA=Math.max(...zA.flat(),1e-12), maxM=Math.max(...zM.flat(),1e-12);
+    const zAn=zA.map(r=>r.map(v=>v/maxA)), zMn=zM.map(r=>r.map(v=>v/maxM));
+    const peakIdx=tw.reduce((b,v,i)=>v>tw[b]?i:b,0);
+    const actorLabs=actors.map(u=>u.label||u.id);
+    const midLabs=mids.map(o=>{ const lab=o.label||o.id||""; return String(lab).length>28?String(lab).slice(0,26)+"…":lab; });
+    const midTitle=String(midLabel||"Objets").toUpperCase();
+    const greenScale=[[0,"#f3f5f2"],[0.25,"#c5d4c0"],[0.5,"#7fa37a"],[0.75,"#3f6b45"],[1,"#1a3d28"]];
+    const peakShape={type:"rect",xref:"x",yref:"paper",x0:peakIdx-0.45,x1:peakIdx+0.45,y0:0,y1:1,
+      line:{color:"#5a6570",width:1,dash:"dot"},fillcolor:"rgba(90,101,112,0.07)"};
+    el.style.height=Math.max(520,160+actorLabs.length*18+midLabs.length*18)+"px";
+    Plotly.newPlot(elId,[
+      {type:"bar",x:xLab,y:twN,marker:{color:color||"#2f6b4f"},hovertemplate:"%{x}<br>%{y:.2f}<extra>Temps</extra>",xaxis:"x",yaxis:"y"},
+      {type:"heatmap",x:xLab,y:actorLabs,z:zAn,colorscale:greenScale,zmin:0,zmax:1,showscale:false,
+        hovertemplate:"%{y}<br>%{x}<br>%{z:.2f}<extra></extra>",xaxis:"x",yaxis:"y2"},
+      {type:"heatmap",x:xLab,y:midLabs,z:zMn,colorscale:greenScale,zmin:0,zmax:1,
+        colorbar:{title:{text:"Faible → Fort",side:"right"},len:0.28,y:0.14,thickness:12,tickvals:[0,1],ticktext:["Faible","Fort"]},
+        hovertemplate:"%{y}<br>%{x}<br>%{z:.2f}<extra></extra>",xaxis:"x",yaxis:"y3"}
+    ],{
+      margin:{t:28,r:70,b:48,l:110},paper_bgcolor:"#fbfcfd",plot_bgcolor:"#fbfcfd",showlegend:false,shapes:[peakShape],
+      annotations:[
+        {text:"TEMPS",xref:"paper",yref:"paper",x:0.01,y:0.98,showarrow:false,font:{size:10,color:"#5a6570"},xanchor:"left"},
+        {text:"ACTEURS",xref:"paper",yref:"paper",x:0.01,y:0.68,showarrow:false,font:{size:10,color:"#5a6570"},xanchor:"left"},
+        {text:esc(midTitle),xref:"paper",yref:"paper",x:0.01,y:0.30,showarrow:false,font:{size:10,color:"#5a6570"},xanchor:"left"},
+        {text:"pic "+xLab[peakIdx],xref:"x",yref:"paper",x:peakIdx,y:1.02,showarrow:false,font:{size:10,color:"#5a6570"}}
+      ],
+      xaxis:{anchor:"y3",tickangle:-35,tickfont:{size:10},showgrid:false,zeroline:false,type:"category"},
+      yaxis:{domain:[0.74,1],showticklabels:false,showgrid:false,zeroline:false,range:[0,1.05]},
+      yaxis2:{domain:[0.38,0.70],autorange:"reversed",tickfont:{size:10},showgrid:false,zeroline:false},
+      yaxis3:{domain:[0,0.32],autorange:"reversed",tickfont:{size:10},showgrid:false,zeroline:false}
+    },{responsive:true,displayModeBar:false});
+  }
   function actorMetricsTable(users){
     return `<table class="actor-metrics"><thead><tr>
       <th>Acteur</th><th>Pubs</th><th>% RT</th><th>Propres</th><th>Bio</th>
@@ -2034,6 +2232,7 @@ else {
     hbar("cusers-c"+c.id, c.users, col);
     hbar("cmid-c"+c.id, c.mid, col);
     if (c.mid2&&c.mid2.length) hbar("cmid2-c"+c.id, c.mid2, COLORS[(i+1)%COLORS.length]);
+    paintSpatioSignature("csig-c"+c.id, c, m.mid_label, col);
     const beh=document.getElementById("cbeh-c"+c.id);
     if (beh) beh.innerHTML = behaviorTopsPanel(c.behavior_tops);
     const box=document.getElementById("cactors-c"+c.id);

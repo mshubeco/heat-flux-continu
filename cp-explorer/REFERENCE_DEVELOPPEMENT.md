@@ -148,6 +148,7 @@ Couplage : seulement avec `--with-coupled`.
 
 ## Historique
 
+- 2026-11-26 — Ck : **signature spatio-temporelle** (barres temps + heatmaps acteurs×t / objets×t, pic en pointillés).
 - 2026-11-26 — Ck : acteurs filtrés au **même ordre de grandeur** que w₁ (`w ≥ 10^⌊log₁₀(w₁)⌋`) + bandeau tops agrégés cibles/mentions/hashtags/URLs.
 - 2026-11-26 — jumeau HMPV FULL : `hmpv_cp_explorer/` → Pages `/cp-explorer-hmpv/` (couplé `coupled_cort_ubigram_orig`).
 - 2026-11-26 — onglets Ck : graphe réseau d’échanges (RT / mentions) entre acteurs, survol détaillé.
