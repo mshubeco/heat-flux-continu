@@ -1472,7 +1472,7 @@ function snowflakeCreatedAt(uid){
     const d = new Date(ms);
     if (Number.isNaN(d.getTime())) return null;
     const y = d.getUTCFullYear();
-    if (y < 2018 || d.getTime() > Date.now()) return null;
+    if (y < 2006 || d.getTime() > Date.now()) return null;
     const pad = n => String(n).padStart(2,"0");
     return `${y}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} UTC`;
   } catch(e) { return null; }
@@ -2533,7 +2533,7 @@ else {
       const d = new Date(ms);
       if (Number.isNaN(d.getTime())) return null;
       const y = d.getUTCFullYear();
-      if (y < 2018 || d.getTime() > Date.now()) return null;
+      if (y < 2006 || d.getTime() > Date.now()) return null;
       const pad = n => String(n).padStart(2,"0");
       return `${y}-${pad(d.getUTCMonth()+1)}-${pad(d.getUTCDate())} ${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} UTC`;
     } catch(e) { return null; }
