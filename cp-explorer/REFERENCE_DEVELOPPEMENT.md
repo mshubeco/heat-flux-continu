@@ -151,6 +151,7 @@ Couplage : seulement avec `--with-coupled`.
 - 2026-11-26 — onglets Ck : graphe réseau d’échanges (RT / mentions) entre acteurs, survol détaillé.
 - 2026-11-26 — `ubio` : n-grammes candidats (n=2..4, PMI≥0.8, df≥2, longest-match) à la place des bigrammes fixes.
 - 2026-11-26 — onglets Ck : tableau acteurs (pubs, %RT, bio, top5 cibles/mentions/hashtags/domaines) ; `--enrich-profiles`.
+- 2026-11-26 — réseau Ck : poids/couleur/épaisseur des liens = **n_shared** (nb d’objets distincts), plus l’intensité MID (×count).
 - 2026-11-26 — sync GitHub Pages : `sync_to_github_pages.ps1 -Push` → `mshubeco/heat-flux-continu` `/cp-explorer/`.
 - 2026-11-26 — tenseurs `ucdrt` (émetteur × jour création × cible RT) et `ucdng` (× n-grammes), sans bin d’activité.
 - 2026-11-26 — retrait onglet **Tendance** (ordre stable) par tenseur ; défaut = Temps.

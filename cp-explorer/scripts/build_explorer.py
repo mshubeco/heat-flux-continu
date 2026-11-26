@@ -2032,14 +2032,12 @@ def build_component_network(
                 common = set(ca) & set(cb)
                 if not common:
                     continue
-                w = int(sum(min(ca[m], cb[m]) for m in common))
-                if w <= 0:
-                    continue
+                n_shared = len(common)
+                # intensité MID (min des comptes) — informative seulement, pas le poids du lien
+                intensity = int(sum(min(ca[m], cb[m]) for m in common))
+                # liste : priorité aux MID les plus fréquents (affichage), poids du lien = |common|
                 top = sorted(common, key=lambda m: -min(ca[m], cb[m]))[:10]
-                shared = [
-                    f"{mid_lab.get(m, str(m).replace('_', ' '))} (×{int(min(ca[m], cb[m]))})"
-                    for m in top
-                ]
+                shared = [mid_lab.get(m, str(m).replace("_", " ")) for m in top]
                 edges.append(
                     {
                         "source": a,
@@ -2048,14 +2046,16 @@ def build_component_network(
                         or ("@" + str(sn.get(a, a)).lstrip("@")),
                         "target_label": (by_id.get(b) or {}).get("label")
                         or ("@" + str(sn.get(b, b)).lstrip("@")),
-                        "weight": w,
+                        # poids / couleur / épaisseur = nombre strict d’éléments partagés
+                        "weight": n_shared,
                         "kind": "co_mid",
                         "shared": shared,
-                        "n_shared": len(common),
+                        "n_shared": n_shared,
+                        "intensity": intensity,
                     }
                 )
 
-    edges.sort(key=lambda d: -d["weight"])
+    edges.sort(key=lambda d: (-d.get("n_shared", 0), -d.get("intensity", d.get("weight", 0))))
     edges = edges[:max_edges]
     linked = {e["source"] for e in edges} | {e["target"] for e in edges}
 
@@ -3347,11 +3347,17 @@ def enrich_existing_run(
             tensor_mid_cache[src] = {}
             return None
         tdf = pd.read_csv(path, low_memory=False)
-        mid_col = [c for c in tdf.columns if c not in {"user_id", "tbin", "val"}]
-        if not mid_col:
-            tensor_mid_cache[src] = {}
-            return None
-        um = user_mid_index(tdf, "user_id", mid_col[0])
+        # ucdrt/ucdng : objets réseau = mode 3 (pas creation_bin)
+        if src == "ucdrt" and "retweeted_user_id" in tdf.columns:
+            um = user_mid_index(tdf, "user_id", "retweeted_user_id")
+        elif src == "ucdng" and "ngram" in tdf.columns:
+            um = user_mid_index(tdf, "user_id", "ngram")
+        else:
+            mid_col = [c for c in tdf.columns if c not in {"user_id", "tbin", "val"}]
+            if not mid_col:
+                tensor_mid_cache[src] = {}
+                return None
+            um = user_mid_index(tdf, "user_id", mid_col[0])
         tensor_mid_cache[src] = um
         return um
 
@@ -3376,12 +3382,16 @@ def enrich_existing_run(
                 cid = int(r) + 1
                 if cid in by_id:
                     by_id[cid]["users"] = rows
+                    net_mid = by_id[cid].get("mid") or []
+                    # ucdrt/ucdng : ne pas filtrer sur les jours de création (MID mode 2)
+                    if key in {"ucdrt", "ucdng"}:
+                        net_mid = []
                     by_id[cid]["network"] = build_component_network(
                         rows,
                         profiles,
                         sn,
                         key=key,
-                        mid_items=by_id[cid].get("mid") or [],
+                        mid_items=net_mid,
                         user_mids=umids,
                     )
             m["components"] = [by_id[k] for k in sorted(by_id)]
@@ -3396,12 +3406,15 @@ def enrich_existing_run(
                         )
                     )
                 c["users"] = enriched
+                net_mid = c.get("mid") or []
+                if key in {"ucdrt", "ucdng"}:
+                    net_mid = []
                 c["network"] = build_component_network(
                     enriched,
                     profiles,
                     sn,
                     key=key,
-                    mid_items=c.get("mid") or [],
+                    mid_items=net_mid,
                     user_mids=umids,
                 )
         # agrégat acteurs

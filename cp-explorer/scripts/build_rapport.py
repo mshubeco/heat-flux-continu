@@ -785,7 +785,8 @@ function forceLayout(nodes, edges, W, H, iters){
       let dx = pos[e.target].x - pos[e.source].x;
       let dy = pos[e.target].y - pos[e.source].y;
       let dist = Math.sqrt(dx*dx + dy*dy) || 0.01;
-      const f = (dist * dist) / k * 0.08 * Math.min(3, Math.sqrt(e.weight || 1));
+      const ew = (e.n_shared != null ? e.n_shared : e.weight) || 1;
+      const f = (dist * dist) / k * 0.08 * Math.min(3, Math.sqrt(ew));
       dx = dx / dist * f; dy = dy / dist * f;
       disp[e.source].x += dx; disp[e.source].y += dy;
       disp[e.target].x -= dx; disp[e.target].y -= dy;
@@ -907,7 +908,8 @@ function paintNetwork(elId, network, color){
     if (e.kind === "rt") return `${head}<br>${esc(modeLab)} · poids <b>${e.weight}</b>`;
     const lines = [
       head,
-      `${esc(modeLab)} · <b>${ns}</b> ${esc(edgeFr)} · poids cumulé ${e.weight}`,
+      `${esc(modeLab)} · <b>${ns}</b> ${esc(edgeFr)}` +
+        ` <span style="opacity:.75">(couleur/épaisseur = n distincts)</span>`,
       `<span style="opacity:.8">Objets MID Ck partagés :</span>`
     ];
     if (!shared.length) lines.push("· (aucun détail)");
@@ -1060,7 +1062,7 @@ function paintNetwork(elId, network, color){
   Plotly.newPlot(elId, traces, {
     margin:{t:36,r:72,b:20,l:20},
     paper_bgcolor:"#fbfcfd", plot_bgcolor:"#fbfcfd",
-    title:{ text: modeLab + " · épaisseur∝n partagés · couleur nœud=poids CP", font:{size:12, color:"#5a6570"} },
+    title:{ text: modeLab + " · lien couleur/épaisseur∝n distincts partagés · nœud=poids CP", font:{size:12, color:"#5a6570"} },
     xaxis:{visible:false, zeroline:false, showgrid:false, scaleanchor:"y", scaleratio:1, range:[-10, W+10]},
     yaxis:{visible:false, zeroline:false, showgrid:false, range:[-10, H+10]},
     legend:{orientation:"h", y:1.16, font:{size:10}},
@@ -1764,7 +1766,7 @@ else {
       (edges||[]).forEach(e=>{
         if(!pos[e.source]||!pos[e.target]) return;
         let dx=pos[e.target].x-pos[e.source].x, dy=pos[e.target].y-pos[e.source].y;
-        let dist=Math.sqrt(dx*dx+dy*dy)||0.01; const f=(dist*dist)/k*0.08*Math.min(3,Math.sqrt(e.weight||1));
+        let dist=Math.sqrt(dx*dx+dy*dy)||0.01; const ew=(e.n_shared!=null?e.n_shared:e.weight)||1; const f=(dist*dist)/k*0.08*Math.min(3,Math.sqrt(ew));
         dx=dx/dist*f; dy=dy/dist*f; disp[e.source].x+=dx; disp[e.source].y+=dy; disp[e.target].x-=dx; disp[e.target].y-=dy;
       });
       const cool=0.85*(1-it/(iters||90));
@@ -1831,7 +1833,8 @@ else {
       const shared=e.shared||e.shared_targets||[]; const ns=nShared(e);
       const head=`<b>${esc(e.source_label||"")} — ${esc(e.target_label||"")}</b>`;
       if(e.kind==="rt") return `${head}<br>${esc(modeLab)} · poids <b>${e.weight}</b>`;
-      const lines=[head, `${esc(modeLab)} · <b>${ns}</b> ${esc(edgeFr)} · poids cumulé ${e.weight}`,
+      const lines=[head, `${esc(modeLab)} · <b>${ns}</b> ${esc(edgeFr)}` +
+        ` <span style="opacity:.75">(couleur/épaisseur = n distincts)</span>`,
         `<span style="opacity:.8">Objets MID Ck partagés :</span>`];
       if(!shared.length) lines.push("· (aucun détail)"); else shared.forEach(t=>lines.push("· "+esc(t)));
       if(ns>shared.length) lines.push(`· … +${ns-shared.length} autres`);
@@ -1895,7 +1898,7 @@ else {
     traces.push(mk(nodes.filter(n=>!n.isolated),"Acteurs (poids CP)",.92));
     const isol=nodes.filter(n=>n.isolated); if(isol.length) traces.push(mk(isol,"Sans lien",.4));
     Plotly.newPlot(elId,traces,{margin:{t:36,r:72,b:20,l:20},paper_bgcolor:"#fbfcfd",plot_bgcolor:"#fbfcfd",
-      title:{text:modeLab+" · épaisseur∝n partagés · couleur nœud=poids CP",font:{size:12,color:"#5a6570"}},
+      title:{text:modeLab+" · lien couleur/épaisseur∝n distincts partagés · nœud=poids CP",font:{size:12,color:"#5a6570"}},
       xaxis:{visible:false,zeroline:false,showgrid:false,scaleanchor:"y",scaleratio:1,range:[-10,W+10]},
       yaxis:{visible:false,zeroline:false,showgrid:false,range:[-10,H+10]},
       legend:{orientation:"h",y:1.16,font:{size:10}},hovermode:"closest",dragmode:"pan"},
