@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HEAT · Rapport ubigram_orig</title>
+<script src="plotly.min.js"></script>
+<style>
+:root {
+  --bg:#e8eef2; --card:#fff; --ink:#14212b; --muted:#5a6570; --line:#d0dae3;
+  --accent:#0f6e6a; --accent2:#1f4e79; --soft:#f4f8f9;
+}
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--ink);
+  font:15px/1.5 "Segoe UI",system-ui,sans-serif; }
+.topbar {
+  background:linear-gradient(135deg,#14323f,#0f6e6a); color:#f4faf9;
+  padding:14px 22px; display:flex; gap:12px; flex-wrap:wrap; align-items:center;
+}
+.topbar h1 { margin:0; font:600 18px/1.2 Georgia,serif; flex:1; }
+.topbar a { color:#e8f6f5; font-size:12px; padding:5px 10px; border-radius:999px;
+  border:1px solid rgba(255,255,255,.25); text-decoration:none; }
+.wrap { max-width:1100px; margin:0 auto; padding:18px 16px 50px; }
+.panel { background:var(--card); border:1px solid var(--line); border-radius:12px;
+  padding:14px; margin-bottom:14px; }
+.kpi { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+@media (max-width:800px){ .kpi { grid-template-columns:1fr 1fr; } }
+.kpi .box { background:var(--soft); border:1px solid var(--line); border-radius:10px; padding:10px; }
+.kpi .v { font:650 22px/1.1 Georgia,serif; color:var(--accent); }
+.kpi .l { font-size:11px; color:var(--muted); margin-top:4px; }
+.plot { width:100%; height:380px; }
+.plot.tall { height:480px; }
+.grid2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+@media (max-width:900px){ .grid2 { grid-template-columns:1fr; } }
+.cap { color:var(--muted); font-size:12px; }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th,td { padding:6px 8px; border-bottom:1px solid #eef2f6; text-align:left; }
+th { color:var(--muted); font-size:11px; text-transform:uppercase; }
+.barwrap { background:#edf2f5; border-radius:99px; height:7px; overflow:hidden; }
+.bar { height:100%; background:var(--accent); }
+.chip { display:inline-block; background:#d8efed; color:var(--accent); font-weight:650;
+  font-size:12px; border-radius:999px; padding:3px 10px; }
+.comp { border:1px solid var(--line); border-radius:10px; padding:12px; margin:10px 0; background:var(--soft); }
+.modes-formula {
+  font:700 15px/1.35 ui-monospace,Consolas,monospace;
+  background:#14323f; color:#e8f6f5; padding:10px 14px; border-radius:10px; margin:0 0 10px;
+}
+.modes-formula .op { color:#7eb8b4; margin:0 .15em; }
+a.x-link, [data-x-user], a.web-link {
+  color:var(--accent2) !important; font-weight:700; text-decoration:underline;
+  text-underline-offset:2px; cursor:pointer; pointer-events:auto !important; position:relative; z-index:2;
+}
+a.x-link:hover, [data-x-user]:hover, a.web-link:hover { color:var(--accent) !important; }
+a.web-link { font-weight:600; word-break:break-all; }
+.hbar-html { display:flex; flex-direction:column; gap:5px; padding:4px 2px 8px; max-height:480px; overflow:auto; }
+.hbar-html .row {
+  display:grid; grid-template-columns:minmax(110px,160px) 1fr 52px; gap:8px; align-items:center;
+  font-size:12.5px;
+}
+.hbar-html .bartrack { background:#edf2f5; border-radius:99px; height:8px; overflow:hidden; }
+.hbar-html .barfill { height:100%; border-radius:99px; background:var(--accent); }
+.hbar-html .w { font-variant-numeric:tabular-nums; color:var(--muted); text-align:right; }
+.x-chips { display:flex; flex-wrap:wrap; gap:6px; margin:8px 0 4px; }
+.x-chips a.x-link {
+  display:inline-block; background:#eef6f5; padding:3px 9px; border-radius:999px;
+  font-size:12px; text-decoration:none;
+}
+.x-chips a.x-link:hover { background:#d8efed; }
+.subtabs { display:flex; flex-wrap:wrap; gap:6px; margin:0 0 12px; }
+.subtab {
+  appearance:none; border:1px solid var(--line); background:var(--soft); color:var(--ink);
+  font:650 12px/1 "Segoe UI",system-ui,sans-serif; padding:7px 12px; border-radius:999px; cursor:pointer;
+}
+.subtab.on { background:var(--accent); border-color:var(--accent); color:#fff; }
+.subpanel[hidden] { display:none !important; }
+.comp-diag { display:flex; flex-wrap:wrap; gap:8px; margin:0 0 12px; }
+.comp-graphs { display:grid; grid-template-columns:1fr; gap:12px; }
+@media (min-width:900px){
+  .comp-graphs { grid-template-columns:1fr 1fr; }
+  .comp-graphs .plot-time { grid-column:1 / -1; }
+}
+.actor-metrics-wrap {
+  overflow:auto; max-height:560px; border:1px solid var(--line); border-radius:10px; margin-top:10px;
+}
+table.actor-metrics { width:100%; border-collapse:collapse; font-size:12px; min-width:980px; }
+table.actor-metrics th, table.actor-metrics td {
+  padding:7px 8px; border-bottom:1px solid #eef2f6; text-align:left; vertical-align:top;
+}
+table.actor-metrics th {
+  position:sticky; top:0; background:#f4f8f9; color:var(--muted);
+  font-size:10px; text-transform:uppercase; letter-spacing:.04em; z-index:1;
+}
+table.actor-metrics td.num { font-variant-numeric:tabular-nums; white-space:nowrap; }
+table.actor-metrics .bio {
+  max-width:220px; color:var(--muted); font-size:11.5px; line-height:1.35;
+  display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
+}
+table.actor-metrics .toplist { margin:0; padding:0; list-style:none; line-height:1.35; }
+table.actor-metrics .toplist li { white-space:nowrap; }
+.plot.net-plot { height:520px; border:1px solid var(--line); border-radius:12px; background:#fbfcfd; }
+.net-legend { display:flex; flex-wrap:wrap; gap:10px 16px; margin:0 0 8px; font-size:12px; color:var(--muted); }
+.net-legend .sw { display:inline-block; width:18px; height:3px; border-radius:2px; margin-right:6px; vertical-align:middle; }
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1 id="title">Rapport</h1>
+  <a href="rapport.html">Rapport complet</a>
+  <a href="index.html">Explorateur</a>
+</div>
+<div class="wrap">
+  <section class="panel">
+    <div class="modes-formula" id="modesBox"></div>
+    <p id="blurb" class="cap"></p>
+    <div class="kpi" id="kpi"></div>
+  </section>
+  <section class="panel">
+    <h3>Acteurs révélés (agrégat toutes composantes)</h3>
+    <p class="cap">Comptes à forte masse CP + comportements corpus (cibles RT, hashtags, URLs).</p>
+    <div id="actorsAgg"></div>
+  </section>
+  <section class="panel">
+    <h3>Objets MID agrégés</h3>
+    <div id="midsAgg"></div>
+  </section>
+  <section class="panel">
+    <h3>Temporalité des rangs</h3>
+    <div id="timePlot" class="plot"></div>
+  </section>
+  <section class="panel grid2">
+    <div><h3>PCA user</h3><div id="pcaPlot" class="plot tall"></div></div>
+    <div><h3>Heatmap</h3><div id="heatPlot" class="plot tall"></div></div>
+  </section>
+  <section class="panel">
+    <h3>Gini par rang</h3>
+    <div id="giniPlot" class="plot"></div>
+  </section>
+  <section class="panel">
+    <h3>Composantes — 3 facteurs</h3>
+    <p class="cap">Chaque onglet Ck : profil temporel × top acteurs × top objets.</p>
+    <div class="subtabs" id="compTabs"></div>
+    <div id="comps"></div>
+  </section>
+</div>
+<script src="data.js"></script>
+<script>
+const KEY = "ubigram_orig";
+const DATA = window.HEAT_CP;
+const COLORS = ["#0f6e6a","#1f4e79","#9a3412","#5b4b8a","#2f6b3a","#a15c00","#0e7490","#7f1d1d"];
+const m = DATA.modalities.find(x => x.key === KEY);
+if (!m) document.body.innerHTML = "<p>Modalité absente du payload.</p>";
+else {
+  const fmt = n => Number(n).toLocaleString("fr-FR");
+  const tlab = DATA.meta.time_bin_fr || "temps";
+  const MODES = {
+    uut:`émetteur × cible RT × ${tlab}`, uurlt:`émetteur × URL × ${tlab}`,
+    uudom:`émetteur × domaine × ${tlab}`, uht:`émetteur × hashtag × ${tlab}`,
+    ubigram:`émetteur × n-gramme × ${tlab}`, utrigram:`émetteur × trigramme × ${tlab}`,
+    ubigram_orig:`émetteur × n-gramme (hors RT) × ${tlab}`,
+    utrigram_orig:`émetteur × trigramme (hors RT) × ${tlab}`,
+    ucort:`émetteur × status co-RT × ${tlab}`, ucd:`émetteur × jour création × ${tlab}`,
+    ubio:`émetteur × n-gramme bio × ${tlab}`, ubio_ht:`émetteur × hashtag bio × ${tlab}`,
+    uname:`émetteur × token display name × ${tlab}`,
+    umed_orig:`émetteur × type média (hors RT) × ${tlab}`,
+    umedurl_orig:`émetteur × URL média (hors RT) × ${tlab}`,
+    coupled_cort_ubigram_orig:`(émetteur × n-gramme hors RT × ${tlab})  ∥  (émetteur × status co-RT × ${tlab})`,
+    coupled_cort_utrigram_orig:`(émetteur × trigramme hors RT × ${tlab})  ∥  (émetteur × status co-RT × ${tlab})`,
+    coupled_ucd_uut:`(émetteur × jour création × ${tlab})  ∥  (émetteur × cible RT × ${tlab})`,
+    coupled_ucd_ucort:`(émetteur × jour création × ${tlab})  ∥  (émetteur × status co-RT × ${tlab})`,
+    coupled_ubio_ucort:`(émetteur × n-gramme bio × ${tlab})  ∥  (émetteur × status co-RT × ${tlab})`,
+    coupled_umed_ucort:`(émetteur × type média hors RT × ${tlab})  ∥  (émetteur × status co-RT × ${tlab})`,
+    coupled_umed_ubigram_orig:`(émetteur × type média hors RT × ${tlab})  ∥  (émetteur × n-gramme hors RT × ${tlab})`,
+    coupled_uut_uurlt:`(émetteur × URL × ${tlab})  ∥  (émetteur × cible RT × ${tlab})`,
+    coupled_uut_ubigram:`(émetteur × n-gramme × ${tlab})  ∥  (émetteur × cible RT × ${tlab})`,
+  };
+  function esc(s){
+    return String(s??"").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+  }
+  function xHandle(label){
+    let s = String(label ?? "").trim().replace(/[\u200b-\u200d\ufeff]/g, "");
+    let mm = s.match(/^@([A-Za-z0-9_]{1,50})\b/);
+    if (mm) return mm[1];
+    mm = s.match(/^([A-Za-z0-9_]{1,50})$/);
+    return mm ? mm[1] : null;
+  }
+  function xUrl(handle){ return "https://x.com/" + encodeURIComponent(handle); }
+  function xLink(label){
+    const h = xHandle(label);
+    if (!h) return esc(label);
+    return `<a class="x-link" data-x-user="${esc(h)}" href="${xUrl(h)}" target="_blank" rel="noopener noreferrer">@${esc(h)}</a>`;
+  }
+  function openX(handleOrLabel){
+    const h = xHandle(handleOrLabel) || (String(handleOrLabel||"").match(/^[A-Za-z0-9_]{1,50}$/) ? handleOrLabel : null);
+    if (!h) return false;
+    window.open(xUrl(h), "_blank", "noopener,noreferrer");
+    return true;
+  }
+  function looksLikeWeb(label){
+    const s = String(label ?? "").trim();
+    if (!s || s.startsWith("@") || s.startsWith("#")) return false;
+    if (/^https?:\/\//i.test(s)) return true;
+    return /^[a-z0-9]([a-z0-9.-]*[a-z0-9])?\.[a-z]{2,}([/:?#].*)?$/i.test(s);
+  }
+  function webHref(label){
+    const s = String(label ?? "").trim();
+    if (/^https?:\/\//i.test(s)) return s;
+    return "https://" + s.replace(/^\/+/, "");
+  }
+  function webLink(label){
+    if (!looksLikeWeb(label)) return esc(label);
+    const href = webHref(label);
+    return `<a class="web-link" href="${esc(href)}" target="_blank" rel="noopener noreferrer">${esc(label)}</a>`;
+  }
+  function entityLink(label){
+    if (xHandle(label)) return xLink(label);
+    if (looksLikeWeb(label)) return webLink(label);
+    return esc(label);
+  }
+  const modes = m.modes || MODES[m.key] || m.label || m.key;
+  document.getElementById("title").textContent = modes + " · " + m.key;
+  document.getElementById("modesBox").innerHTML = modes
+    .replace(/×/g,'<span class="op">×</span>').replace(/∥/g,'<span class="op">∥</span>');
+  document.getElementById("blurb").textContent = m.blurb || "";
+  document.getElementById("kpi").innerHTML = [
+    ["Users", fmt(m.n_users)], ["Mid", fmt(m.n_mid)],
+    [tlab.charAt(0).toUpperCase()+tlab.slice(1)+"s", fmt(m.n_days)],
+    ["Rang", "R="+m.rank],
+  ].map(([l,v]) => `<div class="box"><div class="v">${v}</div><div class="l">${l}</div></div>`).join("");
+
+  const agg = m.aggregate || {};
+  document.getElementById("actorsAgg").innerHTML = (agg.top_actors||[]).slice(0,15).map(a => {
+    const rt = (a.top_rt_targets||[]).map(x=>`${xLink(x.label)} (${x.n})`).join(", ") || "—";
+    const ht = (a.top_hashtags||[]).map(x=>`#${esc(x.label)} (${x.n})`).join(", ") || "—";
+    const urls = (a.top_urls||a.top_domains||[]).map(x=>`${webLink(x.id||x.label)} (${x.n})`).join(", ") || "—";
+    return `<div class="comp"><div><span class="chip">${xLink(a.label)}</span> Σw=${a.w_sum} · dom C${a.dom_comp}</div>
+      <p class="cap">tweets ${fmt(a.n_tweets)} · RT ${fmt(a.n_rt)} · propres ${fmt(a.n_orig)} · comps [${(a.in_comps||[]).join(", ")}]</p>
+      <p><b>Cibles RT</b> : ${rt}<br><b>Hashtags</b> : ${ht}<br><b>URLs</b> : ${urls}</p></div>`;
+  }).join("") || "<p class='cap'>Aucun acteur.</p>";
+
+  function tbl(rows, wKey="w"){
+    const mx=Math.max(...(rows||[]).map(r=>r[wKey]!=null?r[wKey]:r.w),1e-9);
+    return `<table><thead><tr><th>Entité</th><th></th><th>poids</th></tr></thead><tbody>${
+      (rows||[]).map(r=>{
+        const wv=r[wKey]!=null?r[wKey]:r.w;
+        const raw=r.label||r.id;
+        const lab=entityLink(looksLikeWeb(r.id)?(r.id||raw):raw);
+        return `<tr><td>${lab}</td><td><div class="barwrap"><div class="bar" style="width:${100*wv/mx}%"></div></div></td><td>${Number(wv).toFixed(3)}</td></tr>`;
+      }).join("")
+    }</tbody></table>`;
+  }
+  document.getElementById("midsAgg").innerHTML =
+    `<h4>${agg.mid_kind||"objets"}</h4>${tbl(agg.top_mids||[], "w_sum")}` +
+    (agg.top_mids2&&agg.top_mids2.length?`<h4>${agg.mid2_kind||"MID₂"}</h4>${tbl(agg.top_mids2,"w_sum")}`:"");
+
+  const traces = (m.components||[]).map((c,i)=>({
+    type:"scatter", mode:"lines+markers", name:"C"+c.id,
+    x:(c.time||[]).map(d=>d.day), y:(c.time||[]).map(d=>d.w),
+    line:{color:COLORS[i%COLORS.length], width:2}
+  }));
+  Plotly.newPlot("timePlot", traces, {
+    margin:{t:10,r:10,b:50,l:40}, paper_bgcolor:"#fff", xaxis:{tickangle:-35},
+    legend:{orientation:"h", y:1.1}
+  }, {responsive:true, displayModeBar:false});
+
+  const pts = m.pca?.points||[];
+  const maxMass = Math.max(...pts.map(p=>p.mass),1e-9);
+  const pcaT=[];
+  for (let r=1;r<=m.rank;r++){
+    const sub=pts.filter(p=>p.dom===r);
+    pcaT.push({type:"scattergl",mode:"markers",name:"C"+r,
+      x:sub.map(p=>p.x),y:sub.map(p=>p.y),text:sub.map(p=>"@"+p.sn),
+      marker:{color:COLORS[(r-1)%COLORS.length], size:sub.map(p=>5+12*Math.sqrt(p.mass/maxMass)), opacity:.75}});
+  }
+  Plotly.newPlot("pcaPlot", pcaT, {margin:{t:10,r:10,b:40,l:40}, paper_bgcolor:"#fff",
+    legend:{orientation:"h", y:1.08}}, {responsive:true, displayModeBar:false});
+
+  const h=m.heatmap||{z:[],user_labels:[]};
+  Plotly.newPlot("heatPlot", [{type:"heatmap", z:h.z, y:h.user_labels,
+    x:Array.from({length:m.rank},(_,i)=>"C"+(i+1)),
+    colorscale:[[0,"#f7fafb"],[0.5,"#7eb8b4"],[1,"#0f6e6a"]]}],
+    {margin:{t:10,r:20,b:40,l:110}, paper_bgcolor:"#fff", yaxis:{autorange:"reversed", tickfont:{size:9}}},
+    {responsive:true, displayModeBar:false});
+
+  Plotly.newPlot("giniPlot", [
+    {type:"bar", name:"users", x:m.components.map(c=>"C"+c.id), y:m.components.map(c=>c.metrics?.gini_users??0), marker:{color:COLORS[0]}},
+    {type:"bar", name:"mid", x:m.components.map(c=>"C"+c.id), y:m.components.map(c=>c.metrics?.gini_mid??0), marker:{color:COLORS[1]}},
+  ], {barmode:"group", margin:{t:10,r:10,b:30,l:40}, paper_bgcolor:"#fff", yaxis:{range:[0,1]},
+    legend:{orientation:"h", y:1.15}}, {responsive:true, displayModeBar:false});
+
+  function hbar(elId, rows, color){
+    const el = document.getElementById(elId);
+    if (!el) return;
+    const slice = (rows||[]).slice(0,20);
+    const vals = slice.map(r => Number(r.w)||0);
+    const maxV = Math.max(...vals, 1e-9);
+    const anyClick = slice.some(r => xHandle(r.label||r.id) || looksLikeWeb(r.label||r.id) || looksLikeWeb(r.id));
+    if (anyClick) {
+      el.style.height = "auto";
+      el.innerHTML = `<div class="hbar-html">${slice.map(r => {
+        const lab = r.label || r.id;
+        const wv = Number(r.w)||0;
+        const pct = Math.round(100 * wv / maxV);
+        const name = entityLink(looksLikeWeb(r.id) && !xHandle(lab) ? (r.id || lab) : lab);
+        return `<div class="row">
+          <div>${name}</div>
+          <div class="bartrack"><div class="barfill" style="width:${pct}%;background:${color||"var(--accent)"}"></div></div>
+          <div class="w">${wv.toFixed(3)}</div>
+        </div>`;
+      }).join("")}</div>`;
+      return;
+    }
+    const labels = slice.map(r => r.label||r.id).reverse();
+    const yvals = vals.slice().reverse();
+    Plotly.newPlot(elId, [{type:"bar",orientation:"h",y:labels,x:yvals,marker:{color},
+      hovertemplate:"%{y}<br>poids %{x:.4f}<extra></extra>"}],
+      {margin:{t:8,r:16,b:36,l:120},paper_bgcolor:"#fff",xaxis:{title:"poids CP",rangemode:"tozero"},
+       yaxis:{tickfont:{size:11}},height:Math.max(320,28*labels.length+60)},
+      {responsive:true,displayModeBar:false});
+  }
+
+  const tabs = document.getElementById("compTabs");
+  const compsRoot = document.getElementById("comps");
+  tabs.innerHTML = m.components.map((c,i)=>
+    `<button type="button" class="subtab${i===0?" on":""}" data-c="${c.id}">C${c.id}</button>`
+  ).join("");
+  compsRoot.innerHTML = m.components.map((c,i)=>{
+    const col = COLORS[i%COLORS.length];
+    const met = c.metrics||{};
+    return `<div class="subpanel" data-c="${c.id}" ${i? "hidden":""}>
+      <div class="comp-diag">
+        <span class="chip" style="background:${col};color:#fff">C${c.id}</span>
+        <span class="chip">${c.label||""}</span>
+        <span class="chip">Pic <b>${met.peak||"—"}</b></span>
+        <span class="chip">Gini users <b>${met.gini_users??"—"}</b></span>
+        <span class="chip">Gini mid <b>${met.gini_mid??"—"}</b></span>
+      </div>
+      <div class="comp-graphs">
+        <div class="plot-time"><h4>Temps</h4><div id="ctime-c${c.id}" class="plot"></div></div>
+        <div><h4>Acteurs</h4><div id="cusers-c${c.id}" class="plot tall"></div></div>
+        <div><h4>${m.mid_label||"Objets"}</h4><div id="cmid-c${c.id}" class="plot tall"></div></div>
+        ${c.mid2&&c.mid2.length?`<div><h4>${m.mid2_label||"MID₂"}</h4><div id="cmid2-c${c.id}" class="plot tall"></div></div>`:""}
+      </div>
+      <h4>Réseau mono-modalité (MID Ck)</h4>
+      <div class="net-legend" id="cnetleg-c${c.id}"></div>
+      <div id="cnet-c${c.id}" class="plot net-plot"></div>
+      <h4>Acteurs — métriques</h4>
+      <div class="actor-metrics-wrap" id="cactors-c${c.id}"></div>
+    </div>`;
+  }).join("");
+
+  function forceLayout(nodes, edges, W, H, iters){
+    const n=nodes.length; if(!n) return {};
+    const pos={}, R=Math.min(W,H)*0.38;
+    nodes.forEach((nd,i)=>{ const a=(2*Math.PI*i)/n-Math.PI/2; pos[nd.id]={x:W/2+R*Math.cos(a),y:H/2+R*Math.sin(a)}; });
+    const k=Math.sqrt((W*H)/Math.max(n,1));
+    for(let it=0;it<(iters||90);it++){
+      const disp={}; nodes.forEach(nd=>disp[nd.id]={x:0,y:0});
+      for(let i=0;i<n;i++) for(let j=i+1;j<n;j++){
+        const a=nodes[i],b=nodes[j]; let dx=pos[a.id].x-pos[b.id].x, dy=pos[a.id].y-pos[b.id].y;
+        let dist=Math.sqrt(dx*dx+dy*dy)||0.01; const f=(k*k)/dist; dx=dx/dist*f; dy=dy/dist*f;
+        disp[a.id].x+=dx; disp[a.id].y+=dy; disp[b.id].x-=dx; disp[b.id].y-=dy;
+      }
+      (edges||[]).forEach(e=>{
+        if(!pos[e.source]||!pos[e.target]) return;
+        let dx=pos[e.target].x-pos[e.source].x, dy=pos[e.target].y-pos[e.source].y;
+        let dist=Math.sqrt(dx*dx+dy*dy)||0.01; const f=(dist*dist)/k*0.08*Math.min(3,Math.sqrt(e.weight||1));
+        dx=dx/dist*f; dy=dy/dist*f; disp[e.source].x+=dx; disp[e.source].y+=dy; disp[e.target].x-=dx; disp[e.target].y-=dy;
+      });
+      const cool=0.85*(1-it/(iters||90));
+      nodes.forEach(nd=>{ let dx=disp[nd.id].x,dy=disp[nd.id].y; const d=Math.sqrt(dx*dx+dy*dy)||1;
+        pos[nd.id].x+=(dx/d)*Math.min(d,8*cool); pos[nd.id].y+=(dy/d)*Math.min(d,8*cool);
+        pos[nd.id].x=Math.max(28,Math.min(W-28,pos[nd.id].x)); pos[nd.id].y=Math.max(28,Math.min(H-28,pos[nd.id].y));
+      });
+    }
+    return pos;
+  }
+  function nodeSizeByDegree(deg, maxDeg){
+    const d=Number(deg)||0, m=Math.max(maxDeg||1,1);
+    return 8+28*Math.sqrt(d/m);
+  }
+  function noverlapPixels(nodes, pos, sizeFn, iters){
+    const ids=nodes.map(n=>n.id); const r={};
+    ids.forEach(id=>{ r[id]=0.55*sizeFn(id)+10; });
+    for(let it=0; it<(iters||90); it++){
+      let moved=false;
+      for(let i=0;i<ids.length;i++) for(let j=i+1;j<ids.length;j++){
+        const a=ids[i], b=ids[j];
+        let dx=pos[a].x-pos[b].x, dy=pos[a].y-pos[b].y, dist=Math.hypot(dx,dy);
+        const minD=r[a]+r[b]; if(dist>=minD) continue;
+        if(dist<1e-6){ const ang=((i*17+j*31)%360)*Math.PI/180; dx=Math.cos(ang); dy=Math.sin(ang); dist=1e-6; }
+        const push=0.5*(minD-dist), ux=dx/dist, uy=dy/dist;
+        pos[a].x+=ux*push; pos[a].y+=uy*push; pos[b].x-=ux*push; pos[b].y-=uy*push; moved=true;
+      }
+      if(!moved) break;
+    }
+    return pos;
+  }
+  function paintNetwork(elId, network, color){
+    const el=document.getElementById(elId); if(!el) return;
+    const net=network||{}, nodes=net.nodes||[], edges=net.edges||[];
+    if(!nodes.length){ el.innerHTML="<p class='cap' style='padding:16px'>Aucun acteur.</p>"; return; }
+    const W=Math.max(720,el.clientWidth||800), H=580;
+    const maxDeg=Math.max(...nodes.map(n=>Number(n.degree)||0),1);
+    let pos={};
+    if(String(net.layout||"").startsWith("pca") || nodes.some(n=>n.x!=null)){
+      const xs=nodes.map(n=>Number(n.x)||0), ys=nodes.map(n=>Number(n.y)||0);
+      const minX=Math.min(...xs), maxX=Math.max(...xs), minY=Math.min(...ys), maxY=Math.max(...ys);
+      const sx=(maxX-minX)||1, sy=(maxY-minY)||1, pad=70;
+      nodes.forEach(n=>{ pos[n.id]={x:pad+((Number(n.x)||0)-minX)/sx*(W-2*pad), y:pad+((Number(n.y)||0)-minY)/sy*(H-2*pad)}; });
+    } else pos=forceLayout(nodes,edges,W,H,120);
+    const sizeOf=id=>{ const n=nodes.find(x=>x.id===id); return nodeSizeByDegree(n&&n.degree,maxDeg); };
+    pos=noverlapPixels(nodes,pos,sizeOf,100);
+    nodes.forEach(n=>{ pos[n.id].x=Math.max(40,Math.min(W-40,pos[n.id].x)); pos[n.id].y=Math.max(40,Math.min(H-40,pos[n.id].y)); });
+    const modeLab=net.mode_label||"lien tenseur", edgeFr=net.edge_fr||"objets partagés";
+    function nShared(e){ return e.n_shared!=null?Number(e.n_shared)||0:(e.shared||e.shared_targets||[]).length; }
+    const shareCounts=edges.map(nShared), maxShare=Math.max(...shareCounts,1);
+    const maxWcp=Math.max(...nodes.map(n=>Number(n.w)||0),1e-9);
+    const CP_SCALE=[[0,"#c8ddda"],[0.35,"#0f6e6a"],[0.65,"#c47a1a"],[1,"#9a3412"]];
+    function lerpColor(t){
+      const x=Math.max(0,Math.min(1,t)); let a=CP_SCALE[0], b=CP_SCALE[CP_SCALE.length-1];
+      for(let i=0;i<CP_SCALE.length-1;i++) if(x>=CP_SCALE[i][0]&&x<=CP_SCALE[i+1][0]){ a=CP_SCALE[i]; b=CP_SCALE[i+1]; break; }
+      const u=(x-a[0])/((b[0]-a[0])||1);
+      const pa=a[1], pb=b[1];
+      const ra=parseInt(pa.slice(1,3),16),ga=parseInt(pa.slice(3,5),16),ba=parseInt(pa.slice(5,7),16);
+      const rb=parseInt(pb.slice(1,3),16),gb=parseInt(pb.slice(3,5),16),bb=parseInt(pb.slice(5,7),16);
+      return `rgb(${Math.round(ra+(rb-ra)*u)},${Math.round(ga+(gb-ga)*u)},${Math.round(ba+(bb-ba)*u)})`;
+    }
+    function edgeWidth(ns){ return 0.9+5.5*Math.sqrt((Number(ns)||0)/maxShare); }
+    function edgeHoverHtml(e){
+      const shared=e.shared||e.shared_targets||[]; const ns=nShared(e);
+      const head=`<b>${esc(e.source_label||"")} — ${esc(e.target_label||"")}</b>`;
+      if(e.kind==="rt") return `${head}<br>${esc(modeLab)} · poids <b>${e.weight}</b>`;
+      const lines=[head, `${esc(modeLab)} · <b>${ns}</b> ${esc(edgeFr)} · poids cumulé ${e.weight}`,
+        `<span style="opacity:.8">Objets MID Ck partagés :</span>`];
+      if(!shared.length) lines.push("· (aucun détail)"); else shared.forEach(t=>lines.push("· "+esc(t)));
+      if(ns>shared.length) lines.push(`· … +${ns-shared.length} autres`);
+      return lines.join("<br>");
+    }
+    const edgeMeta=[];
+    const traces=[];
+    [[0,0.25,"Peu d’éléments partagés"],[0.25,0.5,"Partage moyen"],[0.5,0.75,"Beaucoup d’éléments"],[0.75,1.01,"Partage dominant"]].forEach((st,si)=>{
+      const xs=[],ys=[]; let widthSum=0,nIn=0;
+      edges.forEach((e,ei)=>{ const rel=shareCounts[ei]/maxShare; if(rel<st[0]||rel>=st[1]) return;
+        const a=pos[e.source],b=pos[e.target]; if(!a||!b) return;
+        xs.push(a.x,b.x,null); ys.push(a.y,b.y,null);
+        widthSum+=edgeWidth(shareCounts[ei]); nIn++;
+        edgeMeta.push({a,b,html:edgeHoverHtml(e),ns:shareCounts[ei]});
+      });
+      if(!xs.length) return;
+      traces.push({type:"scatter",mode:"lines",name:st[2],x:xs,y:ys,hoverinfo:"skip",
+        line:{color:lerpColor((st[0]+Math.min(st[1],1))/2),width:widthSum/Math.max(nIn,1)},opacity:0.4+0.15*si});
+    });
+    function bindEdgeHover(gd){
+      if(!gd||!edgeMeta.length) return;
+      let tip=gd.querySelector(".net-edge-tip");
+      if(!tip){
+        tip=document.createElement("div"); tip.className="net-edge-tip"; tip.setAttribute("role","tooltip");
+        Object.assign(tip.style,{position:"absolute",display:"none",zIndex:"40",pointerEvents:"none",maxWidth:"360px",
+          padding:"8px 11px",borderRadius:"8px",background:"#14323f",color:"#f4faf9",fontSize:"12px",lineHeight:"1.4",
+          boxShadow:"0 6px 18px rgba(0,0,0,.28)",border:"1px solid #0f6e6a"});
+        gd.style.position="relative"; gd.appendChild(tip);
+      }
+      const toPix=(x,y)=>{ try{ const xa=gd._fullLayout.xaxis,ya=gd._fullLayout.yaxis; return {x:xa._offset+xa.l2p(x),y:ya._offset+ya.l2p(y)}; }catch(e){ return {x,y}; } };
+      const distSeg=(px,py,ax,ay,bx,by)=>{ const dx=bx-ax,dy=by-ay,L=dx*dx+dy*dy||1; let t=((px-ax)*dx+(py-ay)*dy)/L; t=Math.max(0,Math.min(1,t)); return Math.hypot(px-(ax+t*dx),py-(ay+t*dy)); };
+      const onMove=ev=>{
+        const rect=gd.getBoundingClientRect(); const px=ev.clientX-rect.left, py=ev.clientY-rect.top;
+        for(const n of nodes){ const P=toPix(pos[n.id].x,pos[n.id].y); const r=0.55*nodeSizeByDegree(n.degree,maxDeg)+6;
+          if(Math.hypot(px-P.x,py-P.y)<=r){ tip.style.display="none"; return; } }
+        let best=null,bestD=Infinity;
+        edgeMeta.forEach(ed=>{ const A=toPix(ed.a.x,ed.a.y),B=toPix(ed.b.x,ed.b.y); const d=distSeg(px,py,A.x,A.y,B.x,B.y);
+          const tol=12+0.7*edgeWidth(ed.ns); if(d<=tol&&d<bestD){ bestD=d; best=ed; } });
+        if(!best){ tip.style.display="none"; return; }
+        tip.innerHTML=best.html; tip.style.display="block";
+        const tw=tip.offsetWidth||200, th=tip.offsetHeight||60;
+        let left=px+14, top=py-th-10; if(left+tw>rect.width-8) left=px-tw-10; if(top<4) top=py+14;
+        tip.style.left=Math.max(4,left)+"px"; tip.style.top=Math.max(4,top)+"px";
+      };
+      const hide=()=>{ tip.style.display="none"; };
+      gd.removeEventListener("mousemove",gd._netEdgeMove); gd.removeEventListener("mouseleave",gd._netEdgeLeave);
+      gd._netEdgeMove=onMove; gd._netEdgeLeave=hide; gd.addEventListener("mousemove",onMove); gd.addEventListener("mouseleave",hide);
+    }
+    const degThresh=Math.max(2,Math.ceil(0.35*maxDeg)), wThresh=0.55*maxWcp;
+    const mk=(subset,name,fade)=>({type:"scatter",mode:"markers+text",name,
+      x:subset.map(n=>pos[n.id].x),y:subset.map(n=>pos[n.id].y),
+      text:subset.map(n=>((Number(n.degree)||0)>=degThresh||(Number(n.w)||0)>=wThresh)?n.label:""),
+      textposition:"top center",textfont:{size:10,color:"#14323f"},cliponaxis:false,
+      customdata:subset.map(n=>({label:n.label,w:n.w,degree:n.degree,n_tweets:n.n_tweets,share_rt:n.share_rt})),
+      marker:{size:subset.map(n=>nodeSizeByDegree(n.degree,maxDeg)),
+        color:subset.map(n=>Number(n.w)||0),colorscale:CP_SCALE,cmin:0,cmax:maxWcp,opacity:fade,
+        line:{width:subset.map(n=>(Number(n.w)||0)>=wThresh?2.4:1.1),color:subset.map(n=>(Number(n.w)||0)>=wThresh?"#9a3412":"#ffffff")},
+        colorbar:name==="Acteurs (poids CP)"?{title:{text:"poids CP",font:{size:11}},thickness:12,len:0.45,y:0.35,tickfont:{size:10}}:undefined,
+        showscale:name==="Acteurs (poids CP)"},
+      hovertemplate:"<b>%{customdata.label}</b><br>poids CP <b>%{customdata.w:.3f}</b><br>degré <b>%{customdata.degree}</b><extra></extra>"});
+    traces.push(mk(nodes.filter(n=>!n.isolated),"Acteurs (poids CP)",.92));
+    const isol=nodes.filter(n=>n.isolated); if(isol.length) traces.push(mk(isol,"Sans lien",.4));
+    Plotly.newPlot(elId,traces,{margin:{t:36,r:72,b:20,l:20},paper_bgcolor:"#fbfcfd",plot_bgcolor:"#fbfcfd",
+      title:{text:modeLab+" · épaisseur∝n partagés · couleur nœud=poids CP",font:{size:12,color:"#5a6570"}},
+      xaxis:{visible:false,zeroline:false,showgrid:false,scaleanchor:"y",scaleratio:1,range:[-10,W+10]},
+      yaxis:{visible:false,zeroline:false,showgrid:false,range:[-10,H+10]},
+      legend:{orientation:"h",y:1.16,font:{size:10}},hovermode:"closest",dragmode:"pan"},
+      {responsive:true,displayModeBar:true,displaylogo:false,modeBarButtonsToInclude:["pan2d","zoom2d","autoScale2d","resetScale2d"],scrollZoom:true}).then(()=>{
+      el.style.cursor="grab"; bindEdgeHover(el);
+      el.on("plotly_click",ev=>{ const pt=ev?.points?.[0]; const cd=pt?.customdata; openX((cd&&(cd.label||cd))||pt?.text||""); });
+    });
+    let chips=el.parentElement&&el.parentElement.querySelector(".x-chips-net");
+    if(!chips&&el.parentElement){ chips=document.createElement("div"); chips.className="x-chips x-chips-net"; el.insertAdjacentElement("afterend", chips); }
+    if(chips){ const byDeg=nodes.slice().sort((a,b)=>(b.degree||0)-(a.degree||0)); chips.innerHTML=byDeg.slice(0,24).map(n=>xLink(n.label)).join(""); }
+  }
+
+  function fmtTop(rows, hash=false, web=false){
+    const slice=(rows||[]).slice(0,5);
+    if (!slice.length) return "—";
+    return `<ul class="toplist">${slice.map(x=>{
+      let lab;
+      if (hash) lab = "#"+esc(x.label);
+      else if (web || looksLikeWeb(x.id||x.label)) lab = webLink(x.id||x.label);
+      else lab = entityLink(x.label);
+      return `<li>${lab} <span class="cap">(${x.n})</span></li>`;
+    }).join("")}</ul>`;
+  }
+  function actorMetricsTable(users){
+    return `<table class="actor-metrics"><thead><tr>
+      <th>Acteur</th><th>Pubs</th><th>% RT</th><th>Propres</th><th>Bio</th>
+      <th>Top 5 cibles RT</th><th>Top 5 mentions</th><th>Top 5 hashtags</th><th>Top 5 URLs</th>
+    </tr></thead><tbody>${(users||[]).map(u=>{
+      const ntw=u.n_tweets||0;
+      const share=u.share_rt!=null?u.share_rt:(ntw?(u.n_rt||0)/ntw:0);
+      return `<tr>
+        <td>${xLink(u.label)}<div class="cap">w=${Number(u.w||0).toFixed(3)}</div></td>
+        <td class="num">${fmt(ntw)}</td><td class="num">${Math.round(100*share)}%</td>
+        <td class="num">${fmt(u.n_orig||0)}</td>
+        <td><div class="bio" title="${esc(u.bio||"")}">${esc(u.bio||"—")}</div></td>
+        <td>${fmtTop(u.top_rt_targets)}</td><td>${fmtTop(u.top_mentions)}</td>
+        <td>${fmtTop(u.top_hashtags,true)}</td><td>${fmtTop(u.top_urls||u.top_domains,false,true)}</td></tr>`;
+    }).join("")}</tbody></table>`;
+  }
+
+  m.components.forEach((c,i)=>{
+    const col = COLORS[i%COLORS.length];
+    const traces=[{type:"scatter",mode:"lines+markers",name:"C"+c.id,
+      x:(c.time||[]).map(d=>d.day),y:(c.time||[]).map(d=>d.w),
+      line:{color:col,width:2.5},marker:{size:6}}];
+    if (c.time2) traces.push({type:"scatter",mode:"lines+markers",name:"couche 2",
+      x:c.time2.map(d=>d.day),y:c.time2.map(d=>d.w),
+      line:{color:col,width:1.8,dash:"dot"},marker:{size:5}});
+    Plotly.newPlot("ctime-c"+c.id, traces, {
+      margin:{t:10,r:10,b:50,l:44},paper_bgcolor:"#fff",
+      xaxis:{tickangle:-35},yaxis:{title:"poids"},showlegend:traces.length>1
+    }, {responsive:true,displayModeBar:false});
+    hbar("cusers-c"+c.id, c.users, col);
+    hbar("cmid-c"+c.id, c.mid, col);
+    if (c.mid2&&c.mid2.length) hbar("cmid2-c"+c.id, c.mid2, COLORS[(i+1)%COLORS.length]);
+    const box=document.getElementById("cactors-c"+c.id);
+    if (box) box.innerHTML = actorMetricsTable(c.users);
+    const net=c.network||{};
+    const leg=document.getElementById("cnetleg-c"+c.id);
+    if (leg) leg.innerHTML=`<span><span class="sw" style="background:${col}"></span>${esc(net.mode_label||"lien tenseur")}</span>
+      <span class="cap">AF 2D · ${net.n_edges||0} liens · ${net.n_isolated||0} isolés / ${net.n_nodes||0}</span>
+      <span class="cap">molette=zoom · glisser=pan</span>`;
+    paintNetwork("cnet-c"+c.id, net, col);
+  });
+
+  tabs.querySelectorAll(".subtab").forEach(btn => {
+    btn.onclick = () => {
+      tabs.querySelectorAll(".subtab").forEach(b=>b.classList.toggle("on", b===btn));
+      compsRoot.querySelectorAll(".subpanel").forEach(p => {
+        p.hidden = String(p.dataset.c) !== String(btn.dataset.c);
+      });
+      requestAnimationFrame(() => {
+        ["ctime","cusers","cmid","cmid2"].forEach(prefix => {
+          const el = document.getElementById(prefix+"-c"+btn.dataset.c);
+          if (el) try { Plotly.Plots.resize(el); } catch(e) {}
+        });
+      });
+    };
+  });
+}
+</script>
+</body>
+</html>

@@ -18,3 +18,8 @@ Ancre CARDS « Limites » :
 https://mshubeco.github.io/heat-flux-continu/synthese/intercomm_p1_p2ext/#cards-limites  
 Fichier : `synthese/intercomm_p1_p2ext/index.html`
 
+**Explorateur CP multi-tenseurs (P1 jour) :**  
+https://mshubeco.github.io/heat-flux-continu/cp-explorer/  
+Index : https://mshubeco.github.io/heat-flux-continu/cp-explorer/rapports_index.html  
+Rapport : https://mshubeco.github.io/heat-flux-continu/cp-explorer/rapport.html
+

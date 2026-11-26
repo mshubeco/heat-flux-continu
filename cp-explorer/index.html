@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HEAT · CP multi-tenseurs</title>
+<script src="plotly.min.js"></script>
+<style>
+  :root {
+    --bg:#eef1f4; --card:#fff; --ink:#15202b; --muted:#5a6570; --line:#d5dde5;
+    --accent:#0f6e6a; --accent-soft:#d8efed; --rt:#1f4e79; --chip:#f4f7fa; --soft:#f7fafb;
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; color:var(--ink); background:var(--bg);
+    font:15px/1.45 "Segoe UI","IBM Plex Sans",system-ui,sans-serif; }
+  header {
+    background:linear-gradient(135deg,#14323f 0%,#0f6e6a 55%,#1f4e79 100%);
+    color:#f4faf9; padding:22px 28px 18px;
+  }
+  header h1 { margin:0 0 6px; font:600 26px/1.2 Georgia,"Source Serif 4",serif; letter-spacing:-.02em; }
+  header .sub { margin:0; opacity:.88; max-width:920px; font-size:14px; }
+  header .meta { margin-top:10px; display:flex; flex-wrap:wrap; gap:8px; }
+  .pill { display:inline-flex; gap:6px; align-items:center; background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.22); border-radius:999px; padding:4px 10px; font-size:12px; }
+  .layout { display:grid; grid-template-columns:280px minmax(0,1fr); min-height:calc(100vh - 120px); }
+  nav { background:var(--card); border-right:1px solid var(--line); padding:16px 14px;
+    position:sticky; top:0; align-self:start; max-height:100vh; overflow:auto; }
+  nav h2 { margin:0 0 10px; font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); }
+  .mod { width:100%; text-align:left; border:1px solid var(--line); background:var(--chip);
+    border-radius:10px; padding:10px 12px; margin-bottom:8px; cursor:pointer; color:inherit; font:inherit; }
+  .mod:hover { border-color:#9bb0c0; }
+  .mod.on { border-color:var(--accent); background:var(--accent-soft); box-shadow:inset 3px 0 0 var(--accent); }
+  .mod b { display:block; font-size:13.5px; margin-bottom:2px; }
+  .mod span { display:block; color:var(--muted); font-size:12px; }
+  .mod .sc { color:var(--muted); font-weight:500; font-size:11px; margin-top:4px; }
+  .actor-card { border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin:8px 0; background:var(--soft); }
+  .actor-card h4 { margin:0 0 4px; font-size:14px; }
+  .actor-card .meta { font-size:12px; color:var(--muted); margin-bottom:6px; }
+  .actor-card ul { margin:4px 0 0; padding-left:1.1em; font-size:12.5px; }
+  .actor-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  @media (max-width:900px){ .actor-grid { grid-template-columns:1fr; } }
+  main { padding:16px 18px 40px; }
+  .toolbar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; background:var(--card);
+    border:1px solid var(--line); border-radius:12px; padding:10px 12px; margin-bottom:14px; }
+  .tabs { display:flex; gap:6px; flex-wrap:wrap; }
+  .tab { border:1px solid var(--line); background:#fff; border-radius:8px; padding:7px 12px;
+    cursor:pointer; font:inherit; color:inherit; }
+  .tab.on { background:var(--ink); color:#fff; border-color:var(--ink); }
+  .comp-pills { display:flex; flex-wrap:wrap; gap:6px; margin-left:auto; align-items:center; }
+  .hint { font-size:11px; color:var(--muted); margin-right:4px; }
+  .cpill { border:1px solid var(--line); background:#fff; border-radius:999px; padding:5px 11px;
+    cursor:pointer; font:600 12px/1 inherit; color:var(--muted); }
+  .cpill.on { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .cpill.dim { opacity:.45; }
+  .blurb { background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:12px 14px; margin-bottom:14px; color:var(--muted); font-size:13.5px; }
+  .panel { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:8px; margin-bottom:14px; }
+  .panel.pad { padding:12px 14px; }
+  .grid2 { display:grid; grid-template-columns:1.1fr .9fr; gap:14px; }
+  @media (max-width:1100px) {
+    .layout { grid-template-columns:1fr; }
+    .grid2 { grid-template-columns:1fr; }
+    nav { position:relative; max-height:none; }
+  }
+  .plot { width:100%; height:420px; }
+  .plot.tall { height:540px; }
+  .plot.heat { height:560px; }
+  .cap { color:var(--muted); font-size:12px; padding:4px 8px 8px; }
+  .diag { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px; }
+  .diag .chip { background:var(--soft); border:1px solid var(--line); border-radius:8px;
+    padding:6px 10px; font-size:12.5px; }
+  .diag .chip b { color:var(--ink); }
+  .diag .chip em { color:var(--accent); font-style:normal; font-weight:650; }
+  table.tops, table.sc { width:100%; border-collapse:collapse; font-size:13px; }
+  table.tops th, table.sc th { text-align:left; color:var(--muted); font-weight:600; font-size:11px;
+    text-transform:uppercase; letter-spacing:.06em; padding:6px 8px; border-bottom:1px solid var(--line); }
+  table.tops td, table.sc td { padding:6px 8px; border-bottom:1px solid #eef2f6; vertical-align:top; }
+  table.tops tr:hover td, table.sc tr:hover td { background:#f7fafb; }
+  .barwrap { background:#edf2f5; border-radius:99px; height:8px; overflow:hidden; min-width:70px; }
+  .bar { height:100%; background:var(--accent); border-radius:99px; }
+  .wnum { font-variant-numeric:tabular-nums; color:var(--muted); width:54px; text-align:right; }
+  a { color:var(--rt); }
+  a.x-link {
+    color:var(--accent2, #1f4e79); font-weight:700; text-decoration:none;
+    border-bottom:1px solid transparent;
+  }
+  a.x-link:hover { border-bottom-color:currentColor; }
+  .pca-title { font:600 14px/1.3 inherit; padding:8px 10px 0; }
+  .muted { color:var(--muted); font-size:12px; }
+  .card { border:1px solid var(--line); border-radius:10px; padding:12px; margin:8px 0; background:var(--soft); }
+  .card h3 { margin:0 0 6px; font-size:15px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>HEAT canicule — CP multi-tenseurs</h1>
+  <p class="sub">Acteurs et objets révélés par chaque tenseur (agrégat multi-composantes + comportements corpus).
+     <a href="rapport.html" style="color:#d8efed;font-weight:650">Rapport HTML complet</a>
+     · <a href="rapports_index.html" style="color:#d8efed">Index des rapports</a></p>
+  <div class="meta" id="meta"></div>
+</header>
+<div class="layout">
+  <nav>
+    <h2>Modalités</h2>
+    <div id="mods"></div>
+  </nav>
+  <main>
+    <div class="toolbar">
+      <div class="tabs" id="tabs">
+        <button class="tab on" data-view="actors">Acteurs révélés</button>
+        <button class="tab" data-view="pca">PCA composantes</button>
+        <button class="tab" data-view="comp">Fiche composante</button>
+        <button class="tab" data-view="heat">Heatmap user × rang</button>
+      </div>
+      <div class="comp-pills" id="compPills"></div>
+    </div>
+    <div class="blurb" id="blurb"></div>
+    <section id="view-actors">
+      <div class="panel pad">
+        <p class="muted" style="margin-top:0">Agrégat multi-composantes : comptes mis en avant (somme des poids CP),
+           avec cibles RT / hashtags / domaines observés dans le corpus, et objets MID agrégés.</p>
+        <div class="actor-grid">
+          <div>
+            <h3 style="margin:0 0 8px;font-size:14px">Top comptes révélés</h3>
+            <div id="aggActors"></div>
+          </div>
+          <div>
+            <h3 style="margin:0 0 8px;font-size:14px" id="aggMidTitle">Top objets (MID)</h3>
+            <table class="tops" id="aggMidTable"><thead><tr><th>Objet</th><th></th><th class="wnum">Σ poids</th></tr></thead><tbody></tbody></table>
+            <div id="aggMid2Wrap" hidden>
+              <h3 style="margin:14px 0 8px;font-size:14px" id="aggMid2Title">Top MID₂</h3>
+              <table class="tops" id="aggMid2Table"><thead><tr><th>Objet</th><th></th><th class="wnum">Σ poids</th></tr></thead><tbody></tbody></table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="view-pca" hidden>
+      <div class="panel">
+        <div class="pca-title" id="pcaTitle"></div>
+        <div id="pcaPlot" class="plot tall"></div>
+        <p class="cap" id="pcaCap"></p>
+      </div>
+    </section>
+    <section id="view-comp" hidden>
+      <div class="panel pad" id="compDiag"></div>
+      <div class="grid2">
+        <div class="panel"><div id="timePlot" class="plot"></div><p class="cap">Temporalité du rang</p></div>
+        <div class="panel pad" style="overflow:auto; max-height:520px">
+          <table class="tops" id="userTable"><thead><tr><th>Acteurs</th><th></th><th class="wnum">poids</th></tr></thead><tbody></tbody></table>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="panel pad" style="overflow:auto; max-height:420px">
+          <table class="tops" id="midTable"><thead><tr><th id="midHead">Objets</th><th></th><th class="wnum">poids</th></tr></thead><tbody></tbody></table>
+        </div>
+        <div class="panel pad" style="overflow:auto; max-height:420px" id="mid2Wrap" hidden>
+          <table class="tops" id="mid2Table"><thead><tr><th id="mid2Head">Cibles</th><th></th><th class="wnum">poids</th></tr></thead><tbody></tbody></table>
+        </div>
+      </div>
+    </section>
+    <section id="view-heat" hidden>
+      <div class="panel"><div id="heatPlot" class="plot heat"></div>
+        <p class="cap">Users triés par masse — colonnes = rangs</p></div>
+    </section>
+  </main>
+</div>
+<script src="data.js"></script>
+<script>
+const DATA = window.HEAT_CP;
+const COLORS = ["#0f6e6a","#1f4e79","#9a3412","#5b4b8a","#2f6b3a","#a15c00","#0e7490","#7f1d1d"];
+let modKey = DATA.modalities[0].key;
+let view = "actors";
+let comp = 1;
+let isolate = false;
+
+function mod(){ return DATA.modalities.find(m => m.key === modKey); }
+function fmt(n){ return Number(n).toLocaleString("fr-FR"); }
+
+function tensorModes(m){
+  if (m && m.modes) return m.modes;
+  const t = (DATA.meta && (DATA.meta.time_bin_fr || DATA.meta.time_bin)) || "temps";
+  const key = typeof m === "string" ? m : (m && m.key) || "";
+  const map = {
+    uut:`émetteur × cible RT × ${t}`, uurlt:`émetteur × URL × ${t}`,
+    uudom:`émetteur × domaine × ${t}`, uht:`émetteur × hashtag × ${t}`,
+    ubigram:`émetteur × n-gramme × ${t}`, utrigram:`émetteur × trigramme × ${t}`,
+    ubigram_orig:`émetteur × n-gramme (hors RT) × ${t}`,
+    utrigram_orig:`émetteur × trigramme (hors RT) × ${t}`,
+    ucort:`émetteur × status co-RT × ${t}`, ucd:`émetteur × jour création × ${t}`,
+    ubio:`émetteur × n-gramme bio × ${t}`, ubio_ht:`émetteur × hashtag bio × ${t}`,
+    uname:`émetteur × token display name × ${t}`,
+    umed_orig:`émetteur × type média (hors RT) × ${t}`,
+    umedurl_orig:`émetteur × URL média (hors RT) × ${t}`,
+  };
+  if (key.startsWith("coupled_") && !map[key]) {
+    return m?.label || key;
+  }
+  return map[key] || m?.label || key;
+}
+
+function renderMods(){
+  const box = document.getElementById("mods");
+  box.innerHTML = DATA.modalities.map(m => {
+    const top = (m.aggregate?.top_actors||[])[0];
+    const modes = tensorModes(m);
+    return `
+    <button class="mod ${m.key===modKey?"on":""}" data-k="${m.key}" title="${modes}">
+      <b>${modes}</b>
+      <span><code>${m.key}</code> · ${fmt(m.n_users)} users · mid ${fmt(m.n_mid)} · R=${m.rank}</span>
+      <div class="sc">top: ${top?top.label:"—"}</div>
+    </button>`;
+  }).join("");
+  box.querySelectorAll(".mod").forEach(b => b.onclick = () => {
+    modKey=b.dataset.k; comp=1; isolate=false; paint();
+  });
+}
+
+function renderMeta(){
+  const m = DATA.meta;
+  document.getElementById("meta").innerHTML = [
+    ["Fenêtre", m.window], ["Corpus", m.corpus], ["Pool", m.n_pool + " comptes"],
+    ["Temps", m.time_bin_fr || m.time_bin || "—"],
+    ["Rang", "R = " + m.rank], ["Lemmes", m.lemma], ["Algo", m.algo],
+  ].map(([k,v]) => `<span class="pill"><strong>${k}</strong> ${v}</span>`).join("");
+}
+
+function renderPills(){
+  const m = mod();
+  const box = document.getElementById("compPills");
+  if (view === "actors") { box.innerHTML = ""; return; }
+  box.innerHTML = `<span class="hint">${isolate ? "isolé" : "clic = highlight · double-clic = isoler"}</span>` +
+    Array.from({length:m.rank}, (_,i)=>i+1).map(r => {
+      const on = r===comp ? "on" : (isolate ? "dim" : "");
+      const lab = m.components[r-1]?.label ? ` title="${m.components[r-1].label.replace(/"/g,"&quot;")}"` : "";
+      return `<button class="cpill ${on}" data-r="${r}"${lab}>C${r}</button>`;
+    }).join("");
+  box.querySelectorAll(".cpill").forEach(b => {
+    b.onclick = () => { comp=+b.dataset.r; isolate=false; paint(); };
+    b.ondblclick = (e) => { e.preventDefault(); comp=+b.dataset.r; isolate=true; paint(); };
+  });
+}
+
+function xHandle(label){
+  const m = String(label??"").trim().match(/^@([A-Za-z0-9_]{1,50})$/);
+  return m ? m[1] : null;
+}
+function xLink(label){
+  const h = xHandle(label);
+  if (!h) return String(label??"");
+  return `<a class="x-link" href="https://x.com/${encodeURIComponent(h)}" target="_blank" rel="noopener noreferrer">@${h}</a>`;
+}
+
+function fillTable(tbody, rows, maxW, wKey="w"){
+  tbody.innerHTML = (rows||[]).map(r => {
+    const lab = r.label || r.id;
+    const wv = r[wKey] != null ? r[wKey] : r.w;
+    const pct = maxW > 0 ? (100*wv/maxW) : 0;
+    let link;
+    if (xHandle(lab)) link = xLink(lab);
+    else if (/[./]/.test(String(r.id||"")) && !String(lab).startsWith("@"))
+      link = `<a href="https://${String(r.id).replace(/^https?:\/\//,"")}" target="_blank" rel="noopener">${lab}</a>`;
+    else link = lab;
+    return `<tr><td>${link}</td><td><div class="barwrap"><div class="bar" style="width:${pct}%"></div></div></td><td class="wnum">${Number(wv).toFixed(3)}</td></tr>`;
+  }).join("");
+}
+
+function paintActors(){
+  const m = mod();
+  const agg = m.aggregate || {};
+  const actors = agg.top_actors || [];
+  document.getElementById("aggActors").innerHTML = actors.slice(0,20).map(a => {
+    const comps = (a.in_comps||[]).join(", ");
+    const rt = (a.top_rt_targets||[]).map(x=>`${xLink(x.label)} (${x.n})`).join(", ") || "—";
+    const ht = (a.top_hashtags||[]).map(x=>`#${x.label} (${x.n})`).join(", ") || "—";
+    const urls = (a.top_urls||a.top_domains||[]).map(x=>{
+      const id = String(x.id||x.label||"");
+      const href = id.match(/^https?:\/\//i) ? id : ("https://"+id.replace(/^\/+/,""));
+      return `<a href="${href}" target="_blank" rel="noopener noreferrer">${x.label}</a> (${x.n})`;
+    }).join(", ") || "—";
+    return `<div class="actor-card">
+      <h4>${xLink(a.label)} <span class="muted">Σw=${a.w_sum}</span></h4>
+      <div class="meta">composante dominante C${a.dom_comp} · vu dans C[${comps}] ·
+        tweets ${fmt(a.n_tweets)} (RT ${fmt(a.n_rt)} · propres ${fmt(a.n_orig)})</div>
+      <ul>
+        <li><b>Cibles RT</b> : ${rt}</li>
+        <li><b>Hashtags</b> : ${ht}</li>
+        <li><b>URLs</b> : ${urls}</li>
+      </ul>
+    </div>`;
+  }).join("") || "<p class='muted'>Aucun acteur.</p>";
+
+  document.getElementById("aggMidTitle").textContent = "Top " + (agg.mid_kind || "objets") + " (Σ composantes)";
+  const mids = agg.top_mids || [];
+  const mmax = Math.max(...mids.map(x=>x.w_sum), 1e-9);
+  fillTable(document.querySelector("#aggMidTable tbody"), mids, mmax, "w_sum");
+  const wrap = document.getElementById("aggMid2Wrap");
+  if (agg.top_mids2 && agg.top_mids2.length) {
+    wrap.hidden = false;
+    document.getElementById("aggMid2Title").textContent = "Top " + (agg.mid2_kind || "MID₂");
+    const m2max = Math.max(...agg.top_mids2.map(x=>x.w_sum), 1e-9);
+    fillTable(document.querySelector("#aggMid2Table tbody"), agg.top_mids2, m2max, "w_sum");
+  } else wrap.hidden = true;
+}
+
+function paintPca(){
+  const m = mod();
+  const pts = m.pca.points;
+  const maxMass = Math.max(...pts.map(p => p.mass), 1e-9);
+  const labelSet = new Set(m.pca.label_ids || []);
+  const traces = [];
+  for (let r=1; r<=m.rank; r++){
+    const active = !isolate || r===comp;
+    const hi = r===comp;
+    const sub = pts.filter(p => p.dom === r);
+    traces.push({
+      type: "scattergl", mode: "markers", name: "C"+r,
+      x: sub.map(p=>p.x), y: sub.map(p=>p.y),
+      customdata: sub.map(p => ({ sn:p.sn, dom:p.dom, dom2:p.dom2, mass:p.mass,
+        w:(p.weights||[]).map((x,i)=>`C${i+1}=${x}`).join(" · ") })),
+      marker: {
+        color: COLORS[(r-1)%COLORS.length],
+        size: sub.map(p => 5 + 14 * Math.sqrt(p.mass / maxMass)),
+        opacity: !active ? 0.08 : (hi ? 0.85 : 0.28),
+        line: { width: hi ? 0.6 : 0, color: "#fff" }
+      },
+      hovertemplate: "@%{customdata.sn}<br>dominant C%{customdata.dom}<br>2ᵉ C%{customdata.dom2}<br>mass=%{customdata.mass}<br>%{customdata.w}<extra></extra>"
+    });
+  }
+  const ann = pts.filter(p => labelSet.has(p.id) && p.dom===comp).slice(0,8).map(p => ({
+    x:p.x, y:p.y, text:"@"+p.sn, showarrow:false, xanchor:"left", xshift:6,
+    font:{size:11, color:"#15202b"}
+  }));
+  const ev = m.pca.explained || [];
+  document.getElementById("pcaTitle").textContent =
+    `PCA des facteurs user — PC1 ${((ev[0]||0)*100).toFixed(1)}% · PC2 ${((ev[1]||0)*100).toFixed(1)}%`;
+  Plotly.newPlot("pcaPlot", traces, {
+    margin:{t:20,r:20,b:40,l:40}, paper_bgcolor:"#fff", plot_bgcolor:"#fff",
+    xaxis:{title:"PC1", zeroline:true, gridcolor:"#eef2f6"},
+    yaxis:{title:"PC2", zeroline:true, gridcolor:"#eef2f6"},
+    legend:{orientation:"h", y:1.08}, annotations:ann
+  }, {responsive:true, displayModeBar:false});
+  document.getElementById("pcaCap").textContent =
+    `Couleur = composante dominante · taille = masse |C| · highlight C${comp}`;
+}
+
+function paintComp(){
+  const m = mod();
+  const c = m.components[comp-1];
+  if (!c) return;
+  const met = c.metrics || {};
+  const behave = (c.users||[]).slice(0,5).map(u => {
+    const rt = (u.top_rt_targets||[]).slice(0,3).map(x=>xLink(x.label)).join(", ") || "—";
+    const ht = (u.top_hashtags||[]).slice(0,3).map(x=>"#"+x.label).join(", ") || "—";
+    return `<div class="chip">${xLink(u.label)} RT→ ${rt} · ${ht}</div>`;
+  }).join("");
+  document.getElementById("compDiag").innerHTML = `
+    <div class="diag">
+      <div class="chip"><b>C${c.id}</b> <em>${c.label}</em></div>
+      <div class="chip">Pic <b>${met.peak||"—"}</b></div>
+      <div class="chip">Gini mid <b>${met.gini_mid??"—"}</b></div>
+      <div class="chip">Gini users <b>${met.gini_users??"—"}</b></div>
+      ${met.lag_days!=null?`<div class="chip">Lag <b>${met.lag_days} ${met.lag_unit||"j"}</b></div>`:""}
+      ${behave}
+    </div>`;
+  const t1 = { type:"scatter", mode:"lines+markers", name:"couche 1",
+    x:(c.time||[]).map(d=>d.day), y:(c.time||[]).map(d=>d.w),
+    line:{color:COLORS[0], width:2}, marker:{size:6} };
+  const traces = [t1];
+  if (c.time2) traces.push({
+    type:"scatter", mode:"lines+markers", name:"couche 2 (RT)",
+    x:c.time2.map(d=>d.day), y:c.time2.map(d=>d.w),
+    line:{color:COLORS[1], width:2, dash:"dot"}, marker:{size:6}
+  });
+  Plotly.newPlot("timePlot", traces, {
+    margin:{t:10,r:10,b:40,l:40}, paper_bgcolor:"#fff", plot_bgcolor:"#fff",
+    xaxis:{tickangle:-35}, yaxis:{title:"poids"}, showlegend:traces.length>1
+  }, {responsive:true, displayModeBar:false});
+  const umax = Math.max(...(c.users||[]).map(u=>u.w), 1e-9);
+  fillTable(document.querySelector("#userTable tbody"), c.users, umax);
+  document.getElementById("midHead").textContent = m.mid_label || "Objets";
+  const mmax = Math.max(...(c.mid||[]).map(u=>u.w), 1e-9);
+  fillTable(document.querySelector("#midTable tbody"), c.mid, mmax);
+  const wrap = document.getElementById("mid2Wrap");
+  if (c.mid2 && c.mid2.length) {
+    wrap.hidden = false;
+    document.getElementById("mid2Head").textContent = m.mid2_label || "Couche 2";
+    const m2max = Math.max(...c.mid2.map(u=>u.w), 1e-9);
+    fillTable(document.querySelector("#mid2Table tbody"), c.mid2, m2max);
+  } else wrap.hidden = true;
+}
+
+function paintHeat(){
+  const m = mod();
+  const h = m.heatmap;
+  Plotly.newPlot("heatPlot", [{
+    type:"heatmap", z:h.z, y:h.user_labels,
+    x: Array.from({length:m.rank},(_,i)=>"C"+(i+1)),
+    colorscale:[[0,"#f7fafb"],[0.5,"#7eb8b4"],[1,"#0f6e6a"]],
+    hovertemplate:"%{y} · %{x} = %{z}<extra></extra>"
+  }], {
+    margin:{t:10,r:20,b:40,l:120}, paper_bgcolor:"#fff",
+    yaxis:{autorange:"reversed", tickfont:{size:10}}
+  }, {responsive:true, displayModeBar:false});
+}
+
+function paint(){
+  renderMods(); renderMeta(); renderPills();
+  document.getElementById("blurb").textContent = mod().blurb;
+  document.querySelectorAll(".tab").forEach(t => t.classList.toggle("on", t.dataset.view===view));
+  ["actors","pca","comp","heat"].forEach(v => {
+    document.getElementById("view-"+v).hidden = (v !== view);
+  });
+  if (view==="actors") paintActors();
+  if (view==="pca") paintPca();
+  if (view==="comp") paintComp();
+  if (view==="heat") paintHeat();
+}
+
+document.getElementById("tabs").onclick = (e) => {
+  const b = e.target.closest(".tab"); if (!b) return; view=b.dataset.view; paint();
+};
+paint();
+</script>
+</body>
+</html>
