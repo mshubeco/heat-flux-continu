@@ -125,6 +125,18 @@ table.actor-metrics .bio {
 }
 table.actor-metrics .toplist { margin:0; padding:0; list-style:none; line-height:1.35; }
 table.actor-metrics .toplist li { white-space:nowrap; }
+.behavior-tops {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
+  margin:10px 0 4px; padding:12px; background:var(--soft);
+  border:1px solid var(--line); border-radius:12px;
+}
+@media (max-width:980px){ .behavior-tops { grid-template-columns:1fr 1fr; } }
+.behavior-tops .col h5 {
+  margin:0 0 6px; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted);
+}
+.behavior-tops ul { margin:0; padding:0; list-style:none; font-size:12.5px; line-height:1.4; }
+.behavior-tops li { margin:0 0 3px; }
+.behavior-tops .meta { grid-column:1/-1; font-size:12px; color:var(--muted); margin:0; }
 .plot.net-plot { height:520px; border:1px solid var(--line); border-radius:12px; background:#fbfcfd; }
 .net-legend {
   display:flex; flex-wrap:wrap; gap:10px 16px; align-items:center;
@@ -676,7 +688,7 @@ function buildModSections(){
             <div id="ctime-${m.key}-c${c.id}" class="plot"></div>
           </div>
           <div>
-            <h4>Acteurs — top poids C${c.id}</h4>
+            <h4>Acteurs — même ordre de grandeur que le 1er (C${c.id})</h4>
             <div id="cusers-${m.key}-c${c.id}" class="plot tall"></div>
           </div>
           <div>
@@ -692,8 +704,11 @@ function buildModSections(){
         <p class="cap">Une seule interaction liée au tenseur sur les MID Ck · survol d’un lien = objets partagés · AF 2D + noverlap · taille=degré · zoom/pan · clic nœud → X.</p>
         <div class="net-legend" id="cnetleg-${m.key}-c${c.id}"></div>
         <div id="cnet-${m.key}-c${c.id}" class="plot net-plot"></div>
+        <h4>Comportements agrégés des acteurs C${c.id}</h4>
+        <p class="cap">Tops cibles RT / mentions / hashtags / URLs cumulés sur les acteurs du même ordre de grandeur que le 1er poids CP.</p>
+        <div id="cbeh-${m.key}-c${c.id}"></div>
         <h4>Acteurs C${c.id} — métriques caractéristiques</h4>
-        <p class="cap">Top poids CP · publications fenêtre · part RT · bio · tops cibles / mentions / hashtags / URLs.</p>
+        <p class="cap">Filtre w ≥ 10<sup>⌊log₁₀(w₁)</sup> · publications fenêtre · part RT · bio · tops individuels.</p>
         <div class="actor-metrics-wrap" id="cactors-${m.key}-c${c.id}"></div>
       </div>`).join("")}
       <div class="subpanel" data-sub="diag" hidden>
@@ -1096,6 +1111,31 @@ function paintNetwork(elId, network, color){
   }
 }
 
+function fmtTopList(rows, opts={}){
+  const slice = (rows||[]).slice(0, opts.n || 10);
+  if (!slice.length) return "<li class='cap'>—</li>";
+  return slice.map(x => {
+    let lab;
+    if (opts.hash) lab = "#"+esc(x.label);
+    else if (opts.web || looksLikeWeb(x.id||x.label)) lab = webLink(x.id||x.label);
+    else lab = entityLink(x.label);
+    return `<li>${lab} <span class="cap">(${x.n})</span></li>`;
+  }).join("");
+}
+
+function behaviorTopsPanel(bt){
+  if (!bt) return "<p class='cap'>Pas de tops comportementaux.</p>";
+  const thr = bt.magnitude_threshold != null ? Number(bt.magnitude_threshold).toPrecision(3) : "—";
+  const w1 = bt.w_top != null ? Number(bt.w_top).toFixed(3) : "—";
+  return `<div class="behavior-tops">
+    <p class="meta"><b>${bt.n_actors||0}</b> acteur(s) · w₁=${w1} · seuil ordre de grandeur w≥${thr}</p>
+    <div class="col"><h5>Top cibles RT</h5><ul>${fmtTopList(bt.top_rt_targets)}</ul></div>
+    <div class="col"><h5>Top mentions</h5><ul>${fmtTopList(bt.top_mentions)}</ul></div>
+    <div class="col"><h5>Top hashtags</h5><ul>${fmtTopList(bt.top_hashtags, {hash:true})}</ul></div>
+    <div class="col"><h5>Top URLs</h5><ul>${fmtTopList(bt.top_urls, {web:true})}</ul></div>
+  </div>`;
+}
+
 function actorMetricsTable(users){
   const rows = (users||[]).map(u => {
     const ntw = u.n_tweets||0;
@@ -1372,6 +1412,8 @@ function paintMod(key){
         hbarPlot(`cmid2-${m.key}-c${c.id}`, c.mid2, COLORS[(i+1)%COLORS.length]);
       } else wrap2.hidden = true;
     }
+    const behBox = document.getElementById(`cbeh-${m.key}-c${c.id}`);
+    if (behBox) behBox.innerHTML = behaviorTopsPanel(c.behavior_tops);
     const actorsBox = document.getElementById(`cactors-${m.key}-c${c.id}`);
     if (actorsBox) actorsBox.innerHTML = actorMetricsTable(c.users);
     const net = c.network || {};
@@ -1499,6 +1541,18 @@ table.actor-metrics .bio {
 }
 table.actor-metrics .toplist { margin:0; padding:0; list-style:none; line-height:1.35; }
 table.actor-metrics .toplist li { white-space:nowrap; }
+.behavior-tops {
+  display:grid; grid-template-columns:repeat(4,1fr); gap:10px;
+  margin:10px 0 4px; padding:12px; background:var(--soft);
+  border:1px solid var(--line); border-radius:12px;
+}
+@media (max-width:980px){ .behavior-tops { grid-template-columns:1fr 1fr; } }
+.behavior-tops .col h5 {
+  margin:0 0 6px; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--muted);
+}
+.behavior-tops ul { margin:0; padding:0; list-style:none; font-size:12.5px; line-height:1.4; }
+.behavior-tops li { margin:0 0 3px; }
+.behavior-tops .meta { grid-column:1/-1; font-size:12px; color:var(--muted); margin:0; }
 .plot.net-plot { height:520px; border:1px solid var(--line); border-radius:12px; background:#fbfcfd; }
 .net-legend { display:flex; flex-wrap:wrap; gap:10px 16px; margin:0 0 8px; font-size:12px; color:var(--muted); }
 .net-legend .sw { display:inline-block; width:18px; height:3px; border-radius:2px; margin-right:6px; vertical-align:middle; }
@@ -1739,13 +1793,16 @@ else {
       </div>
       <div class="comp-graphs">
         <div class="plot-time"><h4>Temps</h4><div id="ctime-c${c.id}" class="plot"></div></div>
-        <div><h4>Acteurs</h4><div id="cusers-c${c.id}" class="plot tall"></div></div>
+        <div><h4>Acteurs (même ordre de grandeur)</h4><div id="cusers-c${c.id}" class="plot tall"></div></div>
         <div><h4>${m.mid_label||"Objets"}</h4><div id="cmid-c${c.id}" class="plot tall"></div></div>
         ${c.mid2&&c.mid2.length?`<div><h4>${m.mid2_label||"MID₂"}</h4><div id="cmid2-c${c.id}" class="plot tall"></div></div>`:""}
       </div>
       <h4>Réseau mono-modalité (MID Ck)</h4>
       <div class="net-legend" id="cnetleg-c${c.id}"></div>
       <div id="cnet-c${c.id}" class="plot net-plot"></div>
+      <h4>Comportements agrégés</h4>
+      <p class="cap">Tops cibles / mentions / hashtags / URLs des acteurs w≥10⌊log₁₀(w₁)⌋.</p>
+      <div id="cbeh-c${c.id}"></div>
       <h4>Acteurs — métriques</h4>
       <div class="actor-metrics-wrap" id="cactors-c${c.id}"></div>
     </div>`;
@@ -1922,6 +1979,29 @@ else {
       return `<li>${lab} <span class="cap">(${x.n})</span></li>`;
     }).join("")}</ul>`;
   }
+  function fmtTopList(rows, opts={}){
+    const slice=(rows||[]).slice(0, opts.n||10);
+    if (!slice.length) return "<li class='cap'>—</li>";
+    return slice.map(x=>{
+      let lab;
+      if (opts.hash) lab="#"+esc(x.label);
+      else if (opts.web || looksLikeWeb(x.id||x.label)) lab=webLink(x.id||x.label);
+      else lab=entityLink(x.label);
+      return `<li>${lab} <span class="cap">(${x.n})</span></li>`;
+    }).join("");
+  }
+  function behaviorTopsPanel(bt){
+    if (!bt) return "<p class='cap'>Pas de tops comportementaux.</p>";
+    const thr = bt.magnitude_threshold != null ? Number(bt.magnitude_threshold).toPrecision(3) : "—";
+    const w1 = bt.w_top != null ? Number(bt.w_top).toFixed(3) : "—";
+    return `<div class="behavior-tops">
+      <p class="meta"><b>${bt.n_actors||0}</b> acteur(s) · w₁=${w1} · seuil w≥${thr}</p>
+      <div class="col"><h5>Top cibles RT</h5><ul>${fmtTopList(bt.top_rt_targets)}</ul></div>
+      <div class="col"><h5>Top mentions</h5><ul>${fmtTopList(bt.top_mentions)}</ul></div>
+      <div class="col"><h5>Top hashtags</h5><ul>${fmtTopList(bt.top_hashtags,{hash:true})}</ul></div>
+      <div class="col"><h5>Top URLs</h5><ul>${fmtTopList(bt.top_urls,{web:true})}</ul></div>
+    </div>`;
+  }
   function actorMetricsTable(users){
     return `<table class="actor-metrics"><thead><tr>
       <th>Acteur</th><th>Pubs</th><th>% RT</th><th>Propres</th><th>Bio</th>
@@ -1954,6 +2034,8 @@ else {
     hbar("cusers-c"+c.id, c.users, col);
     hbar("cmid-c"+c.id, c.mid, col);
     if (c.mid2&&c.mid2.length) hbar("cmid2-c"+c.id, c.mid2, COLORS[(i+1)%COLORS.length]);
+    const beh=document.getElementById("cbeh-c"+c.id);
+    if (beh) beh.innerHTML = behaviorTopsPanel(c.behavior_tops);
     const box=document.getElementById("cactors-c"+c.id);
     if (box) box.innerHTML = actorMetricsTable(c.users);
     const net=c.network||{};

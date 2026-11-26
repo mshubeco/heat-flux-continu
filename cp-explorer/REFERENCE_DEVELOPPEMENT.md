@@ -148,6 +148,8 @@ Couplage : seulement avec `--with-coupled`.
 
 ## Historique
 
+- 2026-11-26 — Ck : acteurs filtrés au **même ordre de grandeur** que w₁ (`w ≥ 10^⌊log₁₀(w₁)⌋`) + bandeau tops agrégés cibles/mentions/hashtags/URLs.
+- 2026-11-26 — jumeau HMPV FULL : `hmpv_cp_explorer/` → Pages `/cp-explorer-hmpv/` (couplé `coupled_cort_ubigram_orig`).
 - 2026-11-26 — onglets Ck : graphe réseau d’échanges (RT / mentions) entre acteurs, survol détaillé.
 - 2026-11-26 — `ubio` : n-grammes candidats (n=2..4, PMI≥0.8, df≥2, longest-match) à la place des bigrammes fixes.
 - 2026-11-26 — onglets Ck : tableau acteurs (pubs, %RT, bio, top5 cibles/mentions/hashtags/domaines) ; `--enrich-profiles`.
