@@ -53,8 +53,32 @@ Docs n-grammes : 33 052 (hors RT = 17 691). Médias / bios : vides ou trop clair
 
 URL : https://mshubeco.github.io/heat-flux-continu/cp-explorer-hmpv/rapport.html#mod-coupled_cort_ubigram_orig
 
+## Filiations discursives (n-grammes)
+
+Cascades de publications reliées par chevauchement lexical **indépendamment** du réseau
+(RT / mentions). Arête si ≥ `min_shared` n-grammes candidats partagés (défaut **4**).
+
+```bash
+py -3.13 build_ngram_filiation.py --min-shared 4 --max-df 400 --min-tree 5
+start run_ngram_filiation\ngram_filiation.html
+```
+
+Méthode :
+1. Pubs hors RT (original / reply / quote), n-grammes n=2..4 (PMI + longest-match, comme CP).
+2. Collapse des ensembles de n-grammes **identiques** (nœud = copie × effectif).
+3. Graphe |∩| ≥ 4 (anti-hub `max_df=400`).
+4. Forêt de filiation temporelle : parent = voisin antérieur au max chevauchement,
+   ex æquo → parent le moins chargé (ramifications).
+5. HTML : axe vertical = **niveau de reprise**, gradient jaune→indigo.
+
+Pages : https://mshubeco.github.io/heat-flux-continu/cp-explorer-hmpv/ngram-filiation/ngram_filiation.html
+
+Run ref. (`min_shared=4`) : ~31k nœuds collapsés, ~7,8k arêtes, 40 cascades exportées.
+
 ## Historique
 
+- 2026-11-27 — `build_ngram_filiation.py` : cascades de filiations discursives (≥4 n-grammes)
+  + HTML GitHub Pages `/ngram-filiation/`.
 - 2026-11-26 — Table acteurs Ck : colonne **Création compte** (UTC snowflake).
 - 2026-11-26 — UI Ck : brief + Qui/quoi d’abord ; signature/réseau/table repliés (rendu différé).
 - 2026-11-26 — `rapport.html` : 2e section d’onglets **horaire** (jour intact) via `--hour-out run_full_hour_simple`.

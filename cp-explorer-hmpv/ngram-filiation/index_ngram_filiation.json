@@ -1,0 +1,345 @@
+{
+  "meta": {
+    "corpus": "HMPV",
+    "window": "HMPV FULL 01/01–30/06/2025",
+    "source_csv": "Export_padmen_hmpv_20250101-20250630_full.csv",
+    "scope": "original+reply+quote (hors retweet)",
+    "ngram_method": "candidats n=2..4, PMI≥0.8, longest-match, lemmatisés",
+    "min_shared": 4,
+    "max_df": 400,
+    "min_tree": 5,
+    "n_pubs_hors_rt": 39684,
+    "n_nodes_collapsed": 31426,
+    "n_edges": 7798,
+    "n_nodes_graph": 3230,
+    "n_trees_exported": 40,
+    "collapse": "ensembles de n-grammes identiques fusionnés (copies)",
+    "n_docs_ngrams": 39657,
+    "mean_ngrams": 4.16,
+    "n_unique_ngrams": 47220,
+    "built_at": "2026-11-27T13:48:46.762905+00:00",
+    "elapsed_s": 10.9
+  },
+  "trees": [
+    {
+      "id": "t000",
+      "n_nodes": 50,
+      "max_level": 8,
+      "root": "1876721409432379520",
+      "root_user": "wahabi92013848",
+      "root_text": "Balongpanggang Ansor 2024 The largest moderate Muslim youth movement in t world, affiliated w Nahdlatul Ulama(NU)the largest Islamic mass org in t world. ChatGPT Gemini KMNU HMPV I"
+    },
+    {
+      "id": "t001",
+      "n_nodes": 26,
+      "max_level": 9,
+      "root": "1875573443632230797",
+      "root_user": "DealsOwlIndia",
+      "root_text": "ADISA Women's Girls Grains Cross Body Sling Bag\n\nMRP: Rs 1,499\n\nDeal Price: Rs 499\n\nLink: https://t.co/8lerqGibkI\n\n#Ad #DealOfTheDay #DealsOwl #GameChanger #SSMB29 #GameChangerTrai"
+    },
+    {
+      "id": "t002",
+      "n_nodes": 31,
+      "max_level": 8,
+      "root": "1876271354431119810",
+      "root_user": "aimalpha100x",
+      "root_text": "HMPV infection 🦠 🦠 🦠 \n\nPatient 1  ( Bangalore) - baby recovered well &amp; discharged \nPatient 2 ( Bangalore) - Baby showing good recovery signs\nPatient 3 ( Ahmedabad) - Showing go"
+    },
+    {
+      "id": "t003",
+      "n_nodes": 21,
+      "max_level": 8,
+      "root": "1876184446598099258",
+      "root_user": "IndianTechGuide",
+      "root_text": "🚨 Important Note On HMPV Virus. \n\nHMPV is not a deadly virus.\nMost people get HMPV before they turn 5.\n\nsymptoms:\n\nCough.\nFever.\nRunny or stuffy nose.\nSore throat.\nWheezing.\nShortn"
+    },
+    {
+      "id": "t004",
+      "n_nodes": 25,
+      "max_level": 14,
+      "root": "1891731690675933195",
+      "root_user": "WebpWizard",
+      "root_text": "In this example, we analyze a WebP image of a green plant and print the general file information.\n\nTry our tool - https://t.co/vLd3GORusj\n\n#WebP #HMPV #TheWhiteLotus #USDX #WWENXT "
+    },
+    {
+      "id": "t005",
+      "n_nodes": 24,
+      "max_level": 10,
+      "root": "1874857771595936200",
+      "root_user": "Physics_T_ech",
+      "root_text": "China is dealing with an outbreak of the human metapneumovirus (HMPV), five years after the Covid-19 pandemic. Reports and social media posts suggest that the virus is spreading ra"
+    },
+    {
+      "id": "t006",
+      "n_nodes": 15,
+      "max_level": 9,
+      "root": "1886276362115424537",
+      "root_user": "WebpWizard",
+      "root_text": "In this example, we uploaded a WebP sticker created at a hot air balloon festival.\n\nTry our tool - https://t.co/OWetCQOdRf\n\n#WebP #HMPV #SistasOnBET #USDX #WWENXT #Oscars2025 #ICAI"
+    },
+    {
+      "id": "t007",
+      "n_nodes": 22,
+      "max_level": 8,
+      "root": "1874893855302291597",
+      "root_user": "StanBeagle",
+      "root_text": "HMPV is a virus that usually causes symptoms similar to a cold. You might cough or wheeze, have a runny nose or a sore throat. Most cases are mild, but young children, adults over "
+    },
+    {
+      "id": "t008",
+      "n_nodes": 20,
+      "max_level": 8,
+      "root": "1875053617591529663",
+      "root_user": "The_Tradesman1",
+      "root_text": "1️⃣1️⃣:0️⃣6️⃣ 𝑨𝑴: 🇮🇳\n\n💭 #AI Predicted #BreakoutStocks - #NSE/#BSE.\n\n⏭️🔄: In 3️⃣ mins.\n\n#nifty #banknifty #sensex $gme $amc $btc $eth $kitty $pepe assam stupid stupid stupid #dmart "
+    },
+    {
+      "id": "t009",
+      "n_nodes": 16,
+      "max_level": 4,
+      "root": "1876255942200959277",
+      "root_user": "ANI",
+      "root_text": "#WATCH | Union Health Minister JP Nadda says, \"Health experts have clarified that #HMPV is not a new virus. It was first identified in 2001 and it has been circulating in the entir"
+    },
+    {
+      "id": "t010",
+      "n_nodes": 20,
+      "max_level": 13,
+      "root": "1875242975426449622",
+      "root_user": "DealsOwlIndia",
+      "root_text": "Pleasing Strings Women Satin Nightgown Lace Chemise Spaghetti Strap Sleepwear\n\nMRP: Rs 1,499\n\nDeal Price: Rs 849\n\nLink: https://t.co/2uVJZ3pfQL\n\n#Ad #DealOfTheDay #DealsOwl #GameCh"
+    },
+    {
+      "id": "t011",
+      "n_nodes": 13,
+      "max_level": 7,
+      "root": "1876503987924386152",
+      "root_user": "NewsHubGlobe",
+      "root_text": "What We Know About HMPV, the Virus Spreading in China\n\n🔴 Follow us for 24/7 world news. https://t.co/3APSaWFaFU\n\nWhile cases are climbing in China, the situation is very different "
+    },
+    {
+      "id": "t012",
+      "n_nodes": 22,
+      "max_level": 6,
+      "root": "1874481684122607783",
+      "root_user": "COVID19_disease",
+      "root_text": "⚠️ BREAKING:\n\nChina 🇨🇳 Declares State of Emergency as Epidemic Overwhelms Hospitals and Crematoriums.\n\nMultiple viruses, including Influenza A, HMPV, Mycoplasma pneumoniae, and COV"
+    },
+    {
+      "id": "t013",
+      "n_nodes": 28,
+      "max_level": 4,
+      "root": "1875081769231208646",
+      "root_user": "NewsAlgebraIND",
+      "root_text": "SHOCKING NEWS 🚨 Five years after the COVID-19 pandemic, a new mysterious virus, HMPV, emerges in China 😱\n\nChina is facing a new virus outbreak of the human metapneumovirus (HMPV) s"
+    },
+    {
+      "id": "t014",
+      "n_nodes": 16,
+      "max_level": 3,
+      "root": "1876147843213537407",
+      "root_user": "Teensthack",
+      "root_text": "The Indian Council of Medical Research (ICMR) @ICMRDELHI has detected two cases of Human Metapneumovirus (HMPV) in Karnataka. Both cases were identified through routine surveillanc"
+    },
+    {
+      "id": "t015",
+      "n_nodes": 33,
+      "max_level": 27,
+      "root": "1875029337239363609",
+      "root_user": "IndianTechGuide",
+      "root_text": "🚨 China is facing a new virus outbreak of the human metapneumovirus (HMPV) spreading rapidly, five years after the Covid-19 pandemic. https://t.co/0S4B2tguKW"
+    },
+    {
+      "id": "t016",
+      "n_nodes": 15,
+      "max_level": 10,
+      "root": "1874875204146733271",
+      "root_user": "secretsofcharts",
+      "root_text": "🚨BREAKING NEWS🚨\n\nChina Faces New Virus Outbreak Five Years After Covid CrisisChina is facing a new virus outbreak, with the Human Metapneumovirus (HMPV) spreading rapidly, causing "
+    },
+    {
+      "id": "t017",
+      "n_nodes": 17,
+      "max_level": 9,
+      "root": "1876146817831932396",
+      "root_user": "snehamordani",
+      "root_text": "#Breaking \n\nICMR Detects Two Cases of Human Metapneumovirus (HMPV) in Karnataka through routine surveillance\nSurveillance System Robust, No Unusual Surge in ILI or SARI cases in th"
+    },
+    {
+      "id": "t018",
+      "n_nodes": 20,
+      "max_level": 8,
+      "root": "1874889370035236896",
+      "root_user": "MeetJess",
+      "root_text": "China Faces New Virus Outbreak Five Years After Covid Crisis \n\nChina is facing a new virus outbreak, with the Human Metapneumovirus (HMPV) spreading rapidly, causing flu-like and C"
+    },
+    {
+      "id": "t019",
+      "n_nodes": 14,
+      "max_level": 7,
+      "root": "1876853481337712835",
+      "root_user": "The_Tradesman1",
+      "root_text": "1️⃣0️⃣:1️⃣8️⃣ 𝑨𝑴: 🇮🇳\n\n💭 #AI Predicted #BreakoutStocks - #NSE/#BSE.\n\n⏭️🔄: In 3️⃣ mins.\n\n#nifty #banknifty #sensex $gme $amc $btc $eth $kitty $pepe #deprem #palisadesfire got slapped"
+    },
+    {
+      "id": "t020",
+      "n_nodes": 10,
+      "max_level": 4,
+      "root": "1876242263350903107",
+      "root_user": "Harshitha_888",
+      "root_text": "#Unlistedshares are available for Best price\n\nDM me https://t.co/zvlOJkL6Cq\n\n📌Apollo Green Energy\n📌Vikram Solar\n📌RRP S4E\n\n#Unlistedshares #stockmarketupdates #StockMarketIndia #IPO"
+    },
+    {
+      "id": "t021",
+      "n_nodes": 9,
+      "max_level": 4,
+      "root": "1876158898950082706",
+      "root_user": "_anishaj",
+      "root_text": "Doctors on #HMPV @ETNOWlive : NOTHING TO WORRY AT THE MOMENT.\n\nPratit Samdani:\n- #HMPV Has Been Around For Six Decades\n-No Need For Any Fear  Will Not See Anything Close To COVID-L"
+    },
+    {
+      "id": "t022",
+      "n_nodes": 14,
+      "max_level": 7,
+      "root": "1876767470339407931",
+      "root_user": "wahabi92013848",
+      "root_text": "Bulungan 2024 Banser The largest moderate Muslim youth movement in the world, affiliated w Nahdlatul Ulama(NU)the largest Islamic mass org in th world. ChatGPT Gemini HMPV Ansor In"
+    },
+    {
+      "id": "t023",
+      "n_nodes": 12,
+      "max_level": 6,
+      "root": "1875651335808585749",
+      "root_user": "ingenieur243",
+      "root_text": "Après 5 ans de la pandémie de COVID-19, la Chine fait face à une nouvelle épidémie d’un virus appelé HMPV (Human Metapneumovirus), une infection respiratoire. Les hôpitaux sont sat"
+    },
+    {
+      "id": "t024",
+      "n_nodes": 11,
+      "max_level": 5,
+      "root": "1875048872504119565",
+      "root_user": "malaithenioffl",
+      "root_text": "HMPV Outbreak In China\n\nChina is witnessing a surge in human metapneumovirus (HMPV) cases, sparking concerns of another health crisis after COVID-19 pandemic. Reports and social me"
+    },
+    {
+      "id": "t025",
+      "n_nodes": 10,
+      "max_level": 5,
+      "root": "1874824281022161358",
+      "root_user": "TA_Purvesh",
+      "root_text": "*Breaking News* \n\nEmergency declared in China\nChina infected with many viruses\nOutbreaks of HMPV and Mycoplasma pneumoniae viruses\nChina is troubled by many viruses including covid"
+    },
+    {
+      "id": "t026",
+      "n_nodes": 9,
+      "max_level": 5,
+      "root": "1875577682039390383",
+      "root_user": "FashionHowIn",
+      "root_text": "XIPIPZ Pajamas for Women Satin Camisole Sleepwear Sexy Lingerie Cami Top with Shorts PJ\n\nMRP: Rs 999\n\nDeal Price: Rs 349\n\nLink: https://t.co/CE7M58E5Be\n\n#Ad #FashionHow #Fashion #w"
+    },
+    {
+      "id": "t027",
+      "n_nodes": 9,
+      "max_level": 5,
+      "root": "1876141618778288377",
+      "root_user": "1_ram_jaat16",
+      "root_text": "Big news is coming on #hmpvvirus.\n\nA case of HMPV virus spreading in China found in India😲\n\nAn 8-month-old girl found infected in a hospital in Bengaluru😭\n\nEveryone is requested to"
+    },
+    {
+      "id": "t028",
+      "n_nodes": 10,
+      "max_level": 4,
+      "root": "1909979614220275746",
+      "root_user": "OnlinePNGMaker",
+      "root_text": "In this example, we convert a square PNG image into a circular PNG image.\n\nTry our tool - https://t.co/ea8CZyUVVn\n\n#PNGtool #HMPV #TheRookie #USDX #RHOA #Nifty #RHOBH #GIFTNIFTY #S"
+    },
+    {
+      "id": "t029",
+      "n_nodes": 9,
+      "max_level": 4,
+      "root": "1875084508535394808",
+      "root_user": "saikirankannan",
+      "root_text": "💢 #HMPV has been around for years. The symptoms seem to be more severe this year than in previous years (Influenza + COVID-like). The same thing happened in #China in 2023.\n\nMost c"
+    },
+    {
+      "id": "t030",
+      "n_nodes": 9,
+      "max_level": 4,
+      "root": "1875128815426666517",
+      "root_user": "DDNewslive",
+      "root_text": "#BreakingNews | China battles new 'mystery' virus outbreak five years after COVID pandemic.\n\nChina is experiencing a rise in respiratory illnesses, particularly HMPV, as winter app"
+    },
+    {
+      "id": "t031",
+      "n_nodes": 9,
+      "max_level": 4,
+      "root": "1876153771270799516",
+      "root_user": "IndiaToday",
+      "root_text": "The first cases of HMPV were confirmed in Bengaluru after a three-month-old girl and an eight-month-old boy tested positive for the virus at the city's Baptist Hospital.\n\nRead more"
+    },
+    {
+      "id": "t032",
+      "n_nodes": 7,
+      "max_level": 4,
+      "root": "1876120112702611694",
+      "root_user": "IndiaToday",
+      "root_text": "An eight-month-old baby was detected with the HMPV virus in Bengaluru. The case came to notice in Baptist hospital in the city. The state health department of government said they "
+    },
+    {
+      "id": "t033",
+      "n_nodes": 8,
+      "max_level": 3,
+      "root": "1875602847166869773",
+      "root_user": "FashionHowIn",
+      "root_text": "jaanshi Women's Sexy Sheer Cover Up Side Split Baby Doll Dress See Through Dress\n\nMRP: Rs 999\n\nDeal Price: Rs 849\n\nLink: https://t.co/0d7Ua73EUl\n\n#Ad #FashionHow #Fashion #womensfa"
+    },
+    {
+      "id": "t034",
+      "n_nodes": 7,
+      "max_level": 3,
+      "root": "1875137190440669468",
+      "root_user": "tehseenp",
+      "root_text": "I request the Union Govt to immediately start screening of all flights from China &amp; be prepared to stop flights from CHINA as the nation seems to have had an outbreak of the Hu"
+    },
+    {
+      "id": "t035",
+      "n_nodes": 5,
+      "max_level": 2,
+      "root": "1875154015962767606",
+      "root_user": "seeagainest",
+      "root_text": "Five years after the Covid-19 pandemic China is witnessing an outbreak of the human metapneumovirus (HMPV). \n\nAccording to reports and social media posts, hospitals are overcrowded"
+    },
+    {
+      "id": "t036",
+      "n_nodes": 5,
+      "max_level": 2,
+      "root": "1915072422786613651",
+      "root_user": "WebpWizard",
+      "root_text": "In this example, we apply a radial gradient with three shades of blue to a WebP photo of a modern high-rise building.\n\nTry our tool - https://t.co/9HUFBzRq85\n\n#WebP #HMPV #TheRooki"
+    },
+    {
+      "id": "t037",
+      "n_nodes": 20,
+      "max_level": 13,
+      "root": "1877253187280760867",
+      "root_user": "BAJIYO_MARWADI_",
+      "root_text": "Elon the changed like botton😜😌\n\n#HMPV #lockdown #HMPVinIndia #BreakingNews #hmpvvirus #WWERaw #GetOutRavi #zelena #earthquake #TirupatiStampede #MotherChildCare #ShangarDecorThrive"
+    },
+    {
+      "id": "t038",
+      "n_nodes": 10,
+      "max_level": 8,
+      "root": "1875099665546330424",
+      "root_user": "htTweets",
+      "root_text": "#China is allegedly facing a new health crisis as the #HMPV outbreak rapidly spreads across the country, raising global concerns.\n\nhttps://t.co/hVh5htKlWg https://t.co/5BZkkDf3GF"
+    },
+    {
+      "id": "t039",
+      "n_nodes": 9,
+      "max_level": 7,
+      "root": "1882558486418178155",
+      "root_user": "WastewaterSCAN",
+      "root_text": "1/ 📈 WWSCAN Weekly Data\n\nRespiratory Weekly Update: SARS-CoV-2, Influenza A and RSV are in the “High” category nationwide. The other respiratory viruses (Influenza B, HMPV, and EV-"
+    }
+  ]
+}
